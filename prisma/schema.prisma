@@ -20,7 +20,7 @@ model User {
 
 model ContentsCategory {
   name        String   @id
-  createdDate DateTime
+  createdDate DateTime @default(now())
 
   contentsSummary ContentsSummary[]
 }
@@ -36,7 +36,7 @@ model ContentsData {
 model ContentsSummary {
   id                   Int      @id @default(autoincrement())
   categoryName         String
-  useId                Int
+  userId               Int
   title                String   @unique
   subTitle             String
   representativeImgURL String
@@ -45,5 +45,5 @@ model ContentsSummary {
 
   contentsData     ContentsData?
   contentsCategory ContentsCategory @relation(fields: [categoryName], references: [name])
-  user             User             @relation(fields: [useId], references: [id])
+  user             User             @relation(fields: [userId], references: [id])
 }

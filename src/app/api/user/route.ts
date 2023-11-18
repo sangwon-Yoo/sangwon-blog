@@ -18,10 +18,19 @@ export async function PUT(request: Request) {
 
 export async function GET(request: NextRequest) {
 
-    const user = await prisma.user.create({
+    const user = await prisma.contentsSummary.create({
         data: {
-            name: 'Elsa Prisma',
-            authorizedYN: false
+            categoryName : 'sdf',
+            useId : 2,
+            title : 'hello',
+            subTitle : 'dfsdfs',
+            representativeImgURL : '/base/sdf/sdf.jpeg',
+            /*contentsCategory : {
+                create : {
+                    name : 'sdf',
+                    createdDate : '2021-12-30'
+                }
+            }*/
         },
     });
 
