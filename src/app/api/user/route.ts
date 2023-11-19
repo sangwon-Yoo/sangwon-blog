@@ -18,10 +18,17 @@ export async function PUT(request: Request) {
 
 export async function GET(request: NextRequest) {
 
-    const user = await prisma.user.create({
+    const user = await prisma.contentsCategory.create({
         data: {
-            name: 'Elsa Prisma',
-            authorizedYN: false
+            name : 'dev',
+            contentsSummary : {
+                create : {
+                    title : 'helleo',
+                    subTitle : 'sfds',
+                    userId : 1,
+                    representativeImgURL : 'sdfd',
+                }
+            }
         },
     });
 
