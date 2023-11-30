@@ -11,14 +11,9 @@ import {
     StyledContentsInputText,
     StyledContentsSpan
 } from "@/design-system/module/Contents";
-import styled from "styled-components";
-import { Menu } from "styled-icons/remix-fill";
-import { PaperPlane } from "styled-icons/evaicons-solid";
-import { Edit } from "styled-icons/boxicons-solid";
-import { CloseOutline } from "styled-icons/evaicons-outline";
-import { isMobile } from "@/design-system/MediaQuery";
 import Header from "@/features/header";
 import Footer from "@/features/footer";
+import { StyledContentsIconClose } from "@/components/styledIcons";
 
 export default function ContentsEditor() {
 
@@ -508,51 +503,3 @@ export default function ContentsEditor() {
         </>
     );
 }
-
-const StyledContentsIconMenu = styled(Menu)`
-  display: inherit;
-  color: inherit;
-  width: 22px;
-  height: 22px;
-
-  ${isMobile} {
-    width: 18px;
-    height: 18px;
-  }
-`;
-
-const StyledContentsIconPaperPlan = styled(PaperPlane)`
-  display: inherit;
-  color: inherit;
-  width: 22px;
-  height: 22px;
-
-  ${isMobile} {
-    width: 18px;
-    height: 18px;
-  }
-`;
-
-const StyledContentsIconEdit = styled(Edit)`
-  display: inherit;
-  color: inherit;
-  width: 22px;
-  height: 22px;
-
-  ${isMobile} {
-    width: 18px;
-    height: 18px;
-  }
-`;
-
-const StyledContentsIconClose = styled(CloseOutline)`
-  display: inherit;
-  color: inherit;
-  width: 100%;
-  height: 100%;
-
-  ${isMobile} {
-    width: 100%;
-    height: 100%;
-  }
-`;
