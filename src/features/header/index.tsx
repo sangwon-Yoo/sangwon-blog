@@ -39,8 +39,8 @@ export default function Header() {
                                                 <StyledContentsAnchor
                                                     $styled={{
                                                         display : 'block',
-                                                        width : '36px',
-                                                        height : '36px',
+                                                        width : '42px',
+                                                        height : '42px',
                                                     }}
                                                     $styledMobile={{
                                                         width : '32px',
@@ -48,11 +48,10 @@ export default function Header() {
                                                     }}
                                                 >
                                                     <Image
-                                                        src={'/img/wonny.jpeg'}
-                                                        width={32}
-                                                        height={32}
+                                                        src={'/img/logo_white.svg'}
+                                                        fill={true}
                                                         alt={'사이트 대표 이미지'}
-                                                        style={{ borderRadius : '2px' }}
+                                                        style={{ borderRadius : '2px', objectFit : 'cover' }}
                                                     />
                                                 </StyledContentsAnchor>
                                             </StyledWrapper>
