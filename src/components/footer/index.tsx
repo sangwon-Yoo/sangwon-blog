@@ -36,6 +36,7 @@ export default function Footer({isPositionFixed = false}: {isPositionFixed?: boo
                                     src={'/img/logo_white.svg'}
                                     width={42}
                                     height={42}
+                                    priority={true}
                                     alt={'사이트 대표 이미지'}
                                 />
                             </StyledContentsAnchor>

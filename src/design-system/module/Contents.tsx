@@ -84,6 +84,7 @@ type StyledContentsSpanProps = StyledProps<{
     paddingBottom?: string;
     textAlign?: CSSTextAlign;
     fontSize?: string;
+    fontWeight?: CSSFontWeight;
     color?: string;
     lineHeight?: string;
     verticalAlign?: CSSVerticalAlign;
@@ -103,6 +104,7 @@ export const StyledContentsSpan = styled.span<StyledContentsSpanProps>`
   padding-bottom: ${props => props.$styled?.paddingBottom};
   text-align: ${props => props.$styled?.textAlign};
   font-size: ${props => props.$styled?.fontSize};
+  font-weight: ${props => props.$styled?.fontWeight};
   color: ${props => props.$styled?.color || props.theme.color.black};
   line-height: ${props => props.$styled?.lineHeight};
   vertical-align: ${props => props.$styled?.verticalAlign};
@@ -122,6 +124,7 @@ export const StyledContentsSpan = styled.span<StyledContentsSpanProps>`
     padding-bottom: ${props => props.$styledMobile?.paddingBottom};
     text-align: ${props => props.$styledMobile?.textAlign};
     font-size: ${props => props.$styledMobile?.fontSize};
+    font-weight: ${props => props.$styledMobile?.fontWeight};
     color: ${props => props.$styledMobile?.color};
     line-height: ${props => props.$styledMobile?.lineHeight};
     vertical-align: ${props => props.$styledMobile?.verticalAlign};

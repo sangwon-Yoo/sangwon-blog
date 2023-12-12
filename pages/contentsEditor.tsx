@@ -11,8 +11,8 @@ import {
     StyledContentsInputText,
     StyledContentsSpan
 } from "@/design-system/module/Contents";
-import Header from "@/features/header";
-import Footer from "@/features/footer";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 import { StyledContentsIconClose } from "@/components/styledIcons";
 
 export default function ContentsEditor() {

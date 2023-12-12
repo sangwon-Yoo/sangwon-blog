@@ -12,10 +12,22 @@ import {
     StyledLayoutGridItem
 } from "@/design-system/module/Layout";
 import Image from "next/image";
-import Header from "@/features/header";
-import Footer from "@/features/footer";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]";
+import { GetServerSideProps } from "next";
+import { useSession } from "next-auth/react";
+
+
+// This gets called on every request
+/*export const getServerSideProps = (async (context) => {
+
+
+}) satisfies GetServerSideProps;*/
 
 export default function Home() {
+
 
     return (
         <>

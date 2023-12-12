@@ -3,6 +3,7 @@ import { StyledLayoutFlex, StyledLayoutFlexItem } from "@/design-system/module/L
 import { StyledWrapper } from "@/design-system/module/Wrapper";
 import { StyledContentsIconEdit, StyledContentsIconMenu, StyledContentsIconPaperPlan } from "@/components/styledIcons";
 import Image from "next/image";
+import AnchorLogInOut from "@/features/anchorLogInOut";
 
 export default function Header() {
 
@@ -47,12 +48,15 @@ export default function Header() {
                                                         height : '32px'
                                                     }}
                                                 >
-                                                    <Image
-                                                        src={'/img/logo_white.svg'}
-                                                        fill={true}
-                                                        alt={'사이트 대표 이미지'}
-                                                        style={{ borderRadius : '2px', objectFit : 'cover' }}
-                                                    />
+                                                    <StyledWrapper $styled={{ width : '100%', height : '100%' }}>
+                                                        <Image
+                                                            src={'/img/logo_white.svg'}
+                                                            fill={true}
+                                                            alt={'사이트 대표 이미지'}
+                                                            style={{ borderRadius : '2px', objectFit : 'cover' }}
+                                                            priority={true}
+                                                        />
+                                                    </StyledWrapper>
                                                 </StyledContentsAnchor>
                                             </StyledWrapper>
                                         </StyledLayoutFlexItem>
@@ -142,6 +146,15 @@ export default function Header() {
                                                     <StyledContentsIconPaperPlan />
                                                 </StyledContentsAnchor>
                                             </StyledWrapper>
+                                        </StyledLayoutFlexItem>
+                                    </StyledLayoutFlex>
+                                </StyledLayoutFlexItem>
+                                <StyledLayoutFlexItem>
+                                    <StyledLayoutFlex $styled={{
+                                        flexDirection : 'column', justifyContent : 'center'
+                                    }}>
+                                        <StyledLayoutFlexItem>
+                                            <AnchorLogInOut />
                                         </StyledLayoutFlexItem>
                                     </StyledLayoutFlex>
                                 </StyledLayoutFlexItem>
