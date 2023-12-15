@@ -1,7 +1,7 @@
-import { StyledContents, StyledContentsAnchor, StyledContentsSpan } from "@/design-system/module/Contents";
+import { StyledContents } from "@/design-system/module/Contents";
 import { StyledLayoutFlex } from "@/design-system/module/Layout";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
-import Header from "@/components/header";
+import Top from "@/components/top";
 import Footer from "@/components/footer";
 import Script from "next/script";
 
@@ -9,7 +9,7 @@ export default function Login() {
 
     return (
         <>
-            <Header />
+            <Top />
 
             <StyledContents $styled={{ width : '100%', height : '630px' }}>
                 <StyledLayoutFlex $styled={{ justifyContent : 'center', alignItems : 'center' }}>

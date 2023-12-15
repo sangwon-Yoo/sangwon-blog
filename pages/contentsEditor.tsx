@@ -11,7 +11,7 @@ import {
     StyledContentsInputText,
     StyledContentsSpan
 } from "@/design-system/module/Contents";
-import Header from "@/components/header";
+import Top from "@/components/top";
 import Footer from "@/components/footer";
 import { StyledContentsIconClose } from "@/components/styledIcons";
 
@@ -20,7 +20,7 @@ export default function ContentsEditor() {
 
     return (
         <>
-            <Header />
+            <Top />
 
             <StyledLayoutFlex
                 $styled={{ flexDirection : 'column', alignItems : 'center' }}

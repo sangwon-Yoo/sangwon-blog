@@ -1,6 +1,7 @@
-import NextAuth from "next-auth"
+import NextAuth  from "next-auth"
 import GoogleProvider from "next-auth/providers/google";
-import {JWT} from "next-auth/jwt";
+import prisma from "../db";
+import { Prisma } from '@prisma/client';
 
 export const authOptions = {
 
@@ -13,6 +14,24 @@ export const authOptions = {
         // ...add more providers here
     ],
     callbacks: {
+        async signIn({ user, account, profile, email, credentials }: any) {
+
+            let userFromDB;
+
+            try {
+                userFromDB = await prisma.user.findUnique({
+                    where : {
+                        id : user.id
+                    }
+                });
+            } catch (e) {
+                if (e instanceof Prisma.PrismaClientKnownRequestError) {
+                    console.error(e);
+                }
+            }
+
+            return !!(userFromDB?.authorizedYN);
+        },
         //sign in 할때와, useSession 등을 통해 접근하면서 jwt 를 업데이트 할 때 실행
         async jwt({ token, account }: any) {
             // Persist the OAuth access_token to the token right after signin

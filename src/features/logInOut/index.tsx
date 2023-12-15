@@ -2,11 +2,10 @@ import { StyledContentsAnchor, StyledContentsSpan } from "@/design-system/module
 import { signIn, signOut, useSession } from "next-auth/react";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
 
-export default function AnchorLogInOut() {
+export default function LoginOut() {
 
-    const { data : session, status } = useSession()
-    console.log(status);
-    console.log(session);
+    const { data : session, status } = useSession();
+
     return (
         <StyledWrapper $styled={{ margin : '6px' }}>
             <StyledContentsAnchor

@@ -12,12 +12,8 @@ import {
     StyledLayoutGridItem
 } from "@/design-system/module/Layout";
 import Image from "next/image";
-import Header from "@/components/header";
+import Top from "@/components/top";
 import Footer from "@/components/footer";
-import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]";
-import { GetServerSideProps } from "next";
-import { useSession } from "next-auth/react";
 
 
 // This gets called on every request
@@ -31,7 +27,7 @@ export default function Home() {
 
     return (
         <>
-            <Header />
+            <Top />
 
             {/* ++ 메인 */}
             <StyledWrapper as={'main'}>
