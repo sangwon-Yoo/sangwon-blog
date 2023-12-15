@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id           Int     @id @default(autoincrement())
+  id           String  @id
   name         String
   authorizedYN Boolean
 
@@ -38,7 +38,7 @@ model ContentsSummary {
   representativeImgURL String
   createdDate          DateTime      @default(now())
   updatedDate          DateTime      @updatedAt
-  userId               Int
+  userId               String
   contentsData         ContentsData?
 
   contentsCategory ContentsCategory @relation(fields: [categoryName], references: [name])

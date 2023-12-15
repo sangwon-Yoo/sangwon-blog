@@ -1,19 +1,34 @@
-import { StyledContents, StyledContentsAnchor, StyledContentsSpan } from "@/design-system/module/Contents";
+import { StyledContents } from "@/design-system/module/Contents";
 import { StyledLayoutFlex } from "@/design-system/module/Layout";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
-import Header from "@/features/header";
-import Footer from "@/features/footer";
+import Top from "@/components/top";
+import Footer from "@/components/footer";
+import Script from "next/script";
 
 export default function Login() {
 
     return (
         <>
-            <Header />
+            <Top />
 
             <StyledContents $styled={{ width : '100%', height : '630px' }}>
                 <StyledLayoutFlex $styled={{ justifyContent : 'center', alignItems : 'center' }}>
                     <StyledWrapper $styled={{ textAlign : 'center' }}>
-                        <StyledContentsAnchor $styled={{
+                        <Script src="https://accounts.google.com/gsi/client" async={true} />
+                        <div id="g_id_onload"
+                             data-client_id={'159925926764-0s0f69pan7evuatqtn1cpp4pujcda3dp.apps.googleusercontent.com'}
+                             data-login_uri="http://localhost:3000/home"
+                             data-auto_prompt="false">
+                        </div>
+                        <div className="g_id_signin"
+                             data-type="standard"
+                             data-size="large"
+                             data-theme="outline"
+                             data-text="sign_in_with"
+                             data-shape="rectangular"
+                             data-logo_alignment="left">
+                        </div>
+                        {/*<StyledContentsAnchor $styled={{
                             display : 'inline-block',
                             width : '276px',
                             height : '38px',
@@ -29,7 +44,7 @@ export default function Login() {
                                 backgroundColor : '#f2f3f5'
                             }
                         }}>
-                            <StyledWrapper $styled={{ margin : '2px' }}>
+                            <StyledWrapper $styled={{margin: '2px'}}>
                                 <StyledContents $styled={{ height : '32px', lineHeight : '32px' }}>
                                     <img src={'/img/googleLogo.png'} style={{
                                         display: 'inline-block',
@@ -46,12 +61,12 @@ export default function Login() {
                                     </StyledContentsSpan>
                                 </StyledContents>
                             </StyledWrapper>
-                        </StyledContentsAnchor>
+                        </StyledContentsAnchor>*/}
                     </StyledWrapper>
                 </StyledLayoutFlex>
             </StyledContents>
 
-            <Footer isPositionFixed={true} />
+            <Footer isPositionFixed={true}/>
         </>
     );
 }

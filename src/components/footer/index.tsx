@@ -21,21 +21,22 @@ export default function Footer({isPositionFixed = false}: {isPositionFixed?: boo
                         <StyledWrapper $styled={{
                             verticalAlign : 'middle',
                             width : '100px',
-                            height : '36px',
+                            height : '42px',
                             textAlign : 'center'
                         }}>
                             <StyledContentsAnchor
                                 $styled={{
                                     display : 'inline-block',
                                     verticalAlign : 'middle',
-                                    width : '36px',
+                                    width : '42px',
                                     height : '100%'
                                 }}
                             >
                                 <Image
-                                    src={'/img/wonny.jpeg'}
-                                    width={36}
-                                    height={36}
+                                    src={'/img/logo_white.svg'}
+                                    width={42}
+                                    height={42}
+                                    priority={true}
                                     alt={'사이트 대표 이미지'}
                                 />
                             </StyledContentsAnchor>

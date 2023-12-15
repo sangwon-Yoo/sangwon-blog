@@ -14,8 +14,8 @@ import typescript from 'highlight.js/lib/languages/typescript'
 import xml from 'highlight.js/lib/languages/xml';
 import css from 'highlight.js/lib/languages/css';
 import { useEffect } from "react";
-import Footer from "@/features/footer";
-import Header from "@/features/header";
+import Top from "@/components/top";
+import Footer from "@/components/footer";
 
 export default function Contents() {
 
@@ -31,7 +31,7 @@ export default function Contents() {
 
     return (
         <>
-            <Header />
+            <Top />
 
             <StyledLayoutFlex
                 $styled={{ flexDirection : 'column', alignItems : 'center' }}

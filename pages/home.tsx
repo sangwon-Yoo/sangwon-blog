@@ -12,14 +12,22 @@ import {
     StyledLayoutGridItem
 } from "@/design-system/module/Layout";
 import Image from "next/image";
-import Header from "@/features/header";
-import Footer from "@/features/footer";
+import Top from "@/components/top";
+import Footer from "@/components/footer";
+
+
+// This gets called on every request
+/*export const getServerSideProps = (async (context) => {
+
+
+}) satisfies GetServerSideProps;*/
 
 export default function Home() {
 
+
     return (
         <>
-            <Header />
+            <Top />
 
             {/* ++ 메인 */}
             <StyledWrapper as={'main'}>
