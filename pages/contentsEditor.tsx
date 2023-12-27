@@ -1,19 +1,10 @@
 import {
     StyledLayoutFlex,
-    StyledLayoutFlexItem,
-    StyledLayoutGrid,
-    StyledLayoutGridItem
+    StyledLayoutFlexItem
 } from "@/design-system/module/Layout";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
-import {
-    StyledContents,
-    StyledContentsButton,
-    StyledContentsInputText,
-    StyledContentsSpan
-} from "@/design-system/module/Contents";
 import Top from "@/components/top";
 import Footer from "@/components/footer";
-import { StyledContentsIconClose } from "@/components/styledIcons";
 import SaveContents from "@/features/saveContents";
 import SelectBoxA from "@/components/inputs/selectBoxA";
 import TextFieldA from "@/components/inputs/textFieldA";
@@ -90,7 +81,7 @@ export default function ContentsEditor() {
                                 margin : '0 0 14px 0'
                             }}
                         >
-                            <TextFieldA title={'Title'} />
+                            <TextFieldA title={'Thumbnail'} />
                         </StyledWrapper>
 
                         <StyledWrapper
