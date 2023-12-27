@@ -2,7 +2,7 @@ import { StyledContents, StyledContentsAnchor } from "@/design-system/module/Con
 import { StyledLayoutFlex, StyledLayoutFlexItem } from "@/design-system/module/Layout";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
 import Image from "next/image";
-import LoginOut from "@/features/logInOut";
+import LogInOut from "@/features/logInOut";
 import SendMessage from "@/features/sendMessage";
 import ToContentsEditor from "@/features/toContentsEditor";
 import OpenSideMenuBar from "@/features/openSideMenuBar";
@@ -31,7 +31,7 @@ export default function Header(
                 $styledMobile={{ height : '42px', backgroundColor : '#111111', opacity : 0.875 }}
             >
                 <StyledLayoutFlex>
-                    <StyledLayoutFlexItem $styled={{ flex : '0 0 16%' }}>
+                    <StyledLayoutFlexItem $styled={{ flex : '1' }}>
                         <StyledWrapper $styled={{ height : '100%', margin : '0 0 0 10px' }}>
                             <StyledLayoutFlex
                                 $styled={{ justifyContent : 'flex-end' }}
@@ -86,10 +86,10 @@ export default function Header(
                             </StyledLayoutFlex>
                         </StyledWrapper>
                     </StyledLayoutFlexItem>
-                    <StyledLayoutFlexItem $styled={{ flex : '0 1 68%' }}>
+                    <StyledLayoutFlexItem $styled={{ flex : '2 1' }}>
 
                     </StyledLayoutFlexItem>
-                    <StyledLayoutFlexItem $styled={{ flex : '0 0 16%' }}>
+                    <StyledLayoutFlexItem $styled={{ flex : '1' }}>
                         <StyledWrapper $styled={{ height : '100%', margin : '0 10px 0 0' }}>
                             <StyledLayoutFlex
                                 $styled={{ justifyContent : 'flex-start' }}
@@ -118,7 +118,7 @@ export default function Header(
                                         flexDirection : 'column', justifyContent : 'center'
                                     }}>
                                         <StyledLayoutFlexItem>
-                                            <LoginOut />
+                                            <LogInOut />
                                         </StyledLayoutFlexItem>
                                     </StyledLayoutFlex>
                                 </StyledLayoutFlexItem>

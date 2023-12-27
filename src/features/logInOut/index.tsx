@@ -2,7 +2,7 @@ import { StyledContentsAnchor, StyledContentsSpan } from "@/design-system/module
 import { signIn, signOut, useSession } from "next-auth/react";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
 
-export default function LoginOut() {
+export default function LogInOut() {
 
     const { data : session, status } = useSession();
 
@@ -31,7 +31,7 @@ export default function LoginOut() {
                         $styledMobile={{
                             fontSize : '0.8rem'
                         }}
-                        onClick={() => signOut()}
+                        onClick={() => signOut({ callbackUrl : '/home' })}
                     >
                         Sign Out
                     </StyledContentsSpan>
