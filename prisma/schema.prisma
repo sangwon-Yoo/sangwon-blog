@@ -16,8 +16,9 @@ model User {
 }
 
 model ContentsCategory {
-  name        String   @id
-  createdDate DateTime @default(now())
+  name                 String   @id
+  representativeImgURL String
+  createdDate          DateTime @default(now())
 
   contentsSummary ContentsSummary[]
 }
@@ -35,7 +36,7 @@ model ContentsSummary {
   categoryName         String
   title                String        @unique
   subTitle             String
-  representativeImgURL String
+  representativeImgURL String?
   createdDate          DateTime      @default(now())
   updatedDate          DateTime      @updatedAt
   userId               String
