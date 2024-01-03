@@ -1,8 +1,28 @@
 import { StyledLayoutFlex, StyledLayoutFlexItem } from "@/design-system/module/Layout";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
 import { StyledContentsButton, StyledContentsInputText } from "@/design-system/module/Contents";
+import { useCallback, useState } from "react";
+import { Editor, EditorState, RichUtils } from "draft-js";
 
 export default function WriteContents() {
+
+    const [
+        editorState,
+        setEditorState
+    ] = useState(() => EditorState.createEmpty());
+
+    const handleKeyCommand = useCallback((command: string, editorState: EditorState) => {
+        const newState = RichUtils.handleKeyCommand(editorState, command);
+
+        if (newState) {
+            setEditorState(newState);
+            return 'handled';
+        }
+
+        return 'not-handled';
+    },[]);
+
+    console.log(editorState);
 
     return (
         <StyledLayoutFlex $styled={{ flexDirection : 'column' }}>
@@ -102,7 +122,9 @@ export default function WriteContents() {
                         focusingVisible : { border : '1.4px solid #66f1e1' }
                     }}
                     as={'div'}
-                />
+                >
+                    <Editor editorState={editorState} onChange={setEditorState} handleKeyCommand={handleKeyCommand} />
+                </StyledContentsInputText>
             </StyledLayoutFlexItem>
         </StyledLayoutFlex>
     );
