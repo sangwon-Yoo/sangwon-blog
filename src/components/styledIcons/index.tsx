@@ -4,7 +4,7 @@ import { Menu } from "styled-icons/remix-fill";
 import { PaperPlane } from "styled-icons/evaicons-solid";
 import { Edit } from "styled-icons/boxicons-solid";
 import { Copy } from "styled-icons/boxicons-regular";
-import {CloseOutline} from "styled-icons/evaicons-outline";
+import { CloseOutline } from "styled-icons/evaicons-outline";
 
 export const StyledContentsIconMenu = styled(Menu)`
   display: inherit;

@@ -8,22 +8,13 @@ import {
 import { StyledLayoutFlex, StyledLayoutFlexItem } from "@/design-system/module/Layout";
 import { StyledContentsIconCopy, StyledContentsIconEdit2 } from "@/components/styledIcons";
 import Image from "next/image";
-import hljs from 'highlight.js/lib/core';
-import javascript from 'highlight.js/lib/languages/javascript'
-import typescript from 'highlight.js/lib/languages/typescript'
-import xml from 'highlight.js/lib/languages/xml';
-import css from 'highlight.js/lib/languages/css';
-import { useEffect } from "react";
+import 'highlight.js/styles/atom-one-dark.min.css'
 import Top from "@/components/top";
 import Footer from "@/components/footer";
+import hljs from "highlight.js/lib/core";
+import { useEffect } from "react";
 
 export default function Contents() {
-
-    // Then register the languages you need
-    hljs.registerLanguage('javascript', javascript);
-    hljs.registerLanguage('typescript', typescript);
-    hljs.registerLanguage('xml', xml);
-    hljs.registerLanguage('css', css);
 
     useEffect(() => {
         hljs.highlightAll();
@@ -307,9 +298,9 @@ export default function Contents() {
                             >
                                 <pre>
                                     <code dangerouslySetInnerHTML={{
-                                        __html : hljs.highlight(`async function APICalc({design, REQ_info}: APICalcProps): Promise<ProductCalcOutput> {
+                                        __html : `async function APICalc({design, REQ_info}: APICalcProps): Promise<ProductCalcOutput> {
 
-    const reqURI: string = '/calculate/v1/default';
+    const reqURI: string = '/calculate/v1/defaultdasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasfasf';
 
     return await APIProduct<ProductCalcOutput>(reqURI, {
         method: 'POST',
@@ -318,9 +309,7 @@ export default function Contents() {
             'Content-Type' : 'application/json',
         }
     });
-}`,
-                                            { language : 'typescript' }
-                                        ).value
+}`
                                     }} />
                                 </pre>
                             </StyledContents>
