@@ -1,8 +1,10 @@
 import { StyledLayoutFlex, StyledLayoutFlexItem } from "@/design-system/module/Layout";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
-import { StyledContentsButton, StyledContentsInputText } from "@/design-system/module/Contents";
-import { useCallback, useState } from "react";
-import { Editor, EditorState, RichUtils } from "draft-js";
+import {StyledContents, StyledContentsButton, StyledContentsInputText} from "@/design-system/module/Contents";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Draft, { convertToRaw, Editor, EditorState, RichUtils, getDefaultKeyBinding } from "draft-js";
+import 'draft-js/dist/Draft.css';
+
 
 export default function WriteContents() {
 
@@ -10,19 +12,23 @@ export default function WriteContents() {
         editorState,
         setEditorState
     ] = useState(() => EditorState.createEmpty());
+    const [editorFocusYN, setEditorFocusYN] = useState<boolean>(false);
 
     const handleKeyCommand = useCallback((command: string, editorState: EditorState) => {
         const newState = RichUtils.handleKeyCommand(editorState, command);
 
         if (newState) {
             setEditorState(newState);
+
             return 'handled';
         }
 
         return 'not-handled';
     },[]);
 
-    console.log(editorState);
+    useEffect(() => {
+       console.log(convertToRaw(editorState.getCurrentContent()));
+    });
 
     return (
         <StyledLayoutFlex $styled={{ flexDirection : 'column' }}>
@@ -45,7 +51,7 @@ export default function WriteContents() {
                                     color : '#6B6B6B'
                                 }}
                             >
-                                Title
+                                Head
                             </StyledContentsButton>
                         </StyledLayoutFlexItem>
                         <StyledLayoutFlexItem>
@@ -70,7 +76,7 @@ export default function WriteContents() {
                                     fontWeight : 'bold'
                                 }}
                             >
-                                Italic
+                                Point
                             </StyledContentsButton>
                         </StyledLayoutFlexItem>
                         <StyledLayoutFlexItem>
@@ -113,18 +119,23 @@ export default function WriteContents() {
                 </StyledWrapper>
             </StyledLayoutFlexItem>
             <StyledLayoutFlexItem>
-                <StyledContentsInputText
+                <StyledContents
                     $styled={{
                         height : '630px',
                         padding : '20px',
-                        border : '1.4px solid #0ca8ac',
+                        border : editorFocusYN ? '1.4px solid #66f1e1' : '1.4px solid #0ca8ac',
                         borderRadius : '3px',
-                        focusingVisible : { border : '1.4px solid #66f1e1' }
                     }}
-                    as={'div'}
                 >
-                    <Editor editorState={editorState} onChange={setEditorState} handleKeyCommand={handleKeyCommand} />
-                </StyledContentsInputText>
+                    <Editor
+                        editorState={editorState}
+                        onChange={setEditorState}
+                        handleKeyCommand={handleKeyCommand}
+                        spellCheck={true}
+                        onFocus={() => setEditorFocusYN(true)}
+                        onBlur={() => setEditorFocusYN(false)}
+                    />
+                </StyledContents>
             </StyledLayoutFlexItem>
         </StyledLayoutFlex>
     );
