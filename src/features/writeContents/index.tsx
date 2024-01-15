@@ -1,9 +1,10 @@
 import { StyledLayoutFlex, StyledLayoutFlexItem } from "@/design-system/module/Layout";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
 import {StyledContents, StyledContentsButton, StyledContentsInputText} from "@/design-system/module/Contents";
-import { useCallback, useEffect, useRef, useState } from "react";
-import Draft, { convertToRaw, Editor, EditorState, RichUtils, getDefaultKeyBinding } from "draft-js";
+import React, {SyntheticEvent, useCallback, useEffect, useRef, useState} from "react";
+import { convertToRaw, Editor, EditorState, RichUtils, getDefaultKeyBinding } from "draft-js";
 import 'draft-js/dist/Draft.css';
+import styles from '@/draftJS/RichEditor.module.css';
 
 
 export default function WriteContents() {
@@ -14,7 +15,11 @@ export default function WriteContents() {
     ] = useState(() => EditorState.createEmpty());
     const [editorFocusYN, setEditorFocusYN] = useState<boolean>(false);
 
-    const handleKeyCommand = useCallback((command: string, editorState: EditorState) => {
+    useEffect(() => {
+        console.log(convertToRaw(editorState.getCurrentContent()));
+    });
+
+    const handleKeyCommand = (command: string, editorState: EditorState) => {
         const newState = RichUtils.handleKeyCommand(editorState, command);
 
         if (newState) {
@@ -24,11 +29,26 @@ export default function WriteContents() {
         }
 
         return 'not-handled';
-    },[]);
+    };
+    const mapKeyToEditorCommand = (e: React.KeyboardEvent) => {
+        if (e.key === 'Tab' /* TAB */) {
+            console.log('pressed : Tab');
+            const newEditorState = RichUtils.onTab(
+                e,
+                editorState,
+                4, /* maxDepth */
+            );
+            if (newEditorState !== editorState) {
+                setEditorState(newEditorState);
+            }
+            return;
+        }
+        return getDefaultKeyBinding(e);
+    };
+    const toggleBlockType = (blockType: string) => setEditorState(RichUtils.toggleBlockType(editorState, blockType));
+    const toggleInlineStyle = (inlineStyle: string) => setEditorState(RichUtils.toggleInlineStyle(editorState, inlineStyle));
 
-    useEffect(() => {
-       console.log(convertToRaw(editorState.getCurrentContent()));
-    });
+
 
     return (
         <StyledLayoutFlex $styled={{ flexDirection : 'column' }}>
@@ -51,7 +71,7 @@ export default function WriteContents() {
                                     color : '#6B6B6B'
                                 }}
                             >
-                                Head
+                                Paragraph
                             </StyledContentsButton>
                         </StyledLayoutFlexItem>
                         <StyledLayoutFlexItem>
@@ -63,20 +83,7 @@ export default function WriteContents() {
                                     color : '#6B6B6B'
                                 }}
                             >
-                                Bold
-                            </StyledContentsButton>
-                        </StyledLayoutFlexItem>
-                        <StyledLayoutFlexItem>
-                            <StyledContentsButton
-                                $styled={{
-                                    width : '72px',
-                                    height : '40px',
-                                    margin : '0 10px',
-                                    color : '#292929',
-                                    fontWeight : 'bold'
-                                }}
-                            >
-                                Point
+                                Head
                             </StyledContentsButton>
                         </StyledLayoutFlexItem>
                         <StyledLayoutFlexItem>
@@ -115,27 +122,59 @@ export default function WriteContents() {
                                 Code
                             </StyledContentsButton>
                         </StyledLayoutFlexItem>
+                        <StyledLayoutFlexItem>
+                            <StyledContentsButton
+                                $styled={{
+                                    width : '72px',
+                                    height : '40px',
+                                    margin : '0 10px',
+                                    color : '#292929',
+                                    fontWeight : 'bold'
+                                }}
+                            >
+                                Bold
+                            </StyledContentsButton>
+                        </StyledLayoutFlexItem>
+                        <StyledLayoutFlexItem>
+                            <StyledContentsButton
+                                $styled={{
+                                    width : '72px',
+                                    height : '40px',
+                                    margin : '0 10px',
+                                    color : '#6B6B6B'
+                                }}
+                            >
+                                Point
+                            </StyledContentsButton>
+                        </StyledLayoutFlexItem>
                     </StyledLayoutFlex>
                 </StyledWrapper>
             </StyledLayoutFlexItem>
             <StyledLayoutFlexItem>
-                <StyledContents
+                <StyledWrapper
                     $styled={{
-                        height : '630px',
                         padding : '20px',
                         border : editorFocusYN ? '1.4px solid #66f1e1' : '1.4px solid #0ca8ac',
                         borderRadius : '3px',
                     }}
                 >
-                    <Editor
-                        editorState={editorState}
-                        onChange={setEditorState}
-                        handleKeyCommand={handleKeyCommand}
-                        spellCheck={true}
-                        onFocus={() => setEditorFocusYN(true)}
-                        onBlur={() => setEditorFocusYN(false)}
-                    />
-                </StyledContents>
+                    <StyledContents
+                        $styled={{
+                            height : '630px',
+                        }}
+                        className={styles.RichEditorEditor}
+                    >
+                        <Editor
+                            editorState={editorState}
+                            onChange={setEditorState}
+                            handleKeyCommand={handleKeyCommand}
+                            spellCheck={true}
+                            onFocus={() => setEditorFocusYN(true)}
+                            onBlur={() => setEditorFocusYN(false)}
+                            placeholder="내용을 입력하세요"
+                        />
+                    </StyledContents>
+                </StyledWrapper>
             </StyledLayoutFlexItem>
         </StyledLayoutFlex>
     );
