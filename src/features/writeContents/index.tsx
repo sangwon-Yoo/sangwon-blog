@@ -1,10 +1,11 @@
 import { StyledLayoutFlex, StyledLayoutFlexItem } from "@/design-system/module/Layout";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
 import {StyledContents, StyledContentsButton, StyledContentsInputText} from "@/design-system/module/Contents";
-import React, {SyntheticEvent, useCallback, useEffect, useRef, useState} from "react";
+import React, {MouseEventHandler, SyntheticEvent, useCallback, useEffect, useRef, useState} from "react";
 import { convertToRaw, Editor, EditorState, RichUtils, getDefaultKeyBinding } from "draft-js";
 import 'draft-js/dist/Draft.css';
 import styles from '@/draftJS/RichEditor.module.css';
+import styled from "styled-components";
 
 
 export default function WriteContents() {
@@ -17,6 +18,12 @@ export default function WriteContents() {
 
     useEffect(() => {
         console.log(convertToRaw(editorState.getCurrentContent()));
+        const selection = editorState.getSelection();
+        const blockType = editorState
+            .getCurrentContent()
+            .getBlockForKey(selection.getStartKey())
+            .getType();
+        console.log(blockType);
     });
 
     const handleKeyCommand = (command: string, editorState: EditorState) => {
@@ -30,6 +37,7 @@ export default function WriteContents() {
 
         return 'not-handled';
     };
+
     const mapKeyToEditorCommand = (e: React.KeyboardEvent) => {
         if (e.key === 'Tab' /* TAB */) {
             console.log('pressed : Tab');
@@ -75,16 +83,12 @@ export default function WriteContents() {
                             </StyledContentsButton>
                         </StyledLayoutFlexItem>
                         <StyledLayoutFlexItem>
-                            <StyledContentsButton
-                                $styled={{
-                                    width : '72px',
-                                    height : '40px',
-                                    margin : '0 10px',
-                                    color : '#6B6B6B'
-                                }}
-                            >
-                                Head
-                            </StyledContentsButton>
+                            <BlockControlButton
+                                label={'Head'}
+                                styleName={'header-three'}
+                                toggleFn={toggleBlockType}
+                                editorState={editorState}
+                            />
                         </StyledLayoutFlexItem>
                         <StyledLayoutFlexItem>
                             <StyledContentsButton
@@ -177,5 +181,36 @@ export default function WriteContents() {
                 </StyledWrapper>
             </StyledLayoutFlexItem>
         </StyledLayoutFlex>
+    );
+}
+
+function BlockControlButton(
+    {label, styleName, toggleFn, editorState}: {label: string, styleName: string, toggleFn: (BlockType: string) => void, editorState: EditorState}
+) {
+
+    const selection = editorState.getSelection();
+    const blockType = editorState
+        .getCurrentContent()
+        .getBlockForKey(selection.getStartKey())
+        .getType();
+
+    const [active, setActive] = useState<boolean>(false);
+    useEffect(() => {
+        (blockType == styleName) ? setActive(true) : setActive(false);
+    }, [blockType]);
+
+    return (
+        <StyledContentsButton
+            $styled={{
+                width : '72px',
+                height : '40px',
+                margin : '0 10px',
+                color : active ? '#292929' : '#6B6B6B',
+                fontWeight : active ? 'bold' : undefined
+            }}
+            onClick={() => toggleFn(styleName)}
+        >
+            {label}
+        </StyledContentsButton>
     );
 }
