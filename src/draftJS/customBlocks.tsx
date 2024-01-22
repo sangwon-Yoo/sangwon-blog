@@ -2,7 +2,19 @@ import { StyledWrapper } from "@/design-system/module/Wrapper";
 import { ReactNode } from "react";
 import { Map } from "immutable"
 import { StyledContentsParagraph } from "@/design-system/module/Contents";
+import { ContentBlock } from "draft-js";
 
+
+export const myBlockStyleFn = (contentBlock: ContentBlock) => {
+
+    const type = contentBlock.getType();
+
+    if (type === 'center') {
+        return 'block-style-center';
+    }
+
+    return 'unhandled';
+};
 
 export const CUSTOM_BLOCK_RENDER_MAP = Map({
     'unstyled': {
@@ -12,8 +24,8 @@ export const CUSTOM_BLOCK_RENDER_MAP = Map({
         element: 'h3'
     },
     'center' : {
-        element : 'div',
-        wrapper : <CenterBlock />
+        element : 'p',
+        //wrapper : <CenterBlock />
     },
     'code-block': {
         element : 'pre',

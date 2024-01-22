@@ -1,6 +1,7 @@
 import { StyledLayoutFlex, StyledLayoutFlexItem } from "@/design-system/module/Layout";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
 import { StyledContents, StyledContentsButton } from "@/design-system/module/Contents";
+import { EditorWrapper } from "@/draftJS/EditorWrapper";
 import React, { useEffect, useState } from "react";
 import {
     convertToRaw, Editor,
@@ -8,7 +9,7 @@ import {
     getDefaultKeyBinding
 } from "draft-js";
 import 'draft-js/dist/Draft.css';
-import { CUSTOM_BLOCK_RENDER_MAP } from "@/draftJS/customRenderingBlock";
+import {CUSTOM_BLOCK_RENDER_MAP, myBlockStyleFn} from "@/draftJS/customBlocks";
 
 
 export default function WriteContents() {
@@ -150,7 +151,7 @@ export default function WriteContents() {
                 </StyledWrapper>
             </StyledLayoutFlexItem>
             <StyledLayoutFlexItem>
-                <StyledWrapper
+                <EditorWrapper
                     $styled={{
                         padding : '20px',
                         border : editorFocusYN ? '1.4px solid #66f1e1' : '1.4px solid #0ca8ac',
@@ -166,6 +167,7 @@ export default function WriteContents() {
                             editorState={editorState}
                             onChange={setEditorState}
                             handleKeyCommand={handleKeyCommand}
+                            blockStyleFn={myBlockStyleFn}
                             blockRenderMap={CUSTOM_BLOCK_RENDER_MAP}
                             spellCheck={true}
                             onFocus={() => setEditorFocusYN(true)}
@@ -173,7 +175,7 @@ export default function WriteContents() {
                             placeholder="내용을 입력하세요"
                         />
                     </StyledContents>
-                </StyledWrapper>
+                </EditorWrapper>
             </StyledLayoutFlexItem>
         </StyledLayoutFlex>
     );
