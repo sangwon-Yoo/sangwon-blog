@@ -1,4 +1,4 @@
-import { StyledContents, StyledContentsButton } from "@/design-system/module/Contents";
+import { StyledContents } from "@/design-system/module/Contents";
 import { StyledLayoutFlex, StyledLayoutFlexItem } from "@/design-system/module/Layout";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
 import SelectBoxA from "@/components/inputs/selectBoxA";
@@ -11,8 +11,6 @@ const DynamicEditor = dynamic(() => import('@/features/writeContents'), {
     ssr: false,
 })
 export default function SaveContents() {
-
-
 
     return (
         <StyledWrapper

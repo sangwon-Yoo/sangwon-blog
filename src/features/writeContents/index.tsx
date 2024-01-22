@@ -1,11 +1,14 @@
 import { StyledLayoutFlex, StyledLayoutFlexItem } from "@/design-system/module/Layout";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
-import {StyledContents, StyledContentsButton, StyledContentsInputText} from "@/design-system/module/Contents";
-import React, {MouseEventHandler, SyntheticEvent, useCallback, useEffect, useRef, useState} from "react";
-import { convertToRaw, Editor, EditorState, RichUtils, getDefaultKeyBinding } from "draft-js";
+import { StyledContents, StyledContentsButton } from "@/design-system/module/Contents";
+import React, { useEffect, useState } from "react";
+import {
+    convertToRaw, Editor,
+    EditorState, RichUtils,
+    getDefaultKeyBinding
+} from "draft-js";
 import 'draft-js/dist/Draft.css';
-import styles from '@/draftJS/RichEditor.module.css';
-import styled from "styled-components";
+import { CUSTOM_BLOCK_RENDER_MAP } from "@/draftJS/customRenderingBlock";
 
 
 export default function WriteContents() {
@@ -25,6 +28,10 @@ export default function WriteContents() {
             .getType();
         console.log(blockType);
     });
+
+    console.log('sadf')
+
+    //const extendedBlockRenderMap = DefaultDraftBlockRenderMap.merge(BLOCK_RENDER_MAP);
 
     const handleKeyCommand = (command: string, editorState: EditorState) => {
         const newState = RichUtils.handleKeyCommand(editorState, command);
@@ -58,8 +65,9 @@ export default function WriteContents() {
 
 
 
+
     return (
-        <StyledLayoutFlex $styled={{ flexDirection : 'column' }}>
+        <StyledLayoutFlex $styled={{ flexDirection : 'column' }} id={'tmptmp'}>
             <StyledLayoutFlexItem>
                 <StyledWrapper $styled={{
                     margin : '0 0 4px 0',
@@ -70,18 +78,14 @@ export default function WriteContents() {
                         $styled={{ flexWrap : 'wrap' }}
                         $styledMobile={{ justifyContent : 'center' }}
                     >
-                        <StyledLayoutFlexItem>
-                            <StyledContentsButton
-                                $styled={{
-                                    width : '72px',
-                                    height : '40px',
-                                    margin : '0 10px',
-                                    color : '#6B6B6B'
-                                }}
-                            >
-                                Paragraph
-                            </StyledContentsButton>
-                        </StyledLayoutFlexItem>
+                        {/*<StyledLayoutFlexItem>
+                            <BlockControlButton
+                                label={'Paragraph'}
+                                styleName={'unstyled'}
+                                toggleFn={toggleBlockType}
+                                editorState={editorState}
+                            />
+                        </StyledLayoutFlexItem>*/}
                         <StyledLayoutFlexItem>
                             <BlockControlButton
                                 label={'Head'}
@@ -91,16 +95,12 @@ export default function WriteContents() {
                             />
                         </StyledLayoutFlexItem>
                         <StyledLayoutFlexItem>
-                            <StyledContentsButton
-                                $styled={{
-                                    width : '72px',
-                                    height : '40px',
-                                    margin : '0 10px',
-                                    color : '#6B6B6B'
-                                }}
-                            >
-                                Center
-                            </StyledContentsButton>
+                            <BlockControlButton
+                                label={'Center'}
+                                styleName={'center'}
+                                toggleFn={toggleBlockType}
+                                editorState={editorState}
+                            />
                         </StyledLayoutFlexItem>
                         <StyledLayoutFlexItem>
                             <StyledContentsButton
@@ -115,16 +115,12 @@ export default function WriteContents() {
                             </StyledContentsButton>
                         </StyledLayoutFlexItem>
                         <StyledLayoutFlexItem>
-                            <StyledContentsButton
-                                $styled={{
-                                    width : '72px',
-                                    height : '40px',
-                                    margin : '0 10px',
-                                    color : '#6B6B6B'
-                                }}
-                            >
-                                Code
-                            </StyledContentsButton>
+                            <BlockControlButton
+                                label={'Code'}
+                                styleName={'code-block'}
+                                toggleFn={toggleBlockType}
+                                editorState={editorState}
+                            />
                         </StyledLayoutFlexItem>
                         <StyledLayoutFlexItem>
                             <StyledContentsButton
@@ -132,8 +128,7 @@ export default function WriteContents() {
                                     width : '72px',
                                     height : '40px',
                                     margin : '0 10px',
-                                    color : '#292929',
-                                    fontWeight : 'bold'
+                                    color : '#6B6B6B',
                                 }}
                             >
                                 Bold
@@ -166,12 +161,12 @@ export default function WriteContents() {
                         $styled={{
                             height : '630px',
                         }}
-                        className={styles.RichEditorEditor}
                     >
                         <Editor
                             editorState={editorState}
                             onChange={setEditorState}
                             handleKeyCommand={handleKeyCommand}
+                            blockRenderMap={CUSTOM_BLOCK_RENDER_MAP}
                             spellCheck={true}
                             onFocus={() => setEditorFocusYN(true)}
                             onBlur={() => setEditorFocusYN(false)}
@@ -214,3 +209,4 @@ function BlockControlButton(
         </StyledContentsButton>
     );
 }
+
