@@ -1,14 +1,15 @@
 import { StyledLayoutFlex, StyledLayoutFlexItem } from "@/design-system/module/Layout";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
 import { StyledContents, StyledContentsButton } from "@/design-system/module/Contents";
-import React, {MouseEventHandler, useEffect, useState} from "react";
+import React, {MouseEventHandler, ReactNode, useEffect, useState} from "react";
 import {
     convertToRaw, Editor,
     EditorState, RichUtils,
-    getDefaultKeyBinding
+    getDefaultKeyBinding, ContentBlock
 } from "draft-js";
 import 'draft-js/dist/Draft.css';
-import { CUSTOM_BLOCK_RENDER_MAP, myBlockStyleFn } from "@/draftJS/customs";
+import Immutable from "immutable";
+import styled from "styled-components";
 
 
 export default function WriteContents() {
@@ -32,6 +33,17 @@ export default function WriteContents() {
     console.log('sadf')
 
     //const extendedBlockRenderMap = DefaultDraftBlockRenderMap.merge(BLOCK_RENDER_MAP);
+
+    const myBlockStyleFn = (contentBlock: ContentBlock) => {
+
+        const type = contentBlock.getType();
+
+        if (type === 'center') {
+            return 'block-style-center';
+        }
+
+        return 'unhandled';
+    };
 
     const handleKeyCommand = (command: string, editorState: EditorState) => {
         const newState = RichUtils.handleKeyCommand(editorState, command);
@@ -215,4 +227,46 @@ function BlockControlButton(
         </StyledContentsButton>
     );
 }
+
+const CUSTOM_BLOCK_RENDER_MAP = Immutable.Map({
+    'unstyled': {
+        element: 'div'
+    },
+    'header-three': {
+        element: 'h3'
+    },
+    'center' : {
+        element : 'div',
+        wrapper : <CenterBlock />
+    },
+    'code-block': {
+        element : 'pre',
+        wrapper : <CodeBlock />
+    }
+});
+
+function CodeBlock({children}: {children?: ReactNode}) {
+
+    return (
+        <StyledWrapper $styled={{ padding : '20px', backgroundColor : '#f2f3f5' }}>
+            {children}
+        </StyledWrapper>
+    );
+}
+
+function CenterBlock({children}: {children?: ReactNode}) {
+
+    return (
+        <StyledWrapperEditorCenter>
+            {children}
+        </StyledWrapperEditorCenter>
+    );
+}
+
+const StyledWrapperEditorCenter = styled(StyledWrapper)`
+    
+    & .block-style-center .public-DraftStyleDefault-block {
+        text-align: center;
+    }
+`;
 
