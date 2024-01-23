@@ -1,15 +1,14 @@
 import { StyledLayoutFlex, StyledLayoutFlexItem } from "@/design-system/module/Layout";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
 import { StyledContents, StyledContentsButton } from "@/design-system/module/Contents";
-import { EditorWrapper } from "@/draftJS/EditorWrapper";
-import React, { useEffect, useState } from "react";
+import React, {MouseEventHandler, useEffect, useState} from "react";
 import {
     convertToRaw, Editor,
     EditorState, RichUtils,
     getDefaultKeyBinding
 } from "draft-js";
 import 'draft-js/dist/Draft.css';
-import {CUSTOM_BLOCK_RENDER_MAP, myBlockStyleFn} from "@/draftJS/customBlocks";
+import { CUSTOM_BLOCK_RENDER_MAP, myBlockStyleFn } from "@/draftJS/customs";
 
 
 export default function WriteContents() {
@@ -151,7 +150,7 @@ export default function WriteContents() {
                 </StyledWrapper>
             </StyledLayoutFlexItem>
             <StyledLayoutFlexItem>
-                <EditorWrapper
+                <StyledWrapper
                     $styled={{
                         padding : '20px',
                         border : editorFocusYN ? '1.4px solid #66f1e1' : '1.4px solid #0ca8ac',
@@ -175,7 +174,7 @@ export default function WriteContents() {
                             placeholder="내용을 입력하세요"
                         />
                     </StyledContents>
-                </EditorWrapper>
+                </StyledWrapper>
             </StyledLayoutFlexItem>
         </StyledLayoutFlex>
     );
@@ -196,6 +195,11 @@ function BlockControlButton(
         (blockType == styleName) ? setActive(true) : setActive(false);
     }, [blockType]);
 
+    const onClick: MouseEventHandler<HTMLButtonElement> = (e) => {
+        e.preventDefault();
+        toggleFn(styleName);
+    };
+
     return (
         <StyledContentsButton
             $styled={{
@@ -205,7 +209,7 @@ function BlockControlButton(
                 color : active ? '#292929' : '#6B6B6B',
                 fontWeight : active ? 'bold' : undefined
             }}
-            onClick={() => toggleFn(styleName)}
+            onClick={onClick}
         >
             {label}
         </StyledContentsButton>

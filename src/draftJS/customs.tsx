@@ -1,8 +1,8 @@
 import { StyledWrapper } from "@/design-system/module/Wrapper";
 import { ReactNode } from "react";
 import { Map } from "immutable"
-import { StyledContentsParagraph } from "@/design-system/module/Contents";
 import { ContentBlock } from "draft-js";
+import styled from "styled-components";
 
 
 export const myBlockStyleFn = (contentBlock: ContentBlock) => {
@@ -18,14 +18,14 @@ export const myBlockStyleFn = (contentBlock: ContentBlock) => {
 
 export const CUSTOM_BLOCK_RENDER_MAP = Map({
     'unstyled': {
-        element: 'p'
+        element: 'div'
     },
     'header-three': {
         element: 'h3'
     },
     'center' : {
-        element : 'p',
-        //wrapper : <CenterBlock />
+        element : 'div',
+        wrapper : <CenterBlock />
     },
     'code-block': {
         element : 'pre',
@@ -45,10 +45,15 @@ function CodeBlock({children}: {children?: ReactNode}) {
 function CenterBlock({children}: {children?: ReactNode}) {
 
     return (
-        <StyledWrapper>
-            <StyledContentsParagraph $styled={{ height : 'auto', textAlign : 'center' }}>
-                {children}
-            </StyledContentsParagraph>
-        </StyledWrapper>
+        <StyledWrapperEditorCenter>
+            {children}
+        </StyledWrapperEditorCenter>
     );
 }
+
+const StyledWrapperEditorCenter = styled(StyledWrapper)`
+    
+    & .block-style-center .public-DraftStyleDefault-block {
+        text-align: center;
+    }
+`;
