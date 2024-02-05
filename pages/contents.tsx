@@ -13,6 +13,7 @@ import Top from "@/components/top";
 import Footer from "@/components/footer";
 import hljs from "highlight.js/lib/core";
 import { useEffect } from "react";
+import { escapeHtml } from "@/functions/utils";
 
 export default function Contents() {
 
@@ -48,8 +49,9 @@ export default function Contents() {
                             }}>
                                 <Image
                                     src={'/img/contents.jpeg'}
-                                    fill={true}
-                                    objectFit={'cover'}
+                                    priority
+                                    fill
+                                    style={{ objectFit : 'cover' }}
                                     alt={'콘텐츠 대표 이미지'}
                                 />
                             </StyledContents>
@@ -298,7 +300,7 @@ export default function Contents() {
                             >
                                 <pre>
                                     <code dangerouslySetInnerHTML={{
-                                        __html : `async function APICalc({design, REQ_info}: APICalcProps): Promise<ProductCalcOutput> {
+                                        __html : escapeHtml(`async function APICalc({design, REQ_info}: APICalcProps): Promise<ProductCalcOutput> {
 
     const reqURI: string = '/calculate/v1/defaultdasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasfasf';
 
@@ -309,7 +311,7 @@ export default function Contents() {
             'Content-Type' : 'application/json',
         }
     });
-}`
+}`)
                                     }} />
                                 </pre>
                             </StyledContents>
@@ -358,9 +360,9 @@ export default function Contents() {
                                 }}
                             >
                                 <Image
-                                    src={'/img/contents.jpeg'}
-                                    fill={true}
-                                    objectFit={'cover'}
+                                    src={'/img/inContents.jpeg'}
+                                    fill
+                                    style={{ objectFit : 'cover' }}
                                     alt={'내용 삽입 이미지'}
                                 />
                             </StyledContents>

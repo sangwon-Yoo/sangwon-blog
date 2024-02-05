@@ -1,15 +1,16 @@
-import { StyledContents, StyledContentsButton } from "@/design-system/module/Contents";
+import { StyledContents } from "@/design-system/module/Contents";
 import { StyledLayoutFlex, StyledLayoutFlexItem } from "@/design-system/module/Layout";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
 import SelectBoxA from "@/components/inputs/selectBoxA";
 import TextFieldA from "@/components/inputs/textFieldA";
 import TextAreaA from "@/components/inputs/textAreaA";
-import WriteContents from "@/features/writeContents";
 import ButtonA_long from "@/components/buttons/buttonA_long";
+import dynamic from "next/dynamic";
 
+const DynamicEditor = dynamic(() => import('@/features/writeContents'), {
+    ssr: false,
+})
 export default function SaveContents() {
-
-
 
     return (
         <StyledWrapper
@@ -38,7 +39,7 @@ export default function SaveContents() {
                     margin : '0 0 14px 0'
                 }}
             >
-                <WriteContents />
+                <DynamicEditor />
             </StyledWrapper>
         </StyledWrapper>
     );
