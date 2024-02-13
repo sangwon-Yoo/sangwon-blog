@@ -32,7 +32,7 @@ export default function WriteContents() {
 
     console.log('sadf')
 
-    //const extendedBlockRenderMap = DefaultDraftBlockRenderMap.merge(BLOCK_RENDER_MAP);
+    console.log(editorState.getCurrentInlineStyle());
 
     const myBlockStyleFn = (contentBlock: ContentBlock) => {
 
@@ -74,9 +74,6 @@ export default function WriteContents() {
     };
     const toggleBlockType = (blockType: string) => setEditorState(RichUtils.toggleBlockType(editorState, blockType));
     const toggleInlineStyle = (inlineStyle: string) => setEditorState(RichUtils.toggleInlineStyle(editorState, inlineStyle));
-
-
-
 
     return (
         <StyledLayoutFlex $styled={{ flexDirection : 'column' }} id={'tmptmp'}>
@@ -135,28 +132,20 @@ export default function WriteContents() {
                             />
                         </StyledLayoutFlexItem>
                         <StyledLayoutFlexItem>
-                            <StyledContentsButton
-                                $styled={{
-                                    width : '72px',
-                                    height : '40px',
-                                    margin : '0 10px',
-                                    color : '#6B6B6B',
-                                }}
-                            >
-                                Bold
-                            </StyledContentsButton>
+                            <InlineControlButton
+                                label={'Bold'}
+                                styleName={'BOLD'}
+                                toggleFn={toggleInlineStyle}
+                                editorState={editorState}
+                            />
                         </StyledLayoutFlexItem>
                         <StyledLayoutFlexItem>
-                            <StyledContentsButton
-                                $styled={{
-                                    width : '72px',
-                                    height : '40px',
-                                    margin : '0 10px',
-                                    color : '#6B6B6B'
-                                }}
-                            >
-                                Point
-                            </StyledContentsButton>
+                            <InlineControlButton
+                                label={'Point'}
+                                styleName={'POINT'}
+                                toggleFn={toggleInlineStyle}
+                                editorState={editorState}
+                            />
                         </StyledLayoutFlexItem>
                     </StyledLayoutFlex>
                 </StyledWrapper>
@@ -179,6 +168,7 @@ export default function WriteContents() {
                             onChange={setEditorState}
                             handleKeyCommand={handleKeyCommand}
                             blockStyleFn={myBlockStyleFn}
+                            customStyleMap={CUSTOM_INLINE_STYLE_MAP}
                             blockRenderMap={CUSTOM_BLOCK_RENDER_MAP}
                             spellCheck={true}
                             onFocus={() => setEditorFocusYN(true)}
@@ -191,6 +181,43 @@ export default function WriteContents() {
         </StyledLayoutFlex>
     );
 }
+
+function InlineControlButton(
+    {label, styleName, toggleFn, editorState}: {label: string, styleName: string, toggleFn: (BlockType: string) => void, editorState: EditorState}
+) {
+
+    const inlineTypeSet = editorState.getCurrentInlineStyle();
+    const [active, setActive] = useState<boolean>(false);
+    useEffect(() => {
+        inlineTypeSet.has(styleName) ? setActive(true) : setActive(false);
+    }, [inlineTypeSet.toArray().join()]);
+
+    const onClick: MouseEventHandler<HTMLButtonElement> = (e) => {
+        e.preventDefault();
+        toggleFn(styleName);
+    };
+
+    return (
+        <StyledContentsButton
+            $styled={{
+                width : '72px',
+                height : '40px',
+                margin : '0 10px',
+                color : active ? '#292929' : '#6B6B6B',
+                fontWeight : active ? 'bold' : undefined
+            }}
+            onClick={onClick}
+        >
+            {label}
+        </StyledContentsButton>
+    );
+}
+const CUSTOM_INLINE_STYLE_MAP = {
+    'POINT': {
+        fontStyle : 'italic',
+        backgroundColor : '#66f1e1'
+    },
+};
 
 function BlockControlButton(
     {label, styleName, toggleFn, editorState}: {label: string, styleName: string, toggleFn: (BlockType: string) => void, editorState: EditorState}
