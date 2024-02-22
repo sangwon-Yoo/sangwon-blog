@@ -114,14 +114,25 @@ export default function WriteContents() {
                         <StyledLayoutFlexItem>
                             <StyledContentsButton
                                 $styled={{
+                                    display : 'inline-block',
                                     width : '72px',
                                     height : '40px',
                                     margin : '0 10px',
-                                    color : '#6B6B6B'
+                                    color : '#6B6B6B',
+                                    textAlign : 'center',
+                                    lineHeight : '40px'
                                 }}
+                                as={'label'}
+                                htmlFor={'Input_UploadImage'}
                             >
                                 Image
                             </StyledContentsButton>
+                            <input
+                                id={'Input_UploadImage'}
+                                name={'Input_UploadImage'}
+                                style={{ display : 'none' }}
+                                type={'file'}
+                            />
                         </StyledLayoutFlexItem>
                         <StyledLayoutFlexItem>
                             <BlockControlButton
