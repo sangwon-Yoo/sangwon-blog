@@ -89,6 +89,11 @@ export default function WriteContents() {
 
         if(!file) return;
 
+        if(file.size > 300000) {
+            alert('Too Big File Size. Use under 300kb image.');
+            return;
+        }
+
         const blob = file.slice();
         const imgURL = URL.createObjectURL(blob);
 
