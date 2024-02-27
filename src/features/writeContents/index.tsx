@@ -1,12 +1,14 @@
 import { StyledLayoutFlex, StyledLayoutFlexItem } from "@/design-system/module/Layout";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
 import { StyledContents, StyledContentsButton } from "@/design-system/module/Contents";
-import React, {MouseEventHandler, ReactNode, useEffect, useState} from "react";
+import { ChangeEvent, MouseEventHandler, ReactNode, useEffect, useState, KeyboardEvent } from "react";
 import {
-    convertToRaw, Editor,
-    EditorState, RichUtils,
-    getDefaultKeyBinding, ContentBlock
+    convertToRaw, EditorState,
+    RichUtils, getDefaultKeyBinding,
+    ContentBlock
 } from "draft-js";
+import Editor from '@draft-js-plugins/editor';
+import createImagePlugin from '@draft-js-plugins/image';
 import 'draft-js/dist/Draft.css';
 import Immutable from "immutable";
 import styled from "styled-components";
@@ -18,6 +20,13 @@ export default function WriteContents() {
         editorState,
         setEditorState
     ] = useState(() => EditorState.createEmpty());
+    const imagePlugIn = createImagePlugin();
+    const [plugIns] = useState(() => {
+        const plugIns = [
+            imagePlugIn,
+        ];
+        return plugIns;
+    });
     const [editorFocusYN, setEditorFocusYN] = useState<boolean>(false);
 
     useEffect(() => {
@@ -29,8 +38,6 @@ export default function WriteContents() {
             .getType();
         console.log(blockType);
     });
-
-    console.log('sadf')
 
     console.log(editorState.getCurrentInlineStyle());
 
@@ -57,7 +64,7 @@ export default function WriteContents() {
         return 'not-handled';
     };
 
-    const mapKeyToEditorCommand = (e: React.KeyboardEvent) => {
+    const mapKeyToEditorCommand = (e: KeyboardEvent) => {
         if (e.key === 'Tab' /* TAB */) {
             console.log('pressed : Tab');
             const newEditorState = RichUtils.onTab(
@@ -74,6 +81,21 @@ export default function WriteContents() {
     };
     const toggleBlockType = (blockType: string) => setEditorState(RichUtils.toggleBlockType(editorState, blockType));
     const toggleInlineStyle = (inlineStyle: string) => setEditorState(RichUtils.toggleInlineStyle(editorState, inlineStyle));
+    const inputImgOnChange = (event: ChangeEvent<HTMLInputElement>) => {
+
+        if(!event.target.files) return;
+
+        const file = event.target.files.item(0);
+
+        if(!file) return;
+
+        const blob = file.slice();
+        const imgURL = URL.createObjectURL(blob);
+
+        setEditorState(prev => imagePlugIn.addImage(
+            prev, imgURL, {}
+        ));
+    };
 
     return (
         <StyledLayoutFlex $styled={{ flexDirection : 'column' }} id={'tmptmp'}>
@@ -87,14 +109,6 @@ export default function WriteContents() {
                         $styled={{ flexWrap : 'wrap' }}
                         $styledMobile={{ justifyContent : 'center' }}
                     >
-                        {/*<StyledLayoutFlexItem>
-                            <BlockControlButton
-                                label={'Paragraph'}
-                                styleName={'unstyled'}
-                                toggleFn={toggleBlockType}
-                                editorState={editorState}
-                            />
-                        </StyledLayoutFlexItem>*/}
                         <StyledLayoutFlexItem>
                             <BlockControlButton
                                 label={'Head'}
@@ -131,6 +145,7 @@ export default function WriteContents() {
                                 id={'Input_UploadImage'}
                                 name={'Input_UploadImage'}
                                 style={{ display : 'none' }}
+                                onChange={inputImgOnChange}
                                 type={'file'}
                             />
                         </StyledLayoutFlexItem>
@@ -172,10 +187,12 @@ export default function WriteContents() {
                     <StyledContents
                         $styled={{
                             height : '630px',
+                            overflow : 'auto'
                         }}
                     >
                         <Editor
                             editorState={editorState}
+                            plugins={plugIns}
                             onChange={setEditorState}
                             handleKeyCommand={handleKeyCommand}
                             blockStyleFn={myBlockStyleFn}
