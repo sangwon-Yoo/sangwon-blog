@@ -52,14 +52,13 @@ export default function TextAreaA({title}: {title: string}) {
                 </StyledWrapper>
             </StyledLayoutGridItem>
             <StyledLayoutGridItem $styled={{ gridArea : 'close' }}>
-                <StyledWrapper $styled={{
-                    height : '32px',
-                    padding : '6px'
-                }}>
+                <StyledWrapper
+                    $styled={{ margin : '0 0 0 14px' }}
+                >
                     <StyledContentsButton
                         $styled={{
-                            width : '100%',
-                            height : '100%',
+                            height : '32px',
+                            padding : '6px',
                             color : '#6B6B6B'
                         }}
                     >

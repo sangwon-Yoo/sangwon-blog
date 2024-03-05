@@ -30,6 +30,7 @@ export default function WriteContents() {
     const [editorFocusYN, setEditorFocusYN] = useState<boolean>(false);
 
     useEffect(() => {
+        console.log('hello')
         console.log(convertToRaw(editorState.getCurrentContent()));
         const selection = editorState.getSelection();
         const blockType = editorState

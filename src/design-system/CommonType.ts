@@ -1,6 +1,7 @@
 export type StyledProps<PropsType> = {
     $styled?: PropsType;
     $styledMobile?: PropsType;
+    $skeletonYN?: boolean;
 };
 
 export type CSSPosition = 'relative' | 'absolute' | 'sticky' | 'fixed';
