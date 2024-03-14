@@ -17,9 +17,11 @@ export default function SelectBoxA({title}: {title: string}) {
                 '"selectBox textField close"'
         }}>
             <StyledLayoutGridItem $styled={{ gridArea : 'name' }}>
-                <StyledWrapper $styled={{ margin : '0 0 10px 0'}}>
+                <StyledWrapper
+                    $styled={{ margin : '0 0 10px 0'}}
+                    $skeletonYN={true}
+                >
                     <StyledContentsSpan
-                        $skeletonYN={true}
                         $styled={{
                             display : 'inline-block',
                             width : '100%',
@@ -35,11 +37,11 @@ export default function SelectBoxA({title}: {title: string}) {
             <StyledLayoutGridItem $styled={{ gridArea : 'selectBox' }}>
                 <StyledWrapper
                     $styled={{ margin : '0 14px 0 0' }}
+                    $skeletonYN={true}
                 >
                     <StyledContentsInputText
                         name={'category'}
                         as={'select'}
-                        $skeletonYN={true}
                         $styled={{
                             border : '1.4px solid #0ca8ac',
                             borderRadius : '3px',
@@ -63,10 +65,9 @@ export default function SelectBoxA({title}: {title: string}) {
                 </StyledWrapper>
             </StyledLayoutGridItem>
             <StyledLayoutGridItem $styled={{ gridArea : 'textField' }}>
-                <StyledWrapper>
+                <StyledWrapper $skeletonYN={true}>
                     <StyledContentsInputText
                         type={'text'}
-                        $skeletonYN={true}
                         $styled={{
                             borderBottom : '1.4px solid #0ca8ac',
                             width : '100%',
@@ -86,9 +87,9 @@ export default function SelectBoxA({title}: {title: string}) {
             <StyledLayoutGridItem $styled={{ gridArea : 'close' }}>
                 <StyledWrapper
                     $styled={{ margin : '0 0 0 14px' }}
+                    $skeletonYN={true}
                 >
                     <StyledContentsButton
-                        $skeletonYN={true}
                         $styled={{
                             height : '32px',
                             padding : '6px',

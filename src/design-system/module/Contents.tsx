@@ -7,12 +7,16 @@ import {
 } from "../CommonType";
 import { isMobile } from "../MediaQuery";
 
+/**
+  회고 : 콘텐츠 컴포넌트 부분은 굳이 스타일드로 속성을 안만들어도 될거 같다. div 컴포넌트를 만든 후 모바일 / 피씨 구분 후 CSS 프로퍼티를 다 넣어버리는게 나을듯!하다.(as 프로퍼티 사용)
+ */
+
 
 /*
     콘텐츠 영역으로 실제 구성요소가 들어가고 너비, 높이가 display block 엘리먼트에 한해서 필수값이다.
 */
 
-const keyFrameSkeleton = keyframes`
+export const keyFrameSkeleton = keyframes`
     to {
         background-position-x: -200%;
     }
@@ -135,29 +139,7 @@ export const StyledContentsSpan = styled.span<StyledContentsSpanProps>`
     line-height: ${props => props.$styledMobile?.lineHeight};
     vertical-align: ${props => props.$styledMobile?.verticalAlign};
   }
-    
-    ${props => props.$skeletonYN && css<StyledContentsSpanProps>`
-      display: ${props => props.$styled?.display};
-      width: ${props => props.$styled?.width};
-      height: ${props => props.$styled?.height};
 
-      ${isMobile} {
-          display: ${props => props.$styledMobile?.display};
-          width: ${props => props.$styledMobile?.width};
-          height: ${props => props.$styledMobile?.height};
-      }
-        color: transparent; /* make the text invisible */
-        user-select: none; /* prevent selection of the text */
-        background: linear-gradient(
-                110deg, 
-                ${props => props.theme.color.gray1} 8%,
-                ${props => props.theme.color.white} 18%, 
-                ${props => props.theme.color.gray1} 33%
-        );
-        border-radius: 3px;
-        background-size: 200% 100%;
-        animation: 1.5s ${keyFrameSkeleton} linear infinite;
-    `}
     
 `;
 
@@ -345,30 +327,6 @@ export const StyledContentsButton = styled.button<StyledContentsButtonProps>`
       background-color: ${props => props.$styledMobile?.hover?.backgroundColor};
     }
   }
-
-    ${props => props.$skeletonYN && css<StyledContentsSpanProps>`
-      display: ${props => props.$styled?.display};
-      width: ${props => props.$styled?.width};
-      height: ${props => props.$styled?.height};
-
-      ${isMobile} {
-          display: ${props => props.$styledMobile?.display};
-          width: ${props => props.$styledMobile?.width};
-          height: ${props => props.$styledMobile?.height};
-      }
-        color: transparent; /* make the text invisible */
-        user-select: none; /* prevent selection of the text */
-        border: none;
-        background: linear-gradient(
-                110deg, 
-                ${props => props.theme.color.gray1} 8%,
-                ${props => props.theme.color.white} 18%, 
-                ${props => props.theme.color.gray1} 33%
-        );
-        border-radius: 3px;
-        background-size: 200% 100%;
-        animation: 1.5s ${keyFrameSkeleton} linear infinite;
-    `}
 `;
 
 
@@ -438,28 +396,4 @@ export const StyledContentsInputText = styled.input<StyledContentsInputTextProps
       border: ${props => props.$styledMobile?.hover?.border};
     }
   }
-
-    ${props => props.$skeletonYN && css<StyledContentsSpanProps>`
-      display: ${props => props.$styled?.display};
-      width: ${props => props.$styled?.width};
-      height: ${props => props.$styled?.height};
-
-      ${isMobile} {
-          display: ${props => props.$styledMobile?.display};
-          width: ${props => props.$styledMobile?.width};
-          height: ${props => props.$styledMobile?.height};
-      }
-        color: transparent; /* make the text invisible */
-        user-select: none; /* prevent selection of the text */
-        border: none;
-        background: linear-gradient(
-                110deg, 
-                ${props => props.theme.color.gray1} 8%,
-                ${props => props.theme.color.white} 18%, 
-                ${props => props.theme.color.gray1} 33%
-        );
-        border-radius: 3px;
-        background-size: 200% 100%;
-        animation: 1.5s ${keyFrameSkeleton} linear infinite;
-    `}
 `;
