@@ -8,17 +8,21 @@ import { StyledWrapper } from "@/design-system/module/Wrapper";
 import { StyledContentsIconClose } from "@/components/styledIcons";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-export default function SelectBoxWithTextFieldA({title, initialValue, exporting}: {
+export default function SelectBoxWithTextFieldA({title, initialValue, usingTextFieldOptionName, exporting}: {
     title: string;
     initialValue: string;
+    usingTextFieldOptionName: string;
     exporting: { exportFlag: boolean; setter: Dispatch<SetStateAction<string>> }
 }) {
 
     const [inputSelectState, setInputSelectState] = useState<string>(initialValue);
+    const [inputTextState, setInputTextState] = useState<string>('');
+
+    const isUseTextTyping = (inputSelectState == usingTextFieldOptionName);
 
     useEffect(() => {
         if(exporting.exportFlag) {
-            exporting.setter(inputSelectState);
+            exporting.setter(isUseTextTyping ? inputTextState : inputSelectState);
         }
     }, [exporting.exportFlag]);
 
@@ -76,7 +80,7 @@ export default function SelectBoxWithTextFieldA({title, initialValue, exporting}
                         <option value={'markup'} defaultChecked={inputSelectState == 'markup'}>markup</option>
                         <option value={'react'} defaultChecked={inputSelectState == 'react'}>react</option>
                         <option value={'nextJS'} defaultChecked={inputSelectState == 'nextJS'}>nextJS</option>
-                        <option value={'신규추가'} defaultChecked={inputSelectState == '신규추가'}>신규추가</option>
+                        <option value={usingTextFieldOptionName} defaultChecked={inputSelectState == usingTextFieldOptionName}>신규추가</option>
                     </StyledContentsInputText>
                 </StyledWrapper>
             </StyledLayoutGridItem>
@@ -99,6 +103,13 @@ export default function SelectBoxWithTextFieldA({title, initialValue, exporting}
                             borderBottom : '1.4px solid #0ca8ac',
                             focusingVisible : { borderBottom : '1.4px solid #66f1e1' }
                         }}
+                        value={isUseTextTyping ? inputTextState : inputSelectState}
+                        onChange={(event) => {
+                            if(isUseTextTyping) {
+                                setInputTextState(event.currentTarget.value);
+                            }
+                        }}
+                        readOnly={!isUseTextTyping}
                     />
                 </StyledWrapper>
             </StyledLayoutGridItem>

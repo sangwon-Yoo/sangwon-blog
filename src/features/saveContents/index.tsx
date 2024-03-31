@@ -52,7 +52,7 @@ export default function SaveContents() {
                     </StyledLayoutFlex>
                 </>
             )} />
-            <CommonWrapper child={<SelectBoxWithTextFieldA title={'카테고리'} initialValue={categoryState} exporting={{ exportFlag : saveFlagState, setter : setCategoryState }} />} />
+            <CommonWrapper child={<SelectBoxWithTextFieldA title={'카테고리'} initialValue={categoryState} usingTextFieldOptionName={'신규추가'} exporting={{ exportFlag : saveFlagState, setter : setCategoryState }} />} />
             <CommonWrapper child={<FileUploadInputA title={'카테고리 대표 이미지'} initialValue={categoryImgState} exporting={{ exportFlag : saveFlagState, setter : setCategoryImgState }} accept={imageAcceptTypes} />} />
             <CommonWrapper child={<TextFieldA title={'제목'} initialValue={contentsTitleState} exporting={{ exportFlag : saveFlagState, setter : setContentsTitleSate }} />} />
             <CommonWrapper child={<TextAreaA initialValue={contentsSummaryState} title={'요약'} exporting={{ exportFlag : saveFlagState, setter : setContentsSummarySate }} />} />
