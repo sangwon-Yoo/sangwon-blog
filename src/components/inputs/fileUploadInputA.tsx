@@ -8,17 +8,19 @@ import {
 import { StyledContentsIconClose } from "@/components/styledIcons";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-export default function TextFieldA({title, initialValue, exporting}: {
+export default function FileUploadInputA({title, initialValue, accept, multiple, exporting}: {
     title: string;
-    initialValue: string;
-    exporting: { exportFlag: boolean; setter: Dispatch<SetStateAction<string>>; }
+    initialValue: FileList | null;
+    accept?: string;
+    multiple?: boolean;
+    exporting: { exportFlag: boolean; setter: Dispatch<SetStateAction<FileList | null>> }
 }) {
 
-    const [inputTextState, setInputTextState] = useState<string>(initialValue);
+    const [inputFileState, setInputFileState] = useState<FileList | null>(initialValue);
 
     useEffect(() => {
         if(exporting.exportFlag) {
-            exporting.setter(inputTextState);
+            exporting.setter(inputFileState);
         }
     }, [exporting.exportFlag]);
 
@@ -47,7 +49,9 @@ export default function TextFieldA({title, initialValue, exporting}: {
             <StyledLayoutGridItem $styled={{ gridArea : 'textField' }}>
                 <StyledWrapper>
                     <StyledContentsInputText
-                        type={'text'}
+                        type={'file'}
+                        accept={accept}
+                        multiple={multiple}
                         $styled={{
                             borderBottom : '1.4px solid #0ca8ac',
                             width : '100%',
@@ -61,8 +65,8 @@ export default function TextFieldA({title, initialValue, exporting}: {
                             borderBottom : '1.4px solid #0ca8ac',
                             focusingVisible : { borderBottom : '1.4px solid #66f1e1' }
                         }}
-                        value={inputTextState}
-                        onChange={(event) => setInputTextState(event.currentTarget.value)}
+                        value={inputFileState ? inputFileState[0].name : ''}
+                        onChange={(event) => setInputFileState(event.currentTarget.files)}
                     />
                 </StyledWrapper>
             </StyledLayoutGridItem>

@@ -27,6 +27,9 @@ export const authOptions = {
             } catch (e) {
                 if (e instanceof Prisma.PrismaClientKnownRequestError) {
                     console.error(e);
+                } else {
+                    console.error(`Unknown Error : `);
+                    console.error(e);
                 }
             }
 

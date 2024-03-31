@@ -6,7 +6,7 @@ import { StyledWrapper } from "@/design-system/module/Wrapper";
 import Top from "@/components/top";
 import Footer from "@/components/footer";
 import SaveContents from "@/features/saveContents";
-import SelectBoxA from "@/components/inputs/selectBoxA";
+import SelectBoxWithTextFieldA from "@/components/inputs/selectBoxWithTextFieldA";
 import TextFieldA from "@/components/inputs/textFieldA";
 import TextAreaA from "@/components/inputs/textAreaA";
 import WriteContents from "@/features/writeContents";

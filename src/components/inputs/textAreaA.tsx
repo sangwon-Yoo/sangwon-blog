@@ -6,8 +6,21 @@ import {
     StyledContentsSpan
 } from "@/design-system/module/Contents";
 import { StyledContentsIconClose } from "@/components/styledIcons";
+import {Dispatch, SetStateAction, useEffect, useState} from "react";
 
-export default function TextAreaA({title}: {title: string}) {
+export default function TextAreaA({title, initialValue, exporting}: {
+    title: string;
+    initialValue: string;
+    exporting: { exportFlag: boolean; setter: Dispatch<SetStateAction<string>> }
+}) {
+
+    const [textAreaState, setTextAreaState] = useState<string>(initialValue);
+
+    useEffect(() => {
+        if(exporting.exportFlag) {
+            exporting.setter(textAreaState);
+        }
+    }, [exporting.exportFlag]);
 
     return (
         <StyledLayoutGrid $styled={{
@@ -48,6 +61,8 @@ export default function TextAreaA({title}: {title: string}) {
                             focusingVisible : { border : '1.4px solid #66f1e1' }
                         }}
                         as={'textarea'}
+                        value={textAreaState}
+                        onChange={(event) => setTextAreaState(event.currentTarget.value)}
                     />
                 </StyledWrapper>
             </StyledLayoutGridItem>
