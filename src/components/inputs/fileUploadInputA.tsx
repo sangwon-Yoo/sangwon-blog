@@ -1,12 +1,14 @@
 import { StyledLayoutGrid, StyledLayoutGridItem } from "@/design-system/module/Layout";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
 import {
+    StyledContents,
     StyledContentsButton,
     StyledContentsInputText,
     StyledContentsSpan
 } from "@/design-system/module/Contents";
 import { StyledContentsIconClose } from "@/components/styledIcons";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {ChangeEvent, Dispatch, LegacyRef, SetStateAction, useEffect, useRef, useState} from "react";
+import Image from "next/image";
 
 export default function FileUploadInputA({title, initialValue, accept, multiple, exporting}: {
     title: string;
@@ -17,6 +19,8 @@ export default function FileUploadInputA({title, initialValue, accept, multiple,
 }) {
 
     const [inputFileState, setInputFileState] = useState<FileList | null>(initialValue);
+    const [previewURL, setPreviewURL] = useState<string | null>(null);
+    const inputFileRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         if(exporting.exportFlag) {
@@ -24,12 +28,41 @@ export default function FileUploadInputA({title, initialValue, accept, multiple,
         }
     }, [exporting.exportFlag]);
 
+    const inputImgOnChange = (event: ChangeEvent<HTMLInputElement>) => {
+
+        if(!event.target.files) return;
+
+        const file = event.target.files.item(0);
+
+        if(!file) return;
+
+        if(file.size > 3000000) {
+            alert('Too Big File Size. Use under 3mb image.');
+            return;
+        }
+
+        const blob = file.slice();
+        const imgURL = URL.createObjectURL(blob);
+
+        setInputFileState(event.currentTarget.files)
+        setPreviewURL(imgURL);
+    };
+
+    const onCLickCloseButton = () => {
+        setInputFileState(null);
+        setPreviewURL(null);
+        if(inputFileRef.current) {
+            inputFileRef.current.value = '';
+        }
+    };
+
     return (
         <StyledLayoutGrid $styled={{
             gridTemplateColumns : '90% 10%',
             gridTemplateAreas :
                 '"name name"' +
-                '"textField close"'
+                '"textField close"' +
+                '"preview preview"'
         }}>
             <StyledLayoutGridItem $styled={{ gridArea : 'name' }}>
                 <StyledWrapper $styled={{ margin : '0 0 10px 0'}}>
@@ -47,7 +80,7 @@ export default function FileUploadInputA({title, initialValue, accept, multiple,
                 </StyledWrapper>
             </StyledLayoutGridItem>
             <StyledLayoutGridItem $styled={{ gridArea : 'textField' }}>
-                <StyledWrapper>
+                <StyledWrapper $styled={{ margin : '0 0 10px 0'}}>
                     <StyledContentsInputText
                         type={'file'}
                         accept={accept}
@@ -65,14 +98,14 @@ export default function FileUploadInputA({title, initialValue, accept, multiple,
                             borderBottom : '1.4px solid #0ca8ac',
                             focusingVisible : { borderBottom : '1.4px solid #66f1e1' }
                         }}
-                        value={inputFileState ? inputFileState[0].name : ''}
-                        onChange={(event) => setInputFileState(event.currentTarget.files)}
+                        onChange={inputImgOnChange}
+                        ref={inputFileRef}
                     />
                 </StyledWrapper>
             </StyledLayoutGridItem>
             <StyledLayoutGridItem $styled={{ gridArea : 'close' }}>
                 <StyledWrapper
-                    $styled={{ margin : '0 0 0 14px' }}
+                    $styled={{ margin : '0 0 10px 14px' }}
                 >
                     <StyledContentsButton
                         $styled={{
@@ -80,9 +113,21 @@ export default function FileUploadInputA({title, initialValue, accept, multiple,
                             padding : '6px',
                             color : '#6B6B6B'
                         }}
+                        onClick={onCLickCloseButton}
                     >
                         <StyledContentsIconClose />
                     </StyledContentsButton>
+                </StyledWrapper>
+            </StyledLayoutGridItem>
+            <StyledLayoutGridItem $styled={{ gridArea : 'preview' }}>
+                <StyledWrapper $styled={{ margin : '0 0 10px 0'}}>
+                    {previewURL && (<Image
+                        src={previewURL}
+                        alt={'preview'}
+                        width={640}
+                        height={300}
+                        style={{ objectFit : 'contain' }} />)
+                    }
                 </StyledWrapper>
             </StyledLayoutGridItem>
         </StyledLayoutGrid>

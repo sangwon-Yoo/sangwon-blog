@@ -124,6 +124,10 @@ export default function SelectBoxWithTextFieldA({title, initialValue, usingTextF
                             padding : '6px',
                             color : '#6B6B6B'
                         }}
+                        onClick={(event) => {
+                            setInputTextState('');
+                            setInputSelectState('');
+                        }}
                     >
                         <StyledContentsIconClose />
                     </StyledContentsButton>

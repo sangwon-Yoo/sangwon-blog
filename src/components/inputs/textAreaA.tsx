@@ -76,6 +76,7 @@ export default function TextAreaA({title, initialValue, exporting}: {
                             padding : '6px',
                             color : '#6B6B6B'
                         }}
+                        onClick={() => setTextAreaState('')}
                     >
                         <StyledContentsIconClose />
                     </StyledContentsButton>

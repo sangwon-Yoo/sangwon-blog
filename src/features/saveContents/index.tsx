@@ -8,6 +8,7 @@ import ButtonA_long from "@/components/buttons/buttonA_long";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import FileUploadInputA from "@/components/inputs/fileUploadInputA";
+import { RawDraftContentState } from "draft-js";
 
 const DynamicEditor = dynamic(() => import('@/features/writeContents'), {
     ssr: false,
@@ -16,11 +17,13 @@ export default function SaveContents() {
 
     const [saveFlagState, setSaveFlagState] = useState<boolean>(false);
     const [sendFlagState, setSendFlagState] = useState<boolean>(false);
+
     const [categoryState, setCategoryState] = useState<string>('');
     const [categoryImgState, setCategoryImgState] = useState<FileList | null>(null);
     const [contentsTitleState, setContentsTitleSate] = useState<string>('');
     const [contentsSummaryState, setContentsSummarySate] = useState<string>('');
     const [contentsImgState, setContentsImgState] = useState<FileList | null>(null);
+    const [editorContents, setEditorContents] = useState<RawDraftContentState | null>(null);
 
     useEffect(() => {
         if(saveFlagState) {
@@ -31,7 +34,7 @@ export default function SaveContents() {
 
     useEffect(() => {
         if(sendFlagState) {
-            console.log([categoryState, categoryImgState, contentsTitleState, contentsSummaryState, contentsImgState]);
+            console.log([categoryState, categoryImgState, contentsTitleState, contentsSummaryState, contentsImgState, editorContents]);
             setSendFlagState(false);
         }
     }, [sendFlagState]);
@@ -52,11 +55,34 @@ export default function SaveContents() {
                     </StyledLayoutFlex>
                 </>
             )} />
-            <CommonWrapper child={<SelectBoxWithTextFieldA title={'카테고리'} initialValue={categoryState} usingTextFieldOptionName={'신규추가'} exporting={{ exportFlag : saveFlagState, setter : setCategoryState }} />} />
-            <CommonWrapper child={<FileUploadInputA title={'카테고리 대표 이미지'} initialValue={categoryImgState} exporting={{ exportFlag : saveFlagState, setter : setCategoryImgState }} accept={imageAcceptTypes} />} />
-            <CommonWrapper child={<TextFieldA title={'제목'} initialValue={contentsTitleState} exporting={{ exportFlag : saveFlagState, setter : setContentsTitleSate }} />} />
-            <CommonWrapper child={<TextAreaA initialValue={contentsSummaryState} title={'요약'} exporting={{ exportFlag : saveFlagState, setter : setContentsSummarySate }} />} />
-            <CommonWrapper child={<FileUploadInputA title={'콘텐츠 대표 이미지'} initialValue={contentsImgState} exporting={{ exportFlag : saveFlagState, setter : setContentsImgState }} accept={imageAcceptTypes} />} />
+            <CommonWrapper child={<SelectBoxWithTextFieldA
+                title={'카테고리'}
+                initialValue={categoryState}
+                usingTextFieldOptionName={'신규추가'}
+                exporting={{ exportFlag : saveFlagState, setter : setCategoryState }} />}
+            />
+            <CommonWrapper child={<FileUploadInputA
+                title={'카테고리 대표 이미지'}
+                initialValue={categoryImgState}
+                exporting={{ exportFlag : saveFlagState, setter : setCategoryImgState }}
+                accept={imageAcceptTypes} />}
+            />
+            <CommonWrapper child={<TextFieldA
+                title={'제목'}
+                initialValue={contentsTitleState}
+                exporting={{ exportFlag : saveFlagState, setter : setContentsTitleSate }} />}
+            />
+            <CommonWrapper child={<TextAreaA
+                initialValue={contentsSummaryState}
+                title={'요약'}
+                exporting={{ exportFlag : saveFlagState, setter : setContentsSummarySate }}
+            />} />
+            <CommonWrapper child={<FileUploadInputA
+                title={'콘텐츠 대표 이미지'}
+                initialValue={contentsImgState}
+                exporting={{ exportFlag : saveFlagState, setter : setContentsImgState }}
+                accept={imageAcceptTypes} />}
+            />
             <StyledWrapper
                 $styled={{
                     margin : '0 0 24px 0'
@@ -65,7 +91,7 @@ export default function SaveContents() {
                     margin : '0 0 14px 0'
                 }}
             >
-                <DynamicEditor />
+                <DynamicEditor exporting={{ exportFlag : saveFlagState, setter : setEditorContents }} />
             </StyledWrapper>
         </StyledWrapper>
     );

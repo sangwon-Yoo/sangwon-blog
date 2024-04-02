@@ -1,11 +1,20 @@
 import { StyledLayoutFlex, StyledLayoutFlexItem } from "@/design-system/module/Layout";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
 import { StyledContents, StyledContentsButton } from "@/design-system/module/Contents";
-import { ChangeEvent, MouseEventHandler, ReactNode, useEffect, useState, KeyboardEvent } from "react";
 import {
+    ChangeEvent,
+    MouseEventHandler,
+    ReactNode,
+    useEffect,
+    useState,
+    KeyboardEvent,
+    Dispatch,
+    SetStateAction
+} from "react";
+import Draft, {
     convertToRaw, EditorState,
     RichUtils, getDefaultKeyBinding,
-    ContentBlock
+    ContentBlock, RawDraftContentState, convertFromRaw
 } from "draft-js";
 import Editor from '@draft-js-plugins/editor';
 import createImagePlugin from '@draft-js-plugins/image';
@@ -14,7 +23,9 @@ import Immutable from "immutable";
 import styled from "styled-components";
 
 
-export default function WriteContents() {
+export default function WriteContents(
+    {exporting}: {exporting: { exportFlag: boolean; setter: Dispatch<SetStateAction<RawDraftContentState | null>>}}
+) {
 
     const [
         editorState,
@@ -28,6 +39,12 @@ export default function WriteContents() {
         return plugIns;
     });
     const [editorFocusYN, setEditorFocusYN] = useState<boolean>(false);
+
+    useEffect(() => {
+        if(exporting.exportFlag) {
+            exporting.setter(editorState.getCurrentContent().hasText() ? convertToRaw(editorState.getCurrentContent()) : null);
+        }
+    }, [exporting.exportFlag]);
 
     useEffect(() => {
         console.log('hello')
