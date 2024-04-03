@@ -9,7 +9,7 @@ import {
     useState,
     KeyboardEvent,
     Dispatch,
-    SetStateAction
+    SetStateAction, useCallback
 } from "react";
 import Draft, {
     convertToRaw, EditorState,
@@ -24,7 +24,7 @@ import styled from "styled-components";
 
 
 export default function WriteContents(
-    {exporting}: {exporting: { exportFlag: boolean; setter: Dispatch<SetStateAction<RawDraftContentState | null>>}}
+    {exportFlag, exportSetter}: {exportFlag: boolean; exportSetter: Dispatch<SetStateAction<RawDraftContentState | null>>}
 ) {
 
     const [
@@ -33,18 +33,25 @@ export default function WriteContents(
     ] = useState(() => EditorState.createEmpty());
     const imagePlugIn = createImagePlugin();
     const [plugIns] = useState(() => {
-        const plugIns = [
-            imagePlugIn,
+
+        const plugInList = [
+            imagePlugIn
+            // ... //
         ];
-        return plugIns;
+        return plugInList;
     });
     const [editorFocusYN, setEditorFocusYN] = useState<boolean>(false);
 
+    const doExport = useCallback(
+        () => exportSetter(editorState.getCurrentContent().hasText() ? convertToRaw(editorState.getCurrentContent()) : null),
+        [exportSetter, editorState]
+    );
+
     useEffect(() => {
-        if(exporting.exportFlag) {
-            exporting.setter(editorState.getCurrentContent().hasText() ? convertToRaw(editorState.getCurrentContent()) : null);
+        if(exportFlag) {
+            doExport();
         }
-    }, [exporting.exportFlag]);
+    }, [exportFlag, doExport]);
 
     useEffect(() => {
         console.log('hello')

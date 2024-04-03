@@ -7,26 +7,32 @@ import {
     StyledContentsSpan
 } from "@/design-system/module/Contents";
 import { StyledContentsIconClose } from "@/components/styledIcons";
-import {ChangeEvent, Dispatch, LegacyRef, SetStateAction, useEffect, useRef, useState} from "react";
+import {ChangeEvent, Dispatch, LegacyRef, SetStateAction, useCallback, useEffect, useRef, useState} from "react";
 import Image from "next/image";
 
-export default function FileUploadInputA({title, initialValue, accept, multiple, exporting}: {
+export default function FileUploadInputA({title, initialValue, accept, multiple, exportFlag, exportSetter}: {
     title: string;
     initialValue: FileList | null;
     accept?: string;
     multiple?: boolean;
-    exporting: { exportFlag: boolean; setter: Dispatch<SetStateAction<FileList | null>> }
+    exportFlag: boolean;
+    exportSetter: Dispatch<SetStateAction<FileList | null>>;
 }) {
 
     const [inputFileState, setInputFileState] = useState<FileList | null>(initialValue);
     const [previewURL, setPreviewURL] = useState<string | null>(null);
     const inputFileRef = useRef<HTMLInputElement>(null);
 
+    const doExport = useCallback(
+        () => exportSetter(inputFileState),
+        [exportSetter, inputFileState]
+    );
+
     useEffect(() => {
-        if(exporting.exportFlag) {
-            exporting.setter(inputFileState);
+        if(exportFlag) {
+            doExport();
         }
-    }, [exporting.exportFlag]);
+    }, [exportFlag, doExport]);
 
     const inputImgOnChange = (event: ChangeEvent<HTMLInputElement>) => {
 

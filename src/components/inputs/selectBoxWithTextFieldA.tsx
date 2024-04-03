@@ -6,13 +6,14 @@ import {
 import { StyledLayoutGrid, StyledLayoutGridItem } from "@/design-system/module/Layout";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
 import { StyledContentsIconClose } from "@/components/styledIcons";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 
-export default function SelectBoxWithTextFieldA({title, initialValue, usingTextFieldOptionName, exporting}: {
+export default function SelectBoxWithTextFieldA({title, initialValue, usingTextFieldOptionName, exportFlag, exportSetter}: {
     title: string;
     initialValue: string;
     usingTextFieldOptionName: string;
-    exporting: { exportFlag: boolean; setter: Dispatch<SetStateAction<string>> }
+    exportFlag: boolean;
+    exportSetter : Dispatch<SetStateAction<string>>;
 }) {
 
     const [inputSelectState, setInputSelectState] = useState<string>(initialValue);
@@ -20,11 +21,16 @@ export default function SelectBoxWithTextFieldA({title, initialValue, usingTextF
 
     const isUseTextTyping = (inputSelectState == usingTextFieldOptionName);
 
+    const doExport = useCallback(
+        () => exportSetter(isUseTextTyping ? inputTextState : inputSelectState),
+        [exportSetter, inputTextState, inputSelectState, isUseTextTyping]
+    );
+
     useEffect(() => {
-        if(exporting.exportFlag) {
-            exporting.setter(isUseTextTyping ? inputTextState : inputSelectState);
+        if(exportFlag) {
+            doExport();
         }
-    }, [exporting.exportFlag]);
+    }, [exportFlag, doExport]);
 
     return (
         <StyledLayoutGrid $styled={{

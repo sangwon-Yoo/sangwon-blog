@@ -59,29 +59,34 @@ export default function SaveContents() {
                 title={'카테고리'}
                 initialValue={categoryState}
                 usingTextFieldOptionName={'신규추가'}
-                exporting={{ exportFlag : saveFlagState, setter : setCategoryState }} />}
+                exportFlag={saveFlagState}
+                exportSetter={setCategoryState} />}
             />
             <CommonWrapper child={<FileUploadInputA
                 title={'카테고리 대표 이미지'}
                 initialValue={categoryImgState}
-                exporting={{ exportFlag : saveFlagState, setter : setCategoryImgState }}
-                accept={imageAcceptTypes} />}
+                accept={imageAcceptTypes}
+                exportFlag={saveFlagState}
+                exportSetter={setCategoryImgState} />}
             />
             <CommonWrapper child={<TextFieldA
                 title={'제목'}
                 initialValue={contentsTitleState}
-                exporting={{ exportFlag : saveFlagState, setter : setContentsTitleSate }} />}
+                exportFlag={saveFlagState}
+                exportSetter={setContentsTitleSate} />}
             />
             <CommonWrapper child={<TextAreaA
                 initialValue={contentsSummaryState}
                 title={'요약'}
-                exporting={{ exportFlag : saveFlagState, setter : setContentsSummarySate }}
-            />} />
+                exportFlag={saveFlagState}
+                exportSetter={setContentsSummarySate} />}
+            />
             <CommonWrapper child={<FileUploadInputA
                 title={'콘텐츠 대표 이미지'}
                 initialValue={contentsImgState}
-                exporting={{ exportFlag : saveFlagState, setter : setContentsImgState }}
-                accept={imageAcceptTypes} />}
+                accept={imageAcceptTypes}
+                exportFlag={saveFlagState}
+                exportSetter={setContentsImgState} />}
             />
             <StyledWrapper
                 $styled={{
@@ -91,7 +96,7 @@ export default function SaveContents() {
                     margin : '0 0 14px 0'
                 }}
             >
-                <DynamicEditor exporting={{ exportFlag : saveFlagState, setter : setEditorContents }} />
+                <DynamicEditor exportFlag={saveFlagState} exportSetter={setEditorContents} />
             </StyledWrapper>
         </StyledWrapper>
     );

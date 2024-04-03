@@ -6,21 +6,27 @@ import {
     StyledContentsSpan
 } from "@/design-system/module/Contents";
 import { StyledContentsIconClose } from "@/components/styledIcons";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {Dispatch, SetStateAction, useCallback, useEffect, useState} from "react";
 
-export default function TextFieldA({title, initialValue, exporting}: {
+export default function TextFieldA({title, initialValue, exportFlag, exportSetter}: {
     title: string;
     initialValue: string;
-    exporting: { exportFlag: boolean; setter: Dispatch<SetStateAction<string>>; }
+    exportFlag: boolean;
+    exportSetter: Dispatch<SetStateAction<string>>;
 }) {
 
     const [inputTextState, setInputTextState] = useState<string>(initialValue);
 
+    const doExport = useCallback(
+        () => exportSetter(inputTextState),
+        [exportSetter, inputTextState]
+    );
+
     useEffect(() => {
-        if(exporting.exportFlag) {
-            exporting.setter(inputTextState);
+        if(exportFlag) {
+            doExport();
         }
-    }, [exporting.exportFlag]);
+    }, [exportFlag, doExport]);
 
     return (
         <StyledLayoutGrid $styled={{
