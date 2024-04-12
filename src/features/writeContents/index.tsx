@@ -14,7 +14,7 @@ import {
 import Draft, {
     convertToRaw, EditorState,
     RichUtils, getDefaultKeyBinding,
-    ContentBlock, RawDraftContentState, convertFromRaw
+    ContentBlock, RawDraftContentState
 } from "draft-js";
 import Editor from '@draft-js-plugins/editor';
 import createImagePlugin from '@draft-js-plugins/image';
@@ -41,6 +41,7 @@ export default function WriteContents(
         return plugInList;
     });
     const [editorFocusYN, setEditorFocusYN] = useState<boolean>(false);
+    const [inputFileEmptyValue, setInputFileEmptyValue] = useState<''>('');
 
     const doExport = useCallback(
         () => exportSetter(editorState.getCurrentContent().hasText() ? convertToRaw(editorState.getCurrentContent()) : null),
@@ -54,7 +55,7 @@ export default function WriteContents(
     }, [exportFlag, doExport]);
 
     useEffect(() => {
-        console.log('hello')
+        console.log('hello');
         console.log(convertToRaw(editorState.getCurrentContent()));
         const selection = editorState.getSelection();
         const blockType = editorState
@@ -62,6 +63,7 @@ export default function WriteContents(
             .getBlockForKey(selection.getStartKey())
             .getType();
         console.log(blockType);
+        console.log(editorState.getCurrentContent().getEntityMap())
     });
 
     console.log(editorState.getCurrentInlineStyle());
@@ -111,11 +113,12 @@ export default function WriteContents(
         if(!event.target.files) return;
 
         const file = event.target.files.item(0);
+        if(!file) {
+            return;
+        }
 
-        if(!file) return;
-
-        if(file.size > 300000) {
-            alert('Too Big File Size. Use under 300kb image.');
+        if(file.size > 1000000) {
+            alert('Too Big File Size. Use under 1Mb image.');
             return;
         }
 
@@ -123,8 +126,9 @@ export default function WriteContents(
         const imgURL = URL.createObjectURL(blob);
 
         setEditorState(prev => imagePlugIn.addImage(
-            prev, imgURL, {}
+            prev, imgURL, {isLocal : true}
         ));
+        setInputFileEmptyValue('');
     };
 
     return (
@@ -177,6 +181,7 @@ export default function WriteContents(
                                 style={{ display : 'none' }}
                                 onChange={inputImgOnChange}
                                 type={'file'}
+                                value={inputFileEmptyValue}
                             />
                         </StyledLayoutFlexItem>
                         <StyledLayoutFlexItem>

@@ -8,29 +8,27 @@ import { StyledWrapper } from "@/design-system/module/Wrapper";
 import { StyledContentsIconClose } from "@/components/styledIcons";
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 
-export default function SelectBoxWithTextFieldA({title, initialValue, usingTextFieldOptionName, exportFlag, exportSetter}: {
+export type ExportTypeForSelectBoxWithTextFieldA = {type: 'select' | 'text'; value: string};
+export default function SelectBoxWithTextFieldA({title, initialValue, optionValueForUsingTextField, exportFlag, exportSetter}: {
     title: string;
-    initialValue: string;
-    usingTextFieldOptionName: string;
+    initialValue: ExportTypeForSelectBoxWithTextFieldA;
+    optionValueForUsingTextField: string;
     exportFlag: boolean;
-    exportSetter : Dispatch<SetStateAction<string>>;
+    exportSetter : Dispatch<SetStateAction<ExportTypeForSelectBoxWithTextFieldA>>;
 }) {
 
-    const [inputSelectState, setInputSelectState] = useState<string>(initialValue);
-    const [inputTextState, setInputTextState] = useState<string>('');
-
-    const isUseTextTyping = (inputSelectState == usingTextFieldOptionName);
+    const [inputState, setInputState] = useState<ExportTypeForSelectBoxWithTextFieldA>(initialValue);
 
     const doExport = useCallback(
-        () => exportSetter(isUseTextTyping ? inputTextState : inputSelectState),
-        [exportSetter, inputTextState, inputSelectState, isUseTextTyping]
+        () => exportSetter(inputState),
+        [exportSetter, inputState]
     );
 
     useEffect(() => {
         if(exportFlag) {
             doExport();
         }
-    }, [exportFlag, doExport]);
+    });
 
     return (
         <StyledLayoutGrid $styled={{
@@ -78,15 +76,21 @@ export default function SelectBoxWithTextFieldA({title, initialValue, usingTextF
                             border: '1.4px solid #0ca8ac',
                             hover: { border: '1.4px solid #66f1e1' }
                         }}
-                        value={inputSelectState}
-                        onChange={(event) => setInputSelectState(event.currentTarget.value)}
+                        value={inputState.value}
+                        onChange={(event) => {
+                            if(event.currentTarget.value == optionValueForUsingTextField) {
+                                setInputState({ type : 'text', value : '' });
+                            } else {
+                                setInputState({ type : 'select', value : event.currentTarget.value });
+                            }
+                        }}
                     >
-                        <option value={''} defaultChecked={inputSelectState == ''}> -- 선택하세요 -- </option>
-                        <option value={'vanillaJS'} defaultChecked={inputSelectState == 'vanillaJS'}>vanillaJS</option>
-                        <option value={'markup'} defaultChecked={inputSelectState == 'markup'}>markup</option>
-                        <option value={'react'} defaultChecked={inputSelectState == 'react'}>react</option>
-                        <option value={'nextJS'} defaultChecked={inputSelectState == 'nextJS'}>nextJS</option>
-                        <option value={usingTextFieldOptionName} defaultChecked={inputSelectState == usingTextFieldOptionName}>신규추가</option>
+                        <option value={''} defaultChecked={initialValue.value == ''}> -- 선택하세요 -- </option>
+                        <option value={'vanillaJS'} defaultChecked={initialValue.value == 'vanillaJS'}>vanillaJS</option>
+                        <option value={'markup'} defaultChecked={initialValue.value == 'markup'}>markup</option>
+                        <option value={'react'} defaultChecked={initialValue.value == 'react'}>react</option>
+                        <option value={'nextJS'} defaultChecked={initialValue.value == 'nextJS'}>nextJS</option>
+                        <option value={optionValueForUsingTextField} defaultChecked={initialValue.value == optionValueForUsingTextField}>{optionValueForUsingTextField}</option>
                     </StyledContentsInputText>
                 </StyledWrapper>
             </StyledLayoutGridItem>
@@ -109,13 +113,13 @@ export default function SelectBoxWithTextFieldA({title, initialValue, usingTextF
                             borderBottom : '1.4px solid #0ca8ac',
                             focusingVisible : { borderBottom : '1.4px solid #66f1e1' }
                         }}
-                        value={isUseTextTyping ? inputTextState : inputSelectState}
+                        value={inputState.value}
                         onChange={(event) => {
-                            if(isUseTextTyping) {
-                                setInputTextState(event.currentTarget.value);
+                            if(inputState.type == 'text') {
+                                setInputState({ type : 'text', value : event.currentTarget.value });
                             }
                         }}
-                        readOnly={!isUseTextTyping}
+                        readOnly={inputState.type == 'select'}
                     />
                 </StyledWrapper>
             </StyledLayoutGridItem>
@@ -127,12 +131,12 @@ export default function SelectBoxWithTextFieldA({title, initialValue, usingTextF
                     <StyledContentsButton
                         $styled={{
                             height : '32px',
+                            width : '32px',
                             padding : '6px',
                             color : '#6B6B6B'
                         }}
                         onClick={(event) => {
-                            setInputTextState('');
-                            setInputSelectState('');
+                            setInputState({ type : 'select', value : '' });
                         }}
                     >
                         <StyledContentsIconClose />

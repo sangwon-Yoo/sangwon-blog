@@ -32,7 +32,7 @@ export default function FileUploadInputA({title, initialValue, accept, multiple,
         if(exportFlag) {
             doExport();
         }
-    }, [exportFlag, doExport]);
+    });
 
     const inputImgOnChange = (event: ChangeEvent<HTMLInputElement>) => {
 
@@ -116,6 +116,7 @@ export default function FileUploadInputA({title, initialValue, accept, multiple,
                     <StyledContentsButton
                         $styled={{
                             height : '32px',
+                            width : '32px',
                             padding : '6px',
                             color : '#6B6B6B'
                         }}

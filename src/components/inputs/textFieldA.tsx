@@ -26,7 +26,7 @@ export default function TextFieldA({title, initialValue, exportFlag, exportSette
         if(exportFlag) {
             doExport();
         }
-    }, [exportFlag, doExport]);
+    });
 
     return (
         <StyledLayoutGrid $styled={{
@@ -79,6 +79,7 @@ export default function TextFieldA({title, initialValue, exportFlag, exportSette
                     <StyledContentsButton
                         $styled={{
                             height : '32px',
+                            width : '32px',
                             padding : '6px',
                             color : '#6B6B6B'
                         }}
