@@ -13,7 +13,6 @@ import WriteContents from "@/features/writeContents";
 
 export default function ContentsEditor() {
 
-    console.log(process.env.NEXT_PUBLIC_HELLO);
     return (
         <>
             <Top />
