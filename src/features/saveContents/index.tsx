@@ -12,7 +12,7 @@ import { RawDraftContentState } from "draft-js";
 import SaveCategory from "@/features/saveContents/saveCategory";
 
 const DynamicEditor = dynamic(() => import('@/features/writeContents'), {
-    ssr: false,
+    ssr : false
 })
 export default function SaveContents() {
 
@@ -64,20 +64,6 @@ export default function SaveContents() {
                 categoryImgExportSetter={setCategoryImgState}
                 imageAcceptTypes={imageAcceptTypes}
             />
-            {/*<CommonWrapperForSaveItem child={<SelectBoxWithTextFieldA
-                title={'카테고리'}
-                initialValue={categoryState}
-                optionValueForUsingTextField={'신규추가'}
-                exportFlag={saveFlagState}
-                exportSetter={setCategoryState} />}
-            />
-            <CommonWrapperForSaveItem child={<FileUploadInputA
-                title={'카테고리 대표 이미지'}
-                initialValue={categoryImgState}
-                accept={imageAcceptTypes}
-                exportFlag={saveFlagState}
-                exportSetter={setCategoryImgState} />}
-            />*/}
             <CommonWrapperForSaveItem child={<TextFieldA
                 title={'제목'}
                 initialValue={contentsTitleState}
