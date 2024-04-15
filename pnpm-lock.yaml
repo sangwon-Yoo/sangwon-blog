@@ -5,6 +5,12 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@draft-js-plugins/editor':
+    specifier: ^4.1.4
+    version: 4.1.4(draft-js@0.11.7)(react-dom@18.0.0)(react@18.0.0)
+  '@draft-js-plugins/image':
+    specifier: ^4.1.4
+    version: 4.1.4(draft-js@0.11.7)(react-dom@18.0.0)(react@18.0.0)
   '@prisma/client':
     specifier: 5.6.0
     version: 5.6.0(prisma@5.5.2)
@@ -273,6 +279,33 @@ packages:
       '@babel/helper-string-parser': 7.23.4
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
+
+  /@draft-js-plugins/editor@4.1.4(draft-js@0.11.7)(react-dom@18.0.0)(react@18.0.0):
+    resolution: {integrity: sha512-NlE1AIsPPfmdn+JIwwmcAm18FgwJ9/A55+2VXf3US3PmITJVL+y9VORCwLbGh2sb0RXvgFOIbqs8pPAOe8F8WQ==}
+    peerDependencies:
+      draft-js: ^0.11.0
+      react: ^16.8.0 || ^17.0.0 || >=18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || >=18.0.0
+    dependencies:
+      draft-js: 0.11.7(react-dom@18.0.0)(react@18.0.0)
+      immutable: 3.7.6
+      prop-types: 15.8.1
+      react: 18.0.0
+      react-dom: 18.0.0(react@18.0.0)
+    dev: false
+
+  /@draft-js-plugins/image@4.1.4(draft-js@0.11.7)(react-dom@18.0.0)(react@18.0.0):
+    resolution: {integrity: sha512-gLEYjhG2n9v5Y+e9sH9OD0/XVbHOaBwSBo3loXScmwSOTFP+9GBwp6HxCXvnBJj15SOQqGVvEkf6W3Jlzu/8ng==}
+    peerDependencies:
+      draft-js: ^0.10.1 || ^0.11.0
+      react: ^16.8.0 || ^17.0.0 || >=18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || >=18.0.0
+    dependencies:
+      clsx: 1.2.1
+      draft-js: 0.11.7(react-dom@18.0.0)(react@18.0.0)
+      react: 18.0.0
+      react-dom: 18.0.0(react@18.0.0)
+    dev: false
 
   /@emotion/is-prop-valid@1.2.1:
     resolution: {integrity: sha512-61Mf7Ufx4aDxx1xlDeOm8aFFigGHE4z+0sKCa+IHCeZKiyP9RLD0Mmx7m8b9/Cf37f7NAvQOOJAbQQGVr5uERw==}
@@ -1286,6 +1319,11 @@ packages:
 
   /client-only@0.0.1:
     resolution: {integrity: sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==}
+    dev: false
+
+  /clsx@1.2.1:
+    resolution: {integrity: sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==}
+    engines: {node: '>=6'}
     dev: false
 
   /color-convert@1.9.3:
@@ -2753,7 +2791,6 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       react-is: 16.13.1
-    dev: true
 
   /punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
@@ -2775,7 +2812,6 @@ packages:
 
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
-    dev: true
 
   /react@18.0.0:
     resolution: {integrity: sha512-x+VL6wbT4JRVPm7EGxXhZ8w8LTROaxPXOqhlGyVSrv0sB1jkyFGgXxJ8LVoPRLvPR6/CIZGFmfzqUa2NYeMr2A==}

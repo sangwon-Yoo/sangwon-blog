@@ -1,6 +1,7 @@
-import styled from "styled-components";
-import {CSSDisplay, CSSPosition, CSSTextAlign, CSSVerticalAlign, StyledProps} from "../CommonType";
+import styled, { css } from "styled-components";
+import { CSSDisplay, CSSPosition, CSSTextAlign, CSSVerticalAlign, StyledProps } from "../CommonType";
 import { isMobile } from "../MediaQuery";
+import { keyFrameSkeleton } from "@/design-system/module/Contents";
 
 
 /*
@@ -64,4 +65,62 @@ export const StyledWrapper = styled.div<StyledWrapperProps>`
     vertical-align: ${props => props.$styledMobile?.verticalAlign};
     z-index: ${props => props.$styledMobile?.zIndex};
   }
+
+    ${props => props.$skeletonYN && css<StyledWrapperProps>`
+        display: ${props => props.$styled?.display};
+        width: ${props => props.$styled?.width};
+        height: ${props => props.$styled?.height};
+        color: transparent; /* make the text invisible */
+        user-select: none; /* prevent selection of the text */
+        border: none;
+        &:focus-visible {
+            outline: none;
+            border: none;
+        }
+        &:hover {
+            border: none;
+        }
+        & * {
+            visibility: hidden;
+        }
+
+        background: linear-gradient(
+                110deg,
+                ${props => props.theme.color.gray1} 8%,
+                ${props => props.theme.color.white} 18%,
+                ${props => props.theme.color.gray1} 33%
+        );
+        border-radius: 3px;
+        background-size: 200% 100%;
+        animation: 1.5s ${keyFrameSkeleton} linear infinite;
+
+        ${isMobile} {
+            display: ${props => props.$styledMobile?.display};
+            width: ${props => props.$styledMobile?.width};
+            height: ${props => props.$styledMobile?.height};
+            color: transparent; /* make the text invisible */
+            user-select: none; /* prevent selection of the text */
+            border: none;
+            &:focus-visible {
+                outline: none;
+                border: none;
+            }
+            &:hover {
+                border: none;
+            }
+            & * {
+                visibility: hidden;
+            }
+
+            background: linear-gradient(
+                    110deg,
+                    ${props => props.theme.color.gray1} 8%,
+                    ${props => props.theme.color.white} 18%,
+                    ${props => props.theme.color.gray1} 33%
+            );
+            border-radius: 3px;
+            background-size: 200% 100%;
+            animation: 1.5s ${keyFrameSkeleton} linear infinite;
+        }
+    `}
 `;

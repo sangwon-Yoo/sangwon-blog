@@ -1,26 +1,61 @@
 import { StyledLayoutFlex, StyledLayoutFlexItem } from "@/design-system/module/Layout";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
 import { StyledContents, StyledContentsButton } from "@/design-system/module/Contents";
-import React, {MouseEventHandler, ReactNode, useEffect, useState} from "react";
 import {
-    convertToRaw, Editor,
-    EditorState, RichUtils,
-    getDefaultKeyBinding, ContentBlock
+    ChangeEvent,
+    MouseEventHandler,
+    ReactNode,
+    useEffect,
+    useState,
+    KeyboardEvent,
+    Dispatch,
+    SetStateAction, useCallback
+} from "react";
+import Draft, {
+    convertToRaw, EditorState,
+    RichUtils, getDefaultKeyBinding,
+    ContentBlock, RawDraftContentState
 } from "draft-js";
+import Editor from '@draft-js-plugins/editor';
+import createImagePlugin from '@draft-js-plugins/image';
 import 'draft-js/dist/Draft.css';
 import Immutable from "immutable";
 import styled from "styled-components";
 
 
-export default function WriteContents() {
+export default function WriteContents(
+    {exportFlag, exportSetter}: {exportFlag: boolean; exportSetter: Dispatch<SetStateAction<RawDraftContentState | null>>}
+) {
 
     const [
         editorState,
         setEditorState
     ] = useState(() => EditorState.createEmpty());
+    const imagePlugIn = createImagePlugin();
+    const [plugIns] = useState(() => {
+
+        const plugInList = [
+            imagePlugIn
+            // ... //
+        ];
+        return plugInList;
+    });
     const [editorFocusYN, setEditorFocusYN] = useState<boolean>(false);
+    const [inputFileEmptyValue, setInputFileEmptyValue] = useState<''>('');
+
+    const doExport = useCallback(
+        () => exportSetter(editorState.getCurrentContent().hasText() ? convertToRaw(editorState.getCurrentContent()) : null),
+        [exportSetter, editorState]
+    );
 
     useEffect(() => {
+        if(exportFlag) {
+            doExport();
+        }
+    }, [exportFlag, doExport]);
+
+    useEffect(() => {
+        console.log('hello');
         console.log(convertToRaw(editorState.getCurrentContent()));
         const selection = editorState.getSelection();
         const blockType = editorState
@@ -28,11 +63,10 @@ export default function WriteContents() {
             .getBlockForKey(selection.getStartKey())
             .getType();
         console.log(blockType);
+        console.log(editorState.getCurrentContent().getEntityMap())
     });
 
-    console.log('sadf')
-
-    //const extendedBlockRenderMap = DefaultDraftBlockRenderMap.merge(BLOCK_RENDER_MAP);
+    console.log(editorState.getCurrentInlineStyle());
 
     const myBlockStyleFn = (contentBlock: ContentBlock) => {
 
@@ -57,7 +91,7 @@ export default function WriteContents() {
         return 'not-handled';
     };
 
-    const mapKeyToEditorCommand = (e: React.KeyboardEvent) => {
+    const mapKeyToEditorCommand = (e: KeyboardEvent) => {
         if (e.key === 'Tab' /* TAB */) {
             console.log('pressed : Tab');
             const newEditorState = RichUtils.onTab(
@@ -74,9 +108,28 @@ export default function WriteContents() {
     };
     const toggleBlockType = (blockType: string) => setEditorState(RichUtils.toggleBlockType(editorState, blockType));
     const toggleInlineStyle = (inlineStyle: string) => setEditorState(RichUtils.toggleInlineStyle(editorState, inlineStyle));
+    const inputImgOnChange = (event: ChangeEvent<HTMLInputElement>) => {
 
+        if(!event.target.files) return;
 
+        const file = event.target.files.item(0);
+        if(!file) {
+            return;
+        }
 
+        if(file.size > 1000000) {
+            alert('Too Big File Size. Use under 1Mb image.');
+            return;
+        }
+
+        const blob = file.slice();
+        const imgURL = URL.createObjectURL(blob);
+
+        setEditorState(prev => imagePlugIn.addImage(
+            prev, imgURL, {isLocal : true}
+        ));
+        setInputFileEmptyValue('');
+    };
 
     return (
         <StyledLayoutFlex $styled={{ flexDirection : 'column' }} id={'tmptmp'}>
@@ -90,14 +143,6 @@ export default function WriteContents() {
                         $styled={{ flexWrap : 'wrap' }}
                         $styledMobile={{ justifyContent : 'center' }}
                     >
-                        {/*<StyledLayoutFlexItem>
-                            <BlockControlButton
-                                label={'Paragraph'}
-                                styleName={'unstyled'}
-                                toggleFn={toggleBlockType}
-                                editorState={editorState}
-                            />
-                        </StyledLayoutFlexItem>*/}
                         <StyledLayoutFlexItem>
                             <BlockControlButton
                                 label={'Head'}
@@ -117,14 +162,27 @@ export default function WriteContents() {
                         <StyledLayoutFlexItem>
                             <StyledContentsButton
                                 $styled={{
+                                    display : 'inline-block',
                                     width : '72px',
                                     height : '40px',
                                     margin : '0 10px',
-                                    color : '#6B6B6B'
+                                    color : '#6B6B6B',
+                                    textAlign : 'center',
+                                    lineHeight : '40px'
                                 }}
+                                as={'label'}
+                                htmlFor={'Input_UploadImage'}
                             >
                                 Image
                             </StyledContentsButton>
+                            <input
+                                id={'Input_UploadImage'}
+                                name={'Input_UploadImage'}
+                                style={{ display : 'none' }}
+                                onChange={inputImgOnChange}
+                                type={'file'}
+                                value={inputFileEmptyValue}
+                            />
                         </StyledLayoutFlexItem>
                         <StyledLayoutFlexItem>
                             <BlockControlButton
@@ -135,28 +193,20 @@ export default function WriteContents() {
                             />
                         </StyledLayoutFlexItem>
                         <StyledLayoutFlexItem>
-                            <StyledContentsButton
-                                $styled={{
-                                    width : '72px',
-                                    height : '40px',
-                                    margin : '0 10px',
-                                    color : '#6B6B6B',
-                                }}
-                            >
-                                Bold
-                            </StyledContentsButton>
+                            <InlineControlButton
+                                label={'Bold'}
+                                styleName={'BOLD'}
+                                toggleFn={toggleInlineStyle}
+                                editorState={editorState}
+                            />
                         </StyledLayoutFlexItem>
                         <StyledLayoutFlexItem>
-                            <StyledContentsButton
-                                $styled={{
-                                    width : '72px',
-                                    height : '40px',
-                                    margin : '0 10px',
-                                    color : '#6B6B6B'
-                                }}
-                            >
-                                Point
-                            </StyledContentsButton>
+                            <InlineControlButton
+                                label={'Point'}
+                                styleName={'POINT'}
+                                toggleFn={toggleInlineStyle}
+                                editorState={editorState}
+                            />
                         </StyledLayoutFlexItem>
                     </StyledLayoutFlex>
                 </StyledWrapper>
@@ -172,13 +222,16 @@ export default function WriteContents() {
                     <StyledContents
                         $styled={{
                             height : '630px',
+                            overflow : 'auto'
                         }}
                     >
                         <Editor
                             editorState={editorState}
+                            plugins={plugIns}
                             onChange={setEditorState}
                             handleKeyCommand={handleKeyCommand}
                             blockStyleFn={myBlockStyleFn}
+                            customStyleMap={CUSTOM_INLINE_STYLE_MAP}
                             blockRenderMap={CUSTOM_BLOCK_RENDER_MAP}
                             spellCheck={true}
                             onFocus={() => setEditorFocusYN(true)}
@@ -191,6 +244,43 @@ export default function WriteContents() {
         </StyledLayoutFlex>
     );
 }
+
+function InlineControlButton(
+    {label, styleName, toggleFn, editorState}: {label: string, styleName: string, toggleFn: (BlockType: string) => void, editorState: EditorState}
+) {
+
+    const inlineTypeSet = editorState.getCurrentInlineStyle();
+    const [active, setActive] = useState<boolean>(false);
+    useEffect(() => {
+        inlineTypeSet.has(styleName) ? setActive(true) : setActive(false);
+    }, [inlineTypeSet.toArray().join()]);
+
+    const onClick: MouseEventHandler<HTMLButtonElement> = (e) => {
+        e.preventDefault();
+        toggleFn(styleName);
+    };
+
+    return (
+        <StyledContentsButton
+            $styled={{
+                width : '72px',
+                height : '40px',
+                margin : '0 10px',
+                color : active ? '#292929' : '#6B6B6B',
+                fontWeight : active ? 'bold' : undefined
+            }}
+            onClick={onClick}
+        >
+            {label}
+        </StyledContentsButton>
+    );
+}
+const CUSTOM_INLINE_STYLE_MAP = {
+    'POINT': {
+        fontStyle : 'italic',
+        backgroundColor : '#66f1e1'
+    },
+};
 
 function BlockControlButton(
     {label, styleName, toggleFn, editorState}: {label: string, styleName: string, toggleFn: (BlockType: string) => void, editorState: EditorState}

@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import {
     CSSCursor, CSSDisplay, CSSFontWeight,
     CSSOverflow, CSSPosition, CSSTextAlign,
@@ -7,10 +7,20 @@ import {
 } from "../CommonType";
 import { isMobile } from "../MediaQuery";
 
+/**
+  회고 : 콘텐츠 컴포넌트 부분은 굳이 스타일드로 속성을 안만들어도 될거 같다. div 컴포넌트를 만든 후 모바일 / 피씨 구분 후 CSS 프로퍼티를 다 넣어버리는게 나을듯!하다.(as 프로퍼티 사용)
+ */
+
 
 /*
     콘텐츠 영역으로 실제 구성요소가 들어가고 너비, 높이가 display block 엘리먼트에 한해서 필수값이다.
 */
+
+export const keyFrameSkeleton = keyframes`
+    to {
+        background-position-x: -200%;
+    }
+`;
 
 type StyledContentsProps = StyledProps<{
     position?: CSSPosition;
@@ -129,6 +139,8 @@ export const StyledContentsSpan = styled.span<StyledContentsSpanProps>`
     line-height: ${props => props.$styledMobile?.lineHeight};
     vertical-align: ${props => props.$styledMobile?.verticalAlign};
   }
+
+    
 `;
 
 

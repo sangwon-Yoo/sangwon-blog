@@ -6,8 +6,27 @@ import {
     StyledContentsSpan
 } from "@/design-system/module/Contents";
 import { StyledContentsIconClose } from "@/components/styledIcons";
+import {Dispatch, SetStateAction, useCallback, useEffect, useState} from "react";
 
-export default function TextAreaA({title}: {title: string}) {
+export default function TextAreaA({title, initialValue, exportFlag, exportSetter}: {
+    title: string;
+    initialValue: string;
+    exportFlag: boolean;
+    exportSetter: Dispatch<SetStateAction<string>>;
+}) {
+
+    const [textAreaState, setTextAreaState] = useState<string>(initialValue);
+
+    const doExport = useCallback(
+        () => exportSetter(textAreaState),
+        [exportSetter, textAreaState]
+    );
+
+    useEffect(() => {
+        if(exportFlag) {
+            doExport();
+        }
+    });
 
     return (
         <StyledLayoutGrid $styled={{
@@ -48,20 +67,23 @@ export default function TextAreaA({title}: {title: string}) {
                             focusingVisible : { border : '1.4px solid #66f1e1' }
                         }}
                         as={'textarea'}
+                        value={textAreaState}
+                        onChange={(event) => setTextAreaState(event.currentTarget.value)}
                     />
                 </StyledWrapper>
             </StyledLayoutGridItem>
             <StyledLayoutGridItem $styled={{ gridArea : 'close' }}>
-                <StyledWrapper $styled={{
-                    height : '32px',
-                    padding : '6px'
-                }}>
+                <StyledWrapper
+                    $styled={{ margin : '0 0 0 14px' }}
+                >
                     <StyledContentsButton
                         $styled={{
-                            width : '100%',
-                            height : '100%',
+                            height : '32px',
+                            width: '32px',
+                            padding : '6px',
                             color : '#6B6B6B'
                         }}
+                        onClick={() => setTextAreaState('')}
                     >
                         <StyledContentsIconClose />
                     </StyledContentsButton>
