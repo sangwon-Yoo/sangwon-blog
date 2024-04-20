@@ -36,7 +36,7 @@ export default function SaveContents() {
 
     useEffect(() => {
         if(sendFlagState) {
-            //console.log([categoryState, categoryImgState, contentsTitleState, contentsSummaryState, contentsImgState, editorContents]);
+            console.log([categoryState, categoryImgState, contentsTitleState, contentsSummaryState, contentsImgState, editorContents]);
             setSendFlagState(false);
         }
     }, [sendFlagState]);
