@@ -13,7 +13,7 @@ export const authOptions = {
         }),
         // ...add more providers here
     ],
-    secret : 'k8DpWXiDeaZKCtJbN203iY5m/Op1pvNplQGipbzkKH4=', //random 으로 생성한 해시키
+    secret : 'k8DpWXiDeaZKCtJbN203iY5m/Op1pvNplQGipbzkKH4=', // random 으로 생성한 해시키
     callbacks: {
         async signIn({ user, account, profile, email, credentials }: any) {
 
