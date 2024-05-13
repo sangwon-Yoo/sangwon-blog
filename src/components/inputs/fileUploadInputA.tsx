@@ -7,7 +7,7 @@ import {
     StyledContentsSpan
 } from "@/design-system/module/Contents";
 import { StyledContentsIconClose } from "@/components/styledIcons";
-import {ChangeEvent, Dispatch, LegacyRef, SetStateAction, useCallback, useEffect, useRef, useState} from "react";
+import { ChangeEvent, Dispatch, LegacyRef, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 export default function FileUploadInputA({title, initialValue, accept, multiple, exportFlag, exportSetter}: {
@@ -33,6 +33,11 @@ export default function FileUploadInputA({title, initialValue, accept, multiple,
             doExport();
         }
     });
+
+    useEffect(() => {
+        // 수정 할 때, 초기 값 넣는 로직
+        //setPreviewURL(imgURL);
+    }, []);
 
     const inputImgOnChange = (event: ChangeEvent<HTMLInputElement>) => {
 

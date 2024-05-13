@@ -76,7 +76,7 @@ export default function SelectBoxWithTextFieldA({title, initialValue, optionValu
                             border: '1.4px solid #0ca8ac',
                             hover: { border: '1.4px solid #66f1e1' }
                         }}
-                        value={inputState.value}
+                        value={inputState.type == 'select' ? inputState.value : optionValueForUsingTextField}
                         onChange={(event) => {
                             if(event.currentTarget.value == optionValueForUsingTextField) {
                                 setInputState({ type : 'text', value : '' });

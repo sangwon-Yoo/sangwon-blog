@@ -3,7 +3,7 @@ import { StyledContentsIconPaperPlan } from "@/components/styledIcons";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
 
 export default function SendMessage() {
-    
+
     return (
         <StyledWrapper $styled={{ margin : '6px' }}>
             <StyledContentsAnchor
@@ -18,6 +18,7 @@ export default function SendMessage() {
                 $styledMobile={{
                     hover : { color : '#66f1e1', backgroundColor : 'unset' }
                 }}
+
             >
                 <StyledContentsIconPaperPlan />
             </StyledContentsAnchor>

@@ -36,12 +36,37 @@ export default function SaveContents() {
 
     useEffect(() => {
         if(sendFlagState) {
-            console.log([categoryState, categoryImgState, contentsTitleState, contentsSummaryState, contentsImgState, editorContents]);
+            if(isValidateForSending(categoryState, categoryImgState, contentsTitleState, contentsSummaryState, editorContents)) {
+                console.log(categoryState, categoryImgState, contentsTitleState, contentsSummaryState, editorContents)
+                alert('전송!');
+                //send();
+            } else {
+                alert('필수 항목을 모두 입력하세요.');
+            }
             setSendFlagState(false);
         }
-    }, [sendFlagState]);
+    }, [
+        sendFlagState,
+        categoryState, categoryImgState, contentsTitleState, contentsSummaryState, editorContents
+    ]);
 
     const imageAcceptTypes = '.jpg, .jpeg, .png';
+
+    const isValidateForSending = (
+        category: ExportTypeForSelectBoxWithTextFieldA,
+        categoryImg: FileList | null,
+        contentsTitle: string,
+        contentsSummary: string,
+        editorContents: RawDraftContentState | null
+    ): boolean => {
+        if(category.type == 'select') {
+            return (!!category.value && !!contentsTitle && !!contentsSummary && !!editorContents);
+        } else if(category.type == 'text') {
+            return (!!category.value && !!categoryImg && !!contentsTitle && !!contentsSummary && !!editorContents);
+        }
+
+        return false;
+    };
 
     return (
         <StyledWrapper
@@ -58,7 +83,8 @@ export default function SaveContents() {
                 </>
             )} />
             <SaveCategory
-                initialValue={categoryState}
+                initialCategoryValue={categoryState}
+                initialCategoryImgValue={categoryImgState}
                 exportFlag={saveFlagState}
                 categoryExportSetter={setCategoryState}
                 categoryImgExportSetter={setCategoryImgState}
@@ -77,7 +103,7 @@ export default function SaveContents() {
                 exportSetter={setContentsSummarySate} />}
             />
             <CommonWrapperForSaveItem child={<FileUploadInputA
-                title={'콘텐츠 대표 이미지'}
+                title={'콘텐츠 대표 이미지(선택)'}
                 initialValue={contentsImgState}
                 accept={imageAcceptTypes}
                 exportFlag={saveFlagState}
