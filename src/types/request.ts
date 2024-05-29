@@ -1,7 +1,7 @@
 import { RawDraftContentState } from "draft-js";
 
 export type ReqSaveContents = {
-    isNew: boolean;
+    isNewCategory: boolean;
     categoryName: string;
     categoryImgFile?: File;
     contentsTitle: string;
