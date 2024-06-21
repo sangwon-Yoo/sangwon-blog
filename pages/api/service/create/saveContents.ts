@@ -1,9 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import prisma from "../../db";
 import { Prisma } from "@prisma/client";
 import { ResponseDTO } from "@/types/response";
 import { ReqSaveContents } from "@/types/request";
 import { put, PutBlobResult } from '@vercel/blob';
+import { createCategoryPrisma } from "../../contentsCategory/createCategory";
+import { VERCEL_BLOB_PATH } from "../../../../constant";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../auth/[...nextauth]";
 
 export default async function saveContents(
     req: NextApiRequest,
@@ -11,10 +14,23 @@ export default async function saveContents(
 ) {
 
     const reqBody = req.body as ReqSaveContents;
+    const session = await getServerSession(req, res, authOptions);
+
     let uploadedCategoryImg: PutBlobResult | null = null;
     let uploadedContentsImg: PutBlobResult | null = null;
 
-    if(reqBody.isNewCategory) {
+    if(session) {
+        if (!session) {
+            res.status(401).json({
+                returnCode : '01',
+                returnMessage: '',
+                errorMessage : '로그인 필요',
+                returnData : null
+            })
+            return
+        }
+    }
+    else if(reqBody.isNewCategory) {
 
         if(!reqBody.categoryImgFile) {
             res.status(400).json({
@@ -23,19 +39,19 @@ export default async function saveContents(
                 errorMessage : '요청에 카테고리 이미지 파일이 존재 하지 않음',
                 returnData : null
             });
-
             return;
         }
-
-        let uploadedCategoryImg = null;
         try {
-            uploadedCategoryImg = await put(
-                reqBody.categoryImgFile.name,
+            const uploadedCategoryImg = await put(
+                `${VERCEL_BLOB_PATH.category}${reqBody.categoryImgFile.name}`,
                 reqBody.categoryImgFile,
                 { access : 'public' }
             );
 
-            //카테고리 업데이트
+            createCategoryPrisma({
+                name : reqBody.categoryName,
+                representativeImgURL : uploadedCategoryImg.url
+            });
         } catch (error) {
             console.error(error);
         }

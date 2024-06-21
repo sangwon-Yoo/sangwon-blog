@@ -12,7 +12,6 @@ export default async function createCategory(
 
 export const createCategoryPrisma = async ({ name, representativeImgURL, createdDate }: Prisma.ContentsCategoryCreateInput) => {
 
-
     try {
         return await prisma.contentsCategory.create({
             data : { name, representativeImgURL, createdDate }
