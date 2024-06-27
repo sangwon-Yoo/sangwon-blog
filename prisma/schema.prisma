@@ -52,3 +52,6 @@ model ContentsSummary {
 
 // 쓰레드풀, 쓰레드풀 타임아웃
 // 외래키 관계에서는 부모가 모든 것에 기준. 부모가 있어야 자식을 create 할 수 있고, 자식은 지울 수 있지만, 부모는 지우거나 다른 값으로 업데이트 할 수 없다. 이를 가능하게 하는것이 cascase ondelete, onupdate
+// User ContentsCategory
+//   ContentsSummary
+//   ContentsData

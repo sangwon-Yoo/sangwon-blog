@@ -7,7 +7,8 @@ export default async function createCategory(
     res: NextApiResponse
 ) {
 
-    createCategoryPrisma({name : 'dsfds', representativeImgURL : 'sdfds' });
+    const reqBody = req.body as Prisma.ContentsCategoryCreateInput;
+    await createCategoryPrisma(reqBody);
 }
 
 export const createCategoryPrisma = async ({ name, representativeImgURL, createdDate }: Prisma.ContentsCategoryCreateInput) => {
@@ -17,6 +18,6 @@ export const createCategoryPrisma = async ({ name, representativeImgURL, created
             data : { name, representativeImgURL, createdDate }
         });
     } catch(error) {
-        console.error(error);
+        throw error;
     }
 }

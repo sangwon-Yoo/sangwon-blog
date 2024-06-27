@@ -7,6 +7,7 @@ import { createCategoryPrisma } from "../../contentsCategory/createCategory";
 import { VERCEL_BLOB_PATH } from "../../../../constant";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]";
+import { createSummaryPrisma } from "../../contentsSummary/createSummary";
 
 export default async function saveContents(
     req: NextApiRequest,
@@ -19,18 +20,17 @@ export default async function saveContents(
     let uploadedCategoryImg: PutBlobResult | null = null;
     let uploadedContentsImg: PutBlobResult | null = null;
 
-    if(session) {
-        if (!session) {
-            res.status(401).json({
-                returnCode : '01',
-                returnMessage: '',
-                errorMessage : '로그인 필요',
-                returnData : null
-            })
-            return
-        }
+    if (!session) {
+        res.status(401).json({
+            returnCode : '01',
+            returnMessage: '',
+            errorMessage : '로그인 필요',
+            returnData : null
+        });
+        return;
     }
-    else if(reqBody.isNewCategory) {
+
+    if(reqBody.isNewCategory) {
 
         if(!reqBody.categoryImgFile) {
             res.status(400).json({
@@ -48,12 +48,19 @@ export default async function saveContents(
                 { access : 'public' }
             );
 
-            createCategoryPrisma({
+            await createCategoryPrisma({
                 name : reqBody.categoryName,
                 representativeImgURL : uploadedCategoryImg.url
             });
         } catch (error) {
             console.error(error);
+            res.status(500).json({
+                returnCode : '01',
+                returnMessage: '',
+                errorMessage : (error instanceof Error) ? error.message : 'Unknown error',
+                returnData : null
+            });
+            return;
         }
     }
 
@@ -61,20 +68,11 @@ export default async function saveContents(
     //콘텐츠 데이터 저장
 
     try {
-        if(reqBody.categoryImgFile) {
-            uploadedCategoryImg = await put(
-                reqBody.categoryImgFile.name,
-                reqBody.categoryImgFile,
-                { access : 'public' }
-            );
-        }
-        if(reqBody.contentsImgFile) {
-            uploadedContentsImg = await put(
-                reqBody.contentsImgFile.name,
-                reqBody.contentsImgFile,
-                { access : 'public' }
-            );
-        }
+        await createSummaryPrisma({
+            title : reqBody.contentsTitle,
+            subTitle : reqBody.contentsSummary,
+            representativeImgURL : reqBody.
+        });
     } catch (error) {
 
     }
