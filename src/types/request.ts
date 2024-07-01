@@ -1,4 +1,5 @@
 import { RawDraftContentState } from "draft-js";
+import { JSONString } from "@/types/globalTypes";
 
 export type ReqSaveContents = {
     isNewCategory: boolean;
@@ -7,5 +8,5 @@ export type ReqSaveContents = {
     contentsTitle: string;
     contentsSummary: string;
     contentsImgFile?: File;
-    editorRaw: RawDraftContentState;
+    editorRaw: JSONString<RawDraftContentState>;
 };

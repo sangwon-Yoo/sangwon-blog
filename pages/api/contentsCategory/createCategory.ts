@@ -11,11 +11,11 @@ export default async function createCategory(
     await createCategoryPrisma(reqBody);
 }
 
-export const createCategoryPrisma = async ({ name, representativeImgURL, createdDate }: Prisma.ContentsCategoryCreateInput) => {
+export const createCategoryPrisma = async ({ name, representativeImgURL, createdDate, contentsSummary }: Prisma.ContentsCategoryCreateInput) => {
 
     try {
         return await prisma.contentsCategory.create({
-            data : { name, representativeImgURL, createdDate }
+            data : { name, representativeImgURL, createdDate, contentsSummary }
         });
     } catch(error) {
         throw error;

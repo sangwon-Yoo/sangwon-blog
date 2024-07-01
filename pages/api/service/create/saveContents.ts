@@ -8,6 +8,7 @@ import { VERCEL_BLOB_PATH } from "../../../../constant";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]";
 import { createSummaryPrisma } from "../../contentsSummary/createSummary";
+import prisma from "../../db";
 
 export default async function saveContents(
     req: NextApiRequest,
@@ -41,16 +42,43 @@ export default async function saveContents(
             });
             return;
         }
+
         try {
-            const uploadedCategoryImg = await put(
-                `${VERCEL_BLOB_PATH.category}${reqBody.categoryImgFile.name}`,
+            let uploadedCategoryImg = await put(
+                `${VERCEL_BLOB_PATH.category}/${reqBody.categoryImgFile.name}`,
                 reqBody.categoryImgFile,
                 { access : 'public' }
             );
 
+            let uploadedContentsImg;
+            if(reqBody.contentsImgFile) {
+                uploadedContentsImg = await put(
+                    `${VERCEL_BLOB_PATH.category}/${reqBody.categoryImgFile.name}/${VERCEL_BLOB_PATH.contents}/${reqBody.contentsImgFile.name}`,
+                    reqBody.contentsImgFile,
+                    { access : 'public' }
+                );
+            } else {
+                uploadedContentsImg = uploadedCategoryImg;
+            }
+
             await createCategoryPrisma({
                 name : reqBody.categoryName,
-                representativeImgURL : uploadedCategoryImg.url
+                representativeImgURL : uploadedCategoryImg.url,
+                contentsSummary : {
+                    create : [
+                        {
+                            title : reqBody.contentsTitle,
+                            subTitle : reqBody.contentsSummary,
+                            representativeImgURL : uploadedContentsImg.url,
+                            userId : session.user.id,
+                            contentsData : {
+                                create : {
+                                    contentsHtml : reqBody.editorRaw
+                                }
+                            }
+                        }
+                    ]
+                }
             });
         } catch (error) {
             console.error(error);
@@ -62,12 +90,14 @@ export default async function saveContents(
             });
             return;
         }
+    } else {
+
     }
 
     //콘텐츠 서머리 저장
     //콘텐츠 데이터 저장
 
-    try {
+    /*try {
         await createSummaryPrisma({
             title : reqBody.contentsTitle,
             subTitle : reqBody.contentsSummary,
@@ -75,7 +105,7 @@ export default async function saveContents(
         });
     } catch (error) {
 
-    }
+    }*/
 
 
     try {
