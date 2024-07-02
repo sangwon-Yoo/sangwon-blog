@@ -1,13 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Prisma } from "@prisma/client";
 import { ResponseDTO } from "@/types/response";
 import { ReqSaveContents } from "@/types/request";
-import { put, PutBlobResult } from '@vercel/blob';
-import { createCategoryPrisma } from "../../contentsCategory/createCategory";
+import { put } from '@vercel/blob';
 import { VERCEL_BLOB_PATH } from "../../../../constant";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]";
-import { createSummaryPrisma } from "../../contentsSummary/createSummary";
 import prisma from "../../db";
 
 export default async function saveContents(
@@ -17,9 +14,6 @@ export default async function saveContents(
 
     const reqBody = req.body as ReqSaveContents;
     const session = await getServerSession(req, res, authOptions);
-
-    let uploadedCategoryImg: PutBlobResult | null = null;
-    let uploadedContentsImg: PutBlobResult | null = null;
 
     if (!session) {
         res.status(401).json({
@@ -45,7 +39,7 @@ export default async function saveContents(
 
         try {
             let uploadedCategoryImg = await put(
-                `${VERCEL_BLOB_PATH.category}/${reqBody.categoryImgFile.name}`,
+                `${VERCEL_BLOB_PATH.category}/${reqBody.categoryName}/${reqBody.categoryImgFile.name}`,
                 reqBody.categoryImgFile,
                 { access : 'public' }
             );
@@ -53,7 +47,7 @@ export default async function saveContents(
             let uploadedContentsImg;
             if(reqBody.contentsImgFile) {
                 uploadedContentsImg = await put(
-                    `${VERCEL_BLOB_PATH.category}/${reqBody.categoryImgFile.name}/${VERCEL_BLOB_PATH.contents}/${reqBody.contentsImgFile.name}`,
+                    `${VERCEL_BLOB_PATH.category}/${reqBody.categoryName}/${VERCEL_BLOB_PATH.contents}/${reqBody.contentsImgFile.name}`,
                     reqBody.contentsImgFile,
                     { access : 'public' }
                 );
@@ -61,25 +55,28 @@ export default async function saveContents(
                 uploadedContentsImg = uploadedCategoryImg;
             }
 
-            await createCategoryPrisma({
-                name : reqBody.categoryName,
-                representativeImgURL : uploadedCategoryImg.url,
-                contentsSummary : {
-                    create : [
-                        {
-                            title : reqBody.contentsTitle,
-                            subTitle : reqBody.contentsSummary,
-                            representativeImgURL : uploadedContentsImg.url,
-                            userId : session.user.id,
-                            contentsData : {
-                                create : {
-                                    contentsHtml : reqBody.editorRaw
+            await prisma.contentsCategory.create({
+                data : {
+                    name : reqBody.categoryName,
+                    representativeImgURL : uploadedCategoryImg.url,
+                    contentsSummary : {
+                        create : [
+                            {
+                                title : reqBody.contentsTitle,
+                                subTitle : reqBody.contentsSummary,
+                                representativeImgURL : uploadedContentsImg.url,
+                                userId : session.user.id,
+                                contentsData : {
+                                    create : {
+                                        contentsHtml : reqBody.editorRaw
+                                    }
                                 }
                             }
-                        }
-                    ]
+                        ]
+                    }
                 }
             });
+
         } catch (error) {
             console.error(error);
             res.status(500).json({
@@ -92,40 +89,61 @@ export default async function saveContents(
         }
     } else {
 
-    }
+        try {
+            let uploadedContentsImg;
+            let contentsSummeryImgURL;
 
-    //콘텐츠 서머리 저장
-    //콘텐츠 데이터 저장
+            if(reqBody.contentsImgFile) {
+                uploadedContentsImg = await put(
+                    `${VERCEL_BLOB_PATH.category}/${reqBody.categoryName}/${VERCEL_BLOB_PATH.contents}/${reqBody.contentsImgFile.name}`,
+                    reqBody.contentsImgFile,
+                    { access : 'public' }
+                );
 
-    /*try {
-        await createSummaryPrisma({
-            title : reqBody.contentsTitle,
-            subTitle : reqBody.contentsSummary,
-            representativeImgURL : reqBody.
-        });
-    } catch (error) {
+                contentsSummeryImgURL = uploadedContentsImg.url;
+            } else {
 
-    }*/
+                const category = await prisma.contentsCategory.findUnique({
+                    where : {
+                        name : reqBody.categoryName
+                    }
+                });
 
+                contentsSummeryImgURL = category?.representativeImgURL || '';
+                if(!contentsSummeryImgURL) throw Error(`Category ${category} or Category Img URL not found`);
+            }
 
-    try {
-       // categoryList = await prisma.contentsCategory.findMany({
+            await prisma.contentsSummary.create({
+                data : {
+                    categoryName : reqBody.categoryName,
+                    title : reqBody.contentsTitle,
+                    subTitle : reqBody.contentsSummary,
+                    representativeImgURL : contentsSummeryImgURL,
+                    userId : session.user.id,
+                    contentsData : {
+                        create: {
+                            contentsHtml: reqBody.editorRaw
+                        }
+                    }
+                }
+            });
 
-        //});
-        //console.error(categoryList);
-        res.status(200).json({
-            returnCode : '00',
-            returnMessage: '저장되었습니다.',
-            errorMessage : '',
-            returnData : null
-        });
-
-    } catch (e) {
-        if (e instanceof Prisma.PrismaClientKnownRequestError) {
-            console.error(e);
-        } else {
-            console.error(`Unknown Error : `);
-            console.error(e);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({
+                returnCode : '01',
+                returnMessage: '',
+                errorMessage : (error instanceof Error) ? error.message : 'Unknown error',
+                returnData : null
+            });
+            return;
         }
     }
+
+    res.status(200).json({
+        returnCode : '00',
+        returnMessage: 'ok',
+        errorMessage : '',
+        returnData : null
+    });
 }
