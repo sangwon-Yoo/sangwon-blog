@@ -8,3 +8,7 @@ export const escapeHtml =  (htmlStr: HtmlString): string => {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#39;");
 }
+
+export const isEmptyObj = (data: Object | undefined | null) => {
+    return (!data || Object.keys(data).length === 0);
+};

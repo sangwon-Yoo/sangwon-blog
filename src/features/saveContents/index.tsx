@@ -10,6 +10,11 @@ import { useEffect, useState } from "react";
 import FileUploadInputA from "@/components/inputs/fileUploadInputA";
 import { RawDraftContentState } from "draft-js";
 import SaveCategory from "@/features/saveContents/saveCategory";
+import { useMutation, UseMutationResult } from "@tanstack/react-query";
+import { APIInternal } from "@/apiClient/apis";
+import { ENDPOINT } from "@/const/endpoint";
+import { ReqSaveContents } from "@/types/request";
+import { contentsToSaveContentsInput } from "@/functions/convertors";
 
 const DynamicEditor = dynamic(() => import('@/features/writeContents'), {
     ssr : false
@@ -27,6 +32,20 @@ export default function SaveContents() {
     const [contentsImgState, setContentsImgState] = useState<FileList | null>(null);
     const [editorContents, setEditorContents] = useState<RawDraftContentState | null>(null);
 
+    const { mutate, status }: UseMutationResult<null, Error, ReqSaveContents> = useMutation({
+        mutationFn : variables => APIInternal<null>({
+            url : ENDPOINT.saveContents,
+            method : 'POST',
+            body : JSON.stringify(variables).trim(),
+        }),
+        onSuccess : () => {
+            alert('저장!');
+        },
+        onError: error => {
+            alert(`저장실패!\n${error.message}`);
+        }
+    })
+
     useEffect(() => {
         if(saveFlagState) {
             setSaveFlagState(false);
@@ -37,18 +56,16 @@ export default function SaveContents() {
     useEffect(() => {
         if(sendFlagState) {
             if(isValidateForSending(categoryState, categoryImgState, contentsTitleState, contentsSummaryState, editorContents)) {
-                console.log(categoryState, categoryImgState, contentsTitleState, contentsSummaryState, editorContents)
-                alert('전송!');
-                //send();
+                console.log(categoryState, categoryImgState, contentsTitleState, contentsSummaryState, editorContents);
+                mutate(contentsToSaveContentsInput(
+                    categoryState, categoryImgState, contentsTitleState, contentsSummaryState, contentsImgState, editorContents
+                ));
             } else {
                 alert('필수 항목을 모두 입력하세요.');
             }
             setSendFlagState(false);
         }
-    }, [
-        sendFlagState,
-        categoryState, categoryImgState, contentsTitleState, contentsSummaryState, editorContents
-    ]);
+    }, [sendFlagState]);
 
     const imageAcceptTypes = '.jpg, .jpeg, .png';
 

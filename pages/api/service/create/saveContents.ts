@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { ResponseDTO } from "@/types/response";
+import { InternalResponseDTO } from "@/types/response";
 import { ReqSaveContents } from "@/types/request";
 import { put } from '@vercel/blob';
 import { VERCEL_BLOB_PATH } from "../../../../constant";
@@ -9,7 +9,7 @@ import prisma from "../../db";
 
 export default async function saveContents(
     req: NextApiRequest,
-    res: NextApiResponse<ResponseDTO<null>>
+    res: NextApiResponse<InternalResponseDTO<null>>
 ) {
 
     const reqBody = req.body as ReqSaveContents;
@@ -20,6 +20,16 @@ export default async function saveContents(
             returnCode : '01',
             returnMessage: '',
             errorMessage : '로그인 필요',
+            returnData : null
+        });
+        return;
+    }
+
+    if(req.method !== 'POST' && req.method !== 'PUT') {
+        res.status(400).json({
+            returnCode : '01',
+            returnMessage: '',
+            errorMessage : '지원하지 않는 method',
             returnData : null
         });
         return;

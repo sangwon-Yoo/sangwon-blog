@@ -1,4 +1,4 @@
-type baseFetchArgs = {
+export type baseFetchArgs = {
     url: string;
     method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
     returnType?: 'JSON' | 'BLOB';
