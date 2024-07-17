@@ -4,9 +4,15 @@ import { JSONString } from "@/types/globalTypes";
 export type ReqSaveContents = {
     isNewCategory: boolean;
     categoryName: string;
-    categoryImgFile?: File;
+    categoryImgFileSrc?: string;
     contentsTitle: string;
     contentsSummary: string;
-    contentsImgFile?: File;
+    contentsImgFileSrc?: string;
     editorRaw: JSONString<RawDraftContentState>;
 };
+
+export type ReqUploadContentsImages = {
+    categoryImgFile?: File;
+    contentsImgFile?: File;
+    editorImgFileList: Array<File>
+}

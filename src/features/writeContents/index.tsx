@@ -55,7 +55,6 @@ export default function WriteContents(
     }, [exportFlag, doExport]);
 
     useEffect(() => {
-        console.log('hello');
         console.log(convertToRaw(editorState.getCurrentContent()));
         const selection = editorState.getSelection();
         const blockType = editorState
@@ -126,7 +125,7 @@ export default function WriteContents(
         const imgURL = URL.createObjectURL(blob);
 
         setEditorState(prev => imagePlugIn.addImage(
-            prev, imgURL, {isLocal : true}
+            prev, imgURL, {tmpFile : file}
         ));
         setInputFileEmptyValue('');
     };

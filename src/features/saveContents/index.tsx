@@ -13,8 +13,9 @@ import SaveCategory from "@/features/saveContents/saveCategory";
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { APIInternal } from "@/apiClient/apis";
 import { ENDPOINT } from "@/const/endpoint";
-import { ReqSaveContents } from "@/types/request";
+import {ReqSaveContents, ReqUploadContentsImages} from "@/types/request";
 import { contentsToSaveContentsInput } from "@/functions/convertors";
+import { PutBlobResult } from "@vercel/blob";
 
 const DynamicEditor = dynamic(() => import('@/features/writeContents'), {
     ssr : false
@@ -32,8 +33,53 @@ export default function SaveContents() {
     const [contentsImgState, setContentsImgState] = useState<FileList | null>(null);
     const [editorContents, setEditorContents] = useState<RawDraftContentState | null>(null);
 
-    const { mutate, status }: UseMutationResult<null, Error, ReqSaveContents> = useMutation({
+    const { mutate, status }: UseMutationResult<Array<PutBlobResult | null>, Error, Array<{file : File, path: string} | null>> = useMutation({
+        mutationFn : variables => Promise.all(variables.map(
+            fileInput => APIInternal<PutBlobResult | null>({
+                url : ENDPOINT.uploadImage + `?savePath=${fileInput?.path}`,
+                method : 'POST',
+                body : fileInput?.file || null,
+            })
+        )),
+        onSuccess : (data) => {
+            const [
+                categoryImgSrc,
+                contentsImgSrc,
+                ...editorImgList
+            ] = data;
+        },
+        onError: error => {
+            alert(`저장실패!\n${error.message}`);
+        }
+    });
+
+    /*const { mutate, status }: UseMutationResult<null, Error, ReqSaveContents> = useMutation({
         mutationFn : variables => APIInternal<null>({
+            url : ENDPOINT.saveContents,
+            contentsType : 'application/json',
+            method : 'POST',
+            body : JSON.stringify(variables).trim(),
+        }),
+        onSuccess : () => {
+            alert('저장!');
+        },
+        onError: error => {
+            alert(`저장실패!\n${error.message}`);
+        }
+    });*/
+    /*
+    const { mutate, status }: UseMutationResult<null, Error, ReqUploadContentsImages> = useMutation({
+        mutationFn : uploadContentsImages => {
+
+
+
+            return Promise.all([
+                uploadContentsImages.categoryImgFile, uploadContentsImages.contentsImgFile, ...uploadContentsImages.editorImgFileList
+            ].);
+        }
+
+
+            APIInternal<null>({
             url : ENDPOINT.saveContents,
             method : 'POST',
             body : JSON.stringify(variables).trim(),
@@ -44,7 +90,7 @@ export default function SaveContents() {
         onError: error => {
             alert(`저장실패!\n${error.message}`);
         }
-    })
+    });*/
 
     useEffect(() => {
         if(saveFlagState) {
@@ -54,12 +100,40 @@ export default function SaveContents() {
     }, [saveFlagState]);
 
     useEffect(() => {
+
         if(sendFlagState) {
             if(isValidateForSending(categoryState, categoryImgState, contentsTitleState, contentsSummaryState, editorContents)) {
                 console.log(categoryState, categoryImgState, contentsTitleState, contentsSummaryState, editorContents);
-                mutate(contentsToSaveContentsInput(
+
+                let uploadImgList = [
+                    categoryImgState ? {file : categoryImgState[0], path : `category/${categoryState.value}/${categoryImgState[0].name}`} : null,
+                    categoryImgState ? {file : categoryImgState[0], path : `contents/${contentsTitleState}/${categoryImgState[0].name}`} : null
+                ];
+
+                if(editorContents?.entityMap) {
+                    const editorImgList = Object.values(editorContents.entityMap).filter(
+                        entity => entity.type == 'IMAGE'
+                    ).map(
+                        imgEntity => {
+                            return {
+                                file : imgEntity.data.tmpFile,
+                                path : `editors/${contentsTitleState}/${imgEntity.data.tmpFile.name}`
+                            };
+                        }
+                    );
+
+                    uploadImgList = uploadImgList.concat(editorImgList);
+                }
+
+                mutate(uploadImgList);
+
+
+                /*console.log(contentsToSaveContentsInput(
                     categoryState, categoryImgState, contentsTitleState, contentsSummaryState, contentsImgState, editorContents
-                ));
+                ));*/
+                /*mutate(contentsToSaveContentsInput(
+                    categoryState, categoryImgState, contentsTitleState, contentsSummaryState, contentsImgState, editorContents
+                ));*/
             } else {
                 alert('필수 항목을 모두 입력하세요.');
             }
