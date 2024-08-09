@@ -8,12 +8,12 @@ import ButtonA_long from "@/components/buttons/buttonA_long";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import FileUploadInputA from "@/components/inputs/fileUploadInputA";
-import { RawDraftContentState } from "draft-js";
+import { RawDraftContentState, RawDraftEntity } from "draft-js";
 import SaveCategory from "@/features/saveContents/saveCategory";
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { APIInternal } from "@/apiClient/apis";
 import { ENDPOINT } from "@/const/endpoint";
-import {ReqSaveContents, ReqUploadContentsImages} from "@/types/request";
+import { ReqSaveContents } from "@/types/request";
 import { contentsToSaveContentsInput } from "@/functions/convertors";
 import { PutBlobResult } from "@vercel/blob";
 
@@ -33,7 +33,16 @@ export default function SaveContents() {
     const [contentsImgState, setContentsImgState] = useState<FileList | null>(null);
     const [editorContents, setEditorContents] = useState<RawDraftContentState | null>(null);
 
-    const { mutate, status }: UseMutationResult<Array<PutBlobResult | null>, Error, Array<{file : File, path: string} | null>> = useMutation({
+    const mutateSaveContents: UseMutationResult<null, Error, ReqSaveContents> = useMutation({
+        mutationFn : variables => APIInternal<null>({
+            url : ENDPOINT.saveContents,
+            method : 'POST',
+            contentsType : 'application/json',
+            body : JSON.stringify(variables)
+        })
+    });
+
+    const mutatePutBlob: UseMutationResult<Array<PutBlobResult | null>, Error, Array<{file : File, path: string} | null>> = useMutation({
         mutationFn : variables => Promise.all(variables.map(
             fileInput => APIInternal<PutBlobResult | null>({
                 url : ENDPOINT.uploadImage + `?savePath=${fileInput?.path}`,
@@ -43,10 +52,41 @@ export default function SaveContents() {
         )),
         onSuccess : (data) => {
             const [
-                categoryImgSrc,
-                contentsImgSrc,
+                categoryImg,
+                contentsImg,
                 ...editorImgList
             ] = data;
+
+            if(!categoryImg || !contentsImg || !editorContents) {
+                console.error('no editorContents data');
+                return;
+            }
+
+            let editorImgListIndex = 0;
+
+            const updatedRawContentState: RawDraftContentState = {
+                ...editorContents,
+                entityMap: Object.keys(editorContents.entityMap).reduce<{[p: string]: RawDraftEntity}>((acc, key) => {
+                    const entity = editorContents.entityMap[key];
+                    if (entity.type === 'IMAGE') {
+                        acc[key] = {
+                            ...entity,
+                            data: {
+                                /*...entity.data,*/
+                                src : editorImgList[editorImgListIndex]?.url // 새로운 URL로 교체
+                            }
+                        };
+                        ++editorImgListIndex;
+                    } else {
+                        acc[key] = entity;
+                    }
+                    return acc;
+                }, {})
+            };
+
+            mutateSaveContents.mutate(contentsToSaveContentsInput(
+                categoryState, categoryImg.url, contentsTitleState, contentsSummaryState, contentsImg.url, updatedRawContentState
+            ));
         },
         onError: error => {
             alert(`저장실패!\n${error.message}`);
@@ -106,8 +146,8 @@ export default function SaveContents() {
                 console.log(categoryState, categoryImgState, contentsTitleState, contentsSummaryState, editorContents);
 
                 let uploadImgList = [
-                    categoryImgState ? {file : categoryImgState[0], path : `category/${categoryState.value}/${categoryImgState[0].name}`} : null,
-                    categoryImgState ? {file : categoryImgState[0], path : `contents/${contentsTitleState}/${categoryImgState[0].name}`} : null
+                    categoryImgState ? {file : categoryImgState[0], path : `${categoryState.value}/${categoryImgState[0].name}`} : null,
+                    contentsImgState ? {file : contentsImgState[0], path : `${categoryState.value}/${contentsTitleState}/${contentsImgState[0].name}`} : null
                 ];
 
                 if(editorContents?.entityMap) {
@@ -125,21 +165,22 @@ export default function SaveContents() {
                     uploadImgList = uploadImgList.concat(editorImgList);
                 }
 
-                mutate(uploadImgList);
-
-
-                /*console.log(contentsToSaveContentsInput(
-                    categoryState, categoryImgState, contentsTitleState, contentsSummaryState, contentsImgState, editorContents
-                ));*/
-                /*mutate(contentsToSaveContentsInput(
-                    categoryState, categoryImgState, contentsTitleState, contentsSummaryState, contentsImgState, editorContents
-                ));*/
+                mutatePutBlob.mutate(uploadImgList);
             } else {
                 alert('필수 항목을 모두 입력하세요.');
             }
             setSendFlagState(false);
         }
-    }, [sendFlagState]);
+    }, [
+        categoryImgState,
+        categoryState,
+        contentsImgState,
+        contentsSummaryState,
+        contentsTitleState,
+        editorContents,
+        mutatePutBlob.mutate,
+        sendFlagState
+    ]);
 
     const imageAcceptTypes = '.jpg, .jpeg, .png';
 

@@ -20,7 +20,7 @@ export default async function uploadImage(
             });
         }
 
-        blob = await put(req.query.savePath as string, req, {access: 'public'});
+        blob = await put(req.query.savePath as string, req, { access: 'public' });
 
     } catch (error) {
         console.error(error);

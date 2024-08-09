@@ -29,23 +29,23 @@ model ContentsCategory {
 
 model ContentsData {
   id           Int    @id @default(autoincrement())
-  title        String @unique
   contentsHtml String
 
+  title           String @unique
   contentsSummary ContentsSummary @relation(fields: [title], references: [title])
 }
 
 model ContentsSummary {
   id                   Int           @id @default(autoincrement())
-  categoryName         String
   title                String        @unique
   subTitle             String
   representativeImgURL String?
   createdDate          DateTime      @default(now())
   updatedDate          DateTime      @updatedAt
-  userId               String
   contentsData         ContentsData?
 
+  userId               String
+  categoryName         String
   contentsCategory ContentsCategory @relation(fields: [categoryName], references: [name])
   user             User             @relation(fields: [userId], references: [id])
 }

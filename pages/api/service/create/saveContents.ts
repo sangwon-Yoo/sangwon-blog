@@ -37,7 +37,7 @@ export default async function saveContents(
 
     if(reqBody.isNewCategory) {
 
-        if(!reqBody.categoryImgFile) {
+        if(!reqBody.categoryImgFileSrc) {
             res.status(400).json({
                 returnCode : '01',
                 returnMessage: '',
@@ -48,33 +48,17 @@ export default async function saveContents(
         }
 
         try {
-            let uploadedCategoryImg = await put(
-                `${VERCEL_BLOB_PATH.category}/${reqBody.categoryName}/${reqBody.categoryImgFile.name}`,
-                reqBody.categoryImgFile,
-                { access : 'public' }
-            );
-
-            let uploadedContentsImg;
-            if(reqBody.contentsImgFile) {
-                uploadedContentsImg = await put(
-                    `${VERCEL_BLOB_PATH.category}/${reqBody.categoryName}/${VERCEL_BLOB_PATH.contents}/${reqBody.contentsImgFile.name}`,
-                    reqBody.contentsImgFile,
-                    { access : 'public' }
-                );
-            } else {
-                uploadedContentsImg = uploadedCategoryImg;
-            }
 
             await prisma.contentsCategory.create({
                 data : {
                     name : reqBody.categoryName,
-                    representativeImgURL : uploadedCategoryImg.url,
+                    representativeImgURL : reqBody.categoryImgFileSrc,
                     contentsSummary : {
                         create : [
                             {
                                 title : reqBody.contentsTitle,
                                 subTitle : reqBody.contentsSummary,
-                                representativeImgURL : uploadedContentsImg.url,
+                                representativeImgURL : reqBody.contentsImgFileSrc || reqBody.categoryImgFileSrc,
                                 userId : session.user.id,
                                 contentsData : {
                                     create : {
@@ -100,36 +84,28 @@ export default async function saveContents(
     } else {
 
         try {
-            let uploadedContentsImg;
-            let contentsSummeryImgURL;
 
-            if(reqBody.contentsImgFile) {
-                uploadedContentsImg = await put(
-                    `${VERCEL_BLOB_PATH.category}/${reqBody.categoryName}/${VERCEL_BLOB_PATH.contents}/${reqBody.contentsImgFile.name}`,
-                    reqBody.contentsImgFile,
-                    { access : 'public' }
-                );
+            let relatedCategory;
 
-                contentsSummeryImgURL = uploadedContentsImg.url;
-            } else {
-
-                const category = await prisma.contentsCategory.findUnique({
+            if(!reqBody.contentsImgFileSrc) {
+                relatedCategory = await prisma.contentsCategory.findUnique({
                     where : {
                         name : reqBody.categoryName
-                    }
+                    },
                 });
-
-                contentsSummeryImgURL = category?.representativeImgURL || '';
-                if(!contentsSummeryImgURL) throw Error(`Category ${category} or Category Img URL not found`);
             }
 
             await prisma.contentsSummary.create({
                 data : {
-                    categoryName : reqBody.categoryName,
+                    contentsCategory : {
+                        connect : { name: reqBody.categoryName }
+                    },
+                    user : {
+                        connect : { id : session.user.id }
+                    },
                     title : reqBody.contentsTitle,
                     subTitle : reqBody.contentsSummary,
-                    representativeImgURL : contentsSummeryImgURL,
-                    userId : session.user.id,
+                    representativeImgURL : reqBody.contentsImgFileSrc || relatedCategory?.representativeImgURL,
                     contentsData : {
                         create: {
                             contentsHtml: reqBody.editorRaw
