@@ -37,7 +37,6 @@ export default function SaveCategory(
     });
 
     useEffect(() => {
-        console.log(categoryState);
         if(categoryState.type == 'text') {
             setIsUseCategoryImg(true);
         } else {

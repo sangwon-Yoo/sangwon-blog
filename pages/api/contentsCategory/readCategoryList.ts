@@ -17,7 +17,7 @@ export default async function readCategoryList(
         categoryList = await prisma.contentsCategory.findMany({
 
         });
-        console.log(categoryList);
+
         res.status(200).json({ message: 'Hello from Next.js!',  })
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {

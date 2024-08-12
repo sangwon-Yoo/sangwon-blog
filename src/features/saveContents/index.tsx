@@ -142,6 +142,7 @@ export default function SaveContents() {
     useEffect(() => {
 
         if(sendFlagState) {
+            setSendFlagState(false);
             if(isValidateForSending(categoryState, categoryImgState, contentsTitleState, contentsSummaryState, editorContents)) {
                 console.log(categoryState, categoryImgState, contentsTitleState, contentsSummaryState, editorContents);
 
@@ -157,7 +158,7 @@ export default function SaveContents() {
                         imgEntity => {
                             return {
                                 file : imgEntity.data.tmpFile,
-                                path : `editors/${contentsTitleState}/${imgEntity.data.tmpFile.name}`
+                                path : `${categoryState.value}/${contentsTitleState}/editor/${imgEntity.data.tmpFile.name}`
                             };
                         }
                     );
@@ -169,18 +170,8 @@ export default function SaveContents() {
             } else {
                 alert('필수 항목을 모두 입력하세요.');
             }
-            setSendFlagState(false);
         }
-    }, [
-        categoryImgState,
-        categoryState,
-        contentsImgState,
-        contentsSummaryState,
-        contentsTitleState,
-        editorContents,
-        mutatePutBlob.mutate,
-        sendFlagState
-    ]);
+    }, [categoryImgState, categoryState, contentsImgState, contentsSummaryState, contentsTitleState, editorContents, mutatePutBlob, mutatePutBlob.mutate, sendFlagState]);
 
     const imageAcceptTypes = '.jpg, .jpeg, .png';
 

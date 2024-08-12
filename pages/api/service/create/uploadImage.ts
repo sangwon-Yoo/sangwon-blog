@@ -11,10 +11,10 @@ export default async function uploadImage(
 
     try {
 
-        if(!req?.body) {
+        if(!req) {
             return res.status(200).json({
                 returnCode: '00',
-                returnMessage: 'ok',
+                returnMessage: 'nothing to save',
                 errorMessage: '',
                 returnData: null
             });

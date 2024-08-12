@@ -31,7 +31,7 @@ model ContentsData {
   id           Int    @id @default(autoincrement())
   contentsHtml String
 
-  title           String @unique
+  title           String @unique //잘못설계했다
   contentsSummary ContentsSummary @relation(fields: [title], references: [title])
 }
 

@@ -14,7 +14,6 @@ export default async function readUser(
                 id : '104706220114838631947'
             }
         });
-        console.log(user);
         res.status(200).json({ message: 'Hello from Next.js!',  })
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {

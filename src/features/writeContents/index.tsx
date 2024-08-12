@@ -61,11 +61,7 @@ export default function WriteContents(
             .getCurrentContent()
             .getBlockForKey(selection.getStartKey())
             .getType();
-        console.log(blockType);
-        console.log(editorState.getCurrentContent().getEntityMap())
     });
-
-    console.log(editorState.getCurrentInlineStyle());
 
     const myBlockStyleFn = (contentBlock: ContentBlock) => {
 
@@ -92,7 +88,6 @@ export default function WriteContents(
 
     const mapKeyToEditorCommand = (e: KeyboardEvent) => {
         if (e.key === 'Tab' /* TAB */) {
-            console.log('pressed : Tab');
             const newEditorState = RichUtils.onTab(
                 e,
                 editorState,
