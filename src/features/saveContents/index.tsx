@@ -15,7 +15,7 @@ import { APIInternal } from "@/apiClient/apis";
 import { ENDPOINT } from "@/const/endpoint";
 import { ReqSaveContents } from "@/types/request";
 import { contentsToSaveContentsInput } from "@/functions/convertors";
-import { PutBlobResult } from "@vercel/blob";
+import { ResUploadBlob } from "@/types/response";
 
 const DynamicEditor = dynamic(() => import('@/features/writeContents'), {
     ssr : false
@@ -39,17 +39,22 @@ export default function SaveContents() {
             method : 'POST',
             contentsType : 'application/json',
             body : JSON.stringify(variables)
-        })
+        }),
+        retry : false
     });
 
-    const mutatePutBlob: UseMutationResult<Array<PutBlobResult | null>, Error, Array<{file : File, path: string} | null>> = useMutation({
+    const mutatePutBlob: UseMutationResult<Array<ResUploadBlob | null>, Error, Array<{file : File, path: string} | null>> = useMutation({
         mutationFn : variables => Promise.all(variables.map(
-            fileInput => APIInternal<PutBlobResult | null>({
-                url: ENDPOINT.uploadImage + `?savePath=${fileInput?.path}`,
-                method: 'POST',
-                body: fileInput?.file || null
-            })
+            fileInput => {
+                if(!fileInput) return null;
+                return APIInternal<ResUploadBlob | null>({
+                    url: ENDPOINT.uploadImage + `?savePath=${fileInput?.path}`,
+                    method: 'POST',
+                    body: fileInput?.file || null
+                });
+            }
         )),
+        retry : false,
         onSuccess : (data) => {
             const [
                 categoryImg,
@@ -57,7 +62,9 @@ export default function SaveContents() {
                 ...editorImgList
             ] = data;
 
-            if(!categoryImg || !contentsImg || !editorContents) {
+            console.log(data);
+
+            if(!editorContents) {
                 console.error('no editorContents data');
                 return;
             }
@@ -73,7 +80,7 @@ export default function SaveContents() {
                             ...entity,
                             data: {
                                 /*...entity.data,*/
-                                src : editorImgList[editorImgListIndex]?.url // 새로운 URL로 교체
+                                src : editorImgList[editorImgListIndex]?.blobUrl // 새로운 URL로 교체
                             }
                         };
                         ++editorImgListIndex;
@@ -85,52 +92,18 @@ export default function SaveContents() {
             };
 
             mutateSaveContents.mutate(contentsToSaveContentsInput(
-                categoryState, categoryImg.url, contentsTitleState, contentsSummaryState, contentsImg.url, updatedRawContentState
+                categoryState,
+                categoryImg?.blobUrl || null,
+                contentsTitleState,
+                contentsSummaryState,
+                contentsImg?.blobUrl || null,
+                updatedRawContentState
             ));
         },
         onError: error => {
             alert(`저장실패!\n${error.message}`);
         }
     });
-
-    /*const { mutate, status }: UseMutationResult<null, Error, ReqSaveContents> = useMutation({
-        mutationFn : variables => APIInternal<null>({
-            url : ENDPOINT.saveContents,
-            contentsType : 'application/json',
-            method : 'POST',
-            body : JSON.stringify(variables).trim(),
-        }),
-        onSuccess : () => {
-            alert('저장!');
-        },
-        onError: error => {
-            alert(`저장실패!\n${error.message}`);
-        }
-    });*/
-    /*
-    const { mutate, status }: UseMutationResult<null, Error, ReqUploadContentsImages> = useMutation({
-        mutationFn : uploadContentsImages => {
-
-
-
-            return Promise.all([
-                uploadContentsImages.categoryImgFile, uploadContentsImages.contentsImgFile, ...uploadContentsImages.editorImgFileList
-            ].);
-        }
-
-
-            APIInternal<null>({
-            url : ENDPOINT.saveContents,
-            method : 'POST',
-            body : JSON.stringify(variables).trim(),
-        }),
-        onSuccess : () => {
-            alert('저장!');
-        },
-        onError: error => {
-            alert(`저장실패!\n${error.message}`);
-        }
-    });*/
 
     useEffect(() => {
         if(saveFlagState) {

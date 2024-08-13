@@ -1,17 +1,17 @@
 import { put, PutBlobResult } from '@vercel/blob';
 import type { NextApiResponse, NextApiRequest, PageConfig } from 'next';
-import { InternalResponseDTO } from "@/types/response";
+import { InternalResponseDTO, ResUploadBlob } from "@/types/response";
 
 export default async function uploadImage(
     req: NextApiRequest,
-    res: NextApiResponse<InternalResponseDTO<PutBlobResult>>,
+    res: NextApiResponse<InternalResponseDTO<ResUploadBlob>>,
 ) {
 
     let blob: PutBlobResult;
 
     try {
-
-        if(!req) {
+        /*if(!req.body) {
+            console.log('hihihihihihihi');
             return res.status(200).json({
                 returnCode: '00',
                 returnMessage: 'nothing to save',
@@ -19,7 +19,7 @@ export default async function uploadImage(
                 returnData: null
             });
         }
-        console.log(req);
+        console.log('hihihihihihihi@@@@@@@@@@@@@@');*/
 
         blob = await put(req.query.savePath as string, req, { access: 'public' });
 
@@ -38,7 +38,9 @@ export default async function uploadImage(
         returnCode : '00',
         returnMessage: 'ok',
         errorMessage : '',
-        returnData : blob
+        returnData : {
+            blobUrl : blob.url,
+        }
     });
 }
 

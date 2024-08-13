@@ -3,4 +3,8 @@ export type InternalResponseDTO<T> = {
     returnMessage: string;
     errorMessage: string;
     returnData: T | null;
-}
+};
+
+export type ResUploadBlob = {
+    blobUrl: string;
+};
