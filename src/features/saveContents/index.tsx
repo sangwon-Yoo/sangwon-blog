@@ -45,9 +45,9 @@ export default function SaveContents() {
     const mutatePutBlob: UseMutationResult<Array<PutBlobResult | null>, Error, Array<{file : File, path: string} | null>> = useMutation({
         mutationFn : variables => Promise.all(variables.map(
             fileInput => APIInternal<PutBlobResult | null>({
-                url : ENDPOINT.uploadImage + `?savePath=${fileInput?.path}`,
-                method : 'POST',
-                body : fileInput?.file || null,
+                url: ENDPOINT.uploadImage + `?savePath=${fileInput?.path}`,
+                method: 'POST',
+                body: fileInput?.file || null
             })
         )),
         onSuccess : (data) => {

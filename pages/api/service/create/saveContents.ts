@@ -12,7 +12,7 @@ export default async function saveContents(
     res: NextApiResponse<InternalResponseDTO<null>>
 ) {
 
-    const reqBody = JSON.parse(req.body) as ReqSaveContents;
+    const reqBody = req.body as ReqSaveContents;
     const session = await getServerSession(req, res, authOptions);
 
     if (!session) {

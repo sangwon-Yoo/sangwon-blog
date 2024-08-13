@@ -1,7 +1,7 @@
 export type baseFetchArgs = {
     url: string;
     method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
-    contentsType?: 'application/json'; // ++ 추가가능
+    contentsType?: 'application/json' | 'multipart/form-data'; // ++ 추가가능
     returnType?: 'JSON' | 'BLOB';
     body?: BodyInit | null;
 }
@@ -18,7 +18,7 @@ export async function baseFetch<T>(
     try{
         const response = await fetch(url, {
             method,
-            body : body ? JSON.stringify(body) : undefined,
+            body,
             headers : contentsType ? {
                 'Content-Type' : contentsType,
             } : undefined
