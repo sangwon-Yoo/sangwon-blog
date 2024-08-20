@@ -9,9 +9,11 @@ import { StyledContentsIconClose } from "@/components/styledIcons";
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 
 export type ExportTypeForSelectBoxWithTextFieldA = {type: 'select' | 'text'; value: string};
-export default function SelectBoxWithTextFieldA({title, initialValue, optionValueForUsingTextField, exportFlag, exportSetter}: {
+export default function SelectBoxWithTextFieldA(
+    {title, initialValue, optionValueList, optionValueForUsingTextField, exportFlag, exportSetter}: {
     title: string;
     initialValue: ExportTypeForSelectBoxWithTextFieldA;
+    optionValueList: Array<string>;
     optionValueForUsingTextField: string;
     exportFlag: boolean;
     exportSetter : Dispatch<SetStateAction<ExportTypeForSelectBoxWithTextFieldA>>;
@@ -86,10 +88,12 @@ export default function SelectBoxWithTextFieldA({title, initialValue, optionValu
                         }}
                     >
                         <option value={''} defaultChecked={initialValue.value == ''}> -- 선택하세요 -- </option>
-                        <option value={'vanillaJS'} defaultChecked={initialValue.value == 'vanillaJS'}>vanillaJS</option>
-                        <option value={'markup'} defaultChecked={initialValue.value == 'markup'}>markup</option>
-                        <option value={'react'} defaultChecked={initialValue.value == 'react'}>react</option>
-                        <option value={'nextJS'} defaultChecked={initialValue.value == 'nextJS'}>nextJS</option>
+                        {optionValueList.map((option, index) => (
+                            <option
+                                value={option}
+                                defaultChecked={initialValue.value == option}
+                                key={index}>{option}
+                            </option>))}
                         <option value={optionValueForUsingTextField} defaultChecked={initialValue.value == optionValueForUsingTextField}>{optionValueForUsingTextField}</option>
                     </StyledContentsInputText>
                 </StyledWrapper>

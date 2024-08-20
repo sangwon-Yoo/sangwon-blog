@@ -10,19 +10,7 @@ export default async function uploadImage(
     let blob: PutBlobResult;
 
     try {
-        /*if(!req.body) {
-            console.log('hihihihihihihi');
-            return res.status(200).json({
-                returnCode: '00',
-                returnMessage: 'nothing to save',
-                errorMessage: '',
-                returnData: null
-            });
-        }
-        console.log('hihihihihihihi@@@@@@@@@@@@@@');*/
-
         blob = await put(req.query.savePath as string, req, { access: 'public' });
-
     } catch (error) {
         console.error(error);
         res.status(500).json({

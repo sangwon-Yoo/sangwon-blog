@@ -4,6 +4,10 @@ import SelectBoxWithTextFieldA, {
 import FileUploadInputA from "@/components/inputs/fileUploadInputA";
 import { CommonWrapperForSaveItem } from "@/features/saveContents";
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { APIInternal } from "@/apiClient/apis";
+import { ResCategoryList } from "@/types/response";
+import { ENDPOINT } from "@/const/endpoint";
 
 export default function SaveCategory(
     {initialCategoryValue, initialCategoryImgValue, exportFlag, categoryExportSetter, categoryImgExportSetter, imageAcceptTypes}: {
@@ -30,6 +34,16 @@ export default function SaveCategory(
         [categoryExportSetter, categoryState, categoryImgExportSetter, categoryImgState]
     );
 
+    const { status, data } = useQuery({
+        queryKey : ['sdfs'],
+        queryFn : () => APIInternal<ResCategoryList>({
+            url : ENDPOINT.getCategoryList,
+            contentsType : 'application/json'
+        }),
+        staleTime : 5 * 60 * 1000,
+        retry : false,
+    });
+
     useEffect(() => {
         if(exportFlag) {
             doExport();
@@ -49,6 +63,7 @@ export default function SaveCategory(
             <CommonWrapperForSaveItem child={<SelectBoxWithTextFieldA
                 title={'카테고리'}
                 initialValue={initialCategoryValue}
+                optionValueList={(data && status == 'success') ? data.map(categoryData => categoryData.categoryName) : []}
                 optionValueForUsingTextField={optionValueForUsingTextField}
                 exportFlag={true}
                 exportSetter={setCategoryState} />}

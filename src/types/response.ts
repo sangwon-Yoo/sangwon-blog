@@ -8,3 +8,7 @@ export type InternalResponseDTO<T> = {
 export type ResUploadBlob = {
     blobUrl: string;
 };
+
+export type ResCategoryList = Array<{
+    categoryName: string;
+}>;
