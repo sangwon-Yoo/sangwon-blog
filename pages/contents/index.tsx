@@ -14,6 +14,12 @@ import Footer from "@/components/footer";
 import hljs from "highlight.js/lib/core";
 import { useEffect } from "react";
 import { escapeHtml } from "@/functions/utils";
+import ShowRepresentImg from "@/features/showContents/showRepresentImg";
+import ShowCategory from "@/features/showContents/showCategory";
+import ShowTitle from "@/features/showContents/showTitle";
+import ShowSubTitle from "@/features/showContents/showSubTitle";
+import ShowMidBox from "@/features/showContents/showMidBox";
+import ShowMainContents from "@/features/showContents/showMainContents";
 
 export default function Contents() {
 
@@ -37,162 +43,13 @@ export default function Contents() {
                         $styled={{ margin : '120px 24px 36px 24px' }}
                         $styledMobile={{ margin : '80px 24px 36px 24px' }}
                     >
-                        <StyledWrapper
-                            $styled={{ width : '680px', height : '384px', margin : '0 0 36px 0' }}
-                            $styledMobile={{ width : '100%', height : '194px' }}
-                        >
-                            <StyledContents $styled={{
-                                height : '100%',
-                                position : 'relative',
-                                overflow : 'hidden',
-                                borderRadius : '2px',
-                            }}>
-                                <Image
-                                    src={'/img/contents.jpeg'}
-                                    priority
-                                    fill
-                                    style={{ objectFit : 'cover' }}
-                                    alt={'콘텐츠 대표 이미지'}
-                                />
-                            </StyledContents>
-                        </StyledWrapper>
 
-                        <StyledWrapper
-                            $styled={{ margin : '0 0 24px 0' }}
-                            $styledMobile={{ margin : '0 0 14px 0' }}
-                        >
-                            <StyledContentsSpan $styled={{
-                                display : 'inline-block',
-                                height : '24px',
-                                lineHeight : '24px',
-                                padding : '0 14px',
-                                backgroundColor : '#0ca8ac',
-                                borderRadius : '7px',
-                                color : '#ffffff',
-                            }}>
-                                {`Dev`}
-                            </StyledContentsSpan>
-                        </StyledWrapper>
-
-                        <StyledWrapper
-                            $styled={{ margin : '0 0 24px 0' }}
-                            $styledMobile={{ margin : '0 0 14px 0' }}
-                        >
-                            <StyledContentsParagraph
-                                $styled={{
-                                    width : '680px',
-                                    height : 'auto',
-                                    fontSize : '2rem'
-                                }}
-                                $styledMobile={{
-                                    width : '100%',
-                                    height : 'auto',
-                                    fontSize : '1.4rem'
-                                }}
-                                as={'h1'}
-                            >
-                                useEffect에 대해 자세히 알아보자. 생명주기를 위해 무엇을 신경써야할까?
-                            </StyledContentsParagraph>
-                        </StyledWrapper>
-
-                        <StyledWrapper
-                            $styled={{ margin : '0 0 36px 0' }}
-                            $styledMobile={{ margin : '0 0 24px 0' }}
-                        >
-                            <StyledContentsParagraph
-                                $styled={{
-                                    width : '680px',
-                                    height : 'auto',
-                                    fontSize : '1.2rem',
-                                    fontWeight : 'normal',
-                                    color : '#6B6B6B'
-                                }}
-                                $styledMobile={{
-                                    width : '100%',
-                                    height : 'auto',
-                                    fontSize : '1.1rem',
-                                    fontWeight : 'normal',
-                                    color : '#6B6B6B'
-                                }}
-                                as={'h2'}
-                            >
-                                useEffect에 대해 자세히 알아보자. 생명주기를 위해 무엇을 신경써야할까? useEffect에 대해 자세히 알아보자. 생명주기를 위해 무엇을 신경써야할까?
-                            </StyledContentsParagraph>
-                        </StyledWrapper>
-
-
-                        <StyledWrapper $styled={{
-                            margin : '32px 0 24px 0',
-                            borderTop : '1px solid #e6e6e6',
-                            borderBottom : '1px solid #e6e6e6'
-                        }}>
-                            <StyledContents $styled={{ height : '49px' }}>
-                                <StyledLayoutFlex>
-
-                                    <StyledLayoutFlexItem $styled={{ flex : '0 0 50%' }}>
-                                        <StyledLayoutFlex>
-                                            <StyledLayoutFlexItem>
-                                                <StyledWrapper $styled={{
-                                                    padding : '0 10px'
-                                                }}>
-                                                    <StyledContentsParagraph
-                                                        $styled={{
-                                                            width : 'auto',
-                                                            height : '50px',
-                                                            lineHeight : '50px',
-                                                            color : '#6B6B6B'
-                                                        }}
-                                                    >
-                                                        {`Sep. 19. 22`}
-                                                    </StyledContentsParagraph>
-                                                </StyledWrapper>
-                                            </StyledLayoutFlexItem>
-                                        </StyledLayoutFlex>
-                                    </StyledLayoutFlexItem>
-
-
-                                    <StyledLayoutFlexItem $styled={{ flex : '0 0 50%' }}>
-                                        <StyledLayoutFlex $styled={{ flexDirection : 'row-reverse' }}>
-                                            <StyledLayoutFlexItem>
-                                                <StyledWrapper $styled={{
-                                                    padding : '14px 10px 14px 10px',
-                                                    width : '42px',
-                                                    height : '50px'
-                                                }}>
-                                                    <StyledContentsButton
-                                                        $styled={{
-                                                            width : '100%',
-                                                            height : '100%',
-                                                            color : '#6B6B6B'
-                                                        }}
-                                                    >
-                                                        <StyledContentsIconCopy />
-                                                    </StyledContentsButton>
-                                                </StyledWrapper>
-                                            </StyledLayoutFlexItem>
-                                            <StyledLayoutFlexItem>
-                                                <StyledWrapper $styled={{
-                                                    padding : '14px 10px 14px 10px',
-                                                    width : '42px',
-                                                    height : '50px'
-                                                }}>
-                                                    <StyledContentsButton
-                                                        $styled={{
-                                                            width : '100%',
-                                                            height : '100%',
-                                                            color : '#6B6B6B'
-                                                        }}
-                                                    >
-                                                        <StyledContentsIconEdit2 />
-                                                    </StyledContentsButton>
-                                                </StyledWrapper>
-                                            </StyledLayoutFlexItem>
-                                        </StyledLayoutFlex>
-                                    </StyledLayoutFlexItem>
-
-                                </StyledLayoutFlex>
-                            </StyledContents>
-                        </StyledWrapper>
+                        <ShowRepresentImg />
+                        <ShowCategory />
+                        <ShowTitle />
+                        <ShowSubTitle />
+                        <ShowMidBox />
+                        <ShowMainContents />
 
                         {/* ++ 부제 */}
                         <StyledWrapper
@@ -236,7 +93,7 @@ export default function Contents() {
                                     color : '#292929'
                                 }}
                             >
-                                useEffect에 대해 자세히 알아보자. <b>생명주기를</b> 위해 무엇을 신경써야할까? <i style={{backgroundColor : '#66f1e1' }}>useEffect에 대해 자세히 알아보자.</i> 생명주기를 위해 무엇을 신경써야할까? useEffect에 대해 자세히 알아보자. 생명주기를 위해 무엇을 신경써야할까? useEffect에 대해 자세히 알아보자. 생명주기를 위해 무엇을 신경써야할까? useEffect 에 대해 자세히 알아보자. 생명주기를 위해 무엇을 신경써야할까? useEffect에 대해 자세히 알아보자. 생명주기를 위해 무엇을 신경써야할까?
+                                useEffect에 대해 자세히 알아보자. <b>생명주기를</b> 위해 무엇을 신경써야할까? <b><i style={{backgroundColor : '#66f1e1' }}>useEffect에 대해 자세히 알아보자.</i></b> 생명주기를 위해 무엇을 신경써야할까? useEffect에 대해 자세히 알아보자. 생명주기를 위해 무엇을 신경써야할까? useEffect에 대해 자세히 알아보자. 생명주기를 위해 무엇을 신경써야할까? useEffect 에 대해 자세히 알아보자. 생명주기를 위해 무엇을 신경써야할까? useEffect에 대해 자세히 알아보자. 생명주기를 위해 무엇을 신경써야할까?
                             </StyledContentsParagraph>
                         </StyledWrapper>
 

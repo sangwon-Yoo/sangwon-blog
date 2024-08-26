@@ -9,7 +9,7 @@ import {
     useState,
     KeyboardEvent,
     Dispatch,
-    SetStateAction, useCallback
+    SetStateAction, useCallback, SyntheticEvent
 } from "react";
 import Draft, {
     convertToRaw, EditorState,
@@ -21,6 +21,7 @@ import createImagePlugin from '@draft-js-plugins/image';
 import 'draft-js/dist/Draft.css';
 import Immutable from "immutable";
 import styled from "styled-components";
+import {EDITOR_BLOCKS} from "@/const/editorBlock";
 
 
 export default function WriteContents(
@@ -83,6 +84,15 @@ export default function WriteContents(
             return 'handled';
         }
 
+        return 'not-handled';
+    };
+
+    const handleReturn = (e: KeyboardEvent) => {
+        if (e.shiftKey) {
+            // 소프트 뉴라인 삽입
+            setEditorState(RichUtils.insertSoftNewline(editorState));
+            return 'handled';
+        }
         return 'not-handled';
     };
 
@@ -224,6 +234,7 @@ export default function WriteContents(
                             plugins={plugIns}
                             onChange={setEditorState}
                             handleKeyCommand={handleKeyCommand}
+                            handleReturn={handleReturn}
                             blockStyleFn={myBlockStyleFn}
                             customStyleMap={CUSTOM_INLINE_STYLE_MAP}
                             blockRenderMap={CUSTOM_BLOCK_RENDER_MAP}
@@ -313,17 +324,18 @@ function BlockControlButton(
 }
 
 const CUSTOM_BLOCK_RENDER_MAP = Immutable.Map({
-    'unstyled': {
+
+    [EDITOR_BLOCKS.unstyled]: {
         element: 'div'
     },
-    'header-three': {
+    [EDITOR_BLOCKS.header_three]: {
         element: 'h3'
     },
-    'center' : {
+    [EDITOR_BLOCKS.center] : {
         element : 'div',
         wrapper : <CenterBlock />
     },
-    'code-block': {
+    [EDITOR_BLOCKS.code_block]: {
         element : 'pre',
         wrapper : <CodeBlock />
     }

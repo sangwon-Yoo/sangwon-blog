@@ -12,3 +12,15 @@ export type ResUploadBlob = {
 export type ResCategoryList = Array<{
     categoryName: string;
 }>;
+
+export type ResContents = {
+    categoryName : string;
+    title : string;
+    subTitle : string;
+    representativeImgURL : string | null;
+    createdDate: Date | null;
+    updatedDate: Date | null;
+    contentsData : {
+        contentsHtml : string;
+    } | null;
+}

@@ -16,6 +16,9 @@ const nextConfig = {
             },
         ]
     },
+    images: {
+        remotePatterns: [{ hostname: "*.public.blob.vercel-storage.com" }],
+    },
     reactStrictMode : false
 };
 
