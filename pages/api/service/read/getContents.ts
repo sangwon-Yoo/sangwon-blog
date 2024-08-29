@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import {InternalResponseDTO, ResCategoryList, ResContents} from "@/types/response";
+import { InternalResponseDTO, ResCategoryList, ResContents } from "@/types/response";
 import prisma from "../../db";
-import {getZeroIndexString} from "@/functions/utils";
-import {QUERY_PARAM} from "@/const/queryParam";
+import { getZeroIndexString } from "@/functions/utils";
+import { QUERY_PARAM } from "@/const/queryParam";
 
 export default async function getContents(
     req: NextApiRequest,
@@ -19,13 +19,13 @@ export default async function getContents(
         return;
     }
 
-    const contentsSummaryId = getZeroIndexString(req.query[QUERY_PARAM.contentsSummaryId]);
+    const contentsSummaryId = Number(getZeroIndexString(req.query[QUERY_PARAM.contentsSummaryId]));
 
     try {
 
         const contents = await prisma.contentsSummary.findUnique({
             where : {
-                id : Number(contentsSummaryId)
+                id : contentsSummaryId
             },
             include : {
                 contentsData : true
@@ -37,6 +37,7 @@ export default async function getContents(
             returnMessage: 'ok',
             errorMessage : '',
             returnData : {
+                contentsSummaryId,
                 categoryName : contents?.categoryName || '',
                 title : contents?.title || '',
                 subTitle : contents?.subTitle || '',

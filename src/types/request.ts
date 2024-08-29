@@ -11,8 +11,10 @@ export type ReqSaveContents = {
     editorRaw: JSONString<RawDraftContentState>;
 };
 
-export type ReqUploadContentsImages = {
-    categoryImgFile?: File;
-    contentsImgFile?: File;
-    editorImgFileList: Array<File>
+export type ReqUpdateContents = {
+    contentsSummaryId: number;
+    contentsTitle: string;
+    contentsSummary: string;
+    contentsImgFileSrc?: string;
+    editorRaw: JSONString<RawDraftContentState>;
 }

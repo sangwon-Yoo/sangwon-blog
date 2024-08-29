@@ -25,7 +25,7 @@ export default async function saveContents(
         return;
     }
 
-    if(req.method !== 'POST' && req.method !== 'PUT') {
+    if(req.method !== 'POST') {
         res.status(400).json({
             returnCode : '01',
             returnMessage: '',

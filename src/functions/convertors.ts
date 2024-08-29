@@ -1,6 +1,6 @@
 import { ExportTypeForSelectBoxWithTextFieldA } from "@/components/inputs/selectBoxWithTextFieldA";
 import { RawDraftContentState } from "draft-js";
-import { ReqSaveContents } from "@/types/request";
+import {ReqSaveContents, ReqUpdateContents} from "@/types/request";
 
 export const contentsToSaveContentsInput = (
     category: ExportTypeForSelectBoxWithTextFieldA,
@@ -15,6 +15,23 @@ export const contentsToSaveContentsInput = (
         isNewCategory : category.type == 'text',
         categoryName : category.value,
         categoryImgFileSrc : categoryImgFileSrc ? categoryImgFileSrc : undefined,
+        contentsTitle : contentsTitle,
+        contentsSummary : contentsSummary,
+        contentsImgFileSrc : contentsImgFileSrc ? contentsImgFileSrc : undefined,
+        editorRaw: JSON.stringify(editorContents).trim(),
+    };
+}
+
+export const contentsToUpdateContentsInput = (
+    contentsTitle: string,
+    contentsSummary: string,
+    contentsImgFileSrc: string | null,
+    editorContents: RawDraftContentState | null,
+    contentsSummaryId: number,
+): ReqUpdateContents => {
+
+    return {
+        contentsSummaryId,
         contentsTitle : contentsTitle,
         contentsSummary : contentsSummary,
         contentsImgFileSrc : contentsImgFileSrc ? contentsImgFileSrc : undefined,

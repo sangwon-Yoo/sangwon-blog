@@ -14,6 +14,7 @@ export type ResCategoryList = Array<{
 }>;
 
 export type ResContents = {
+    contentsSummaryId: number;
     categoryName : string;
     title : string;
     subTitle : string;

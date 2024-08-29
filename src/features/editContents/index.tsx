@@ -1,4 +1,3 @@
-import { StyledContents } from "@/design-system/module/Contents";
 import { StyledLayoutFlex, StyledLayoutFlexItem } from "@/design-system/module/Layout";
 import { StyledWrapper } from "@/design-system/module/Wrapper";
 import { ExportTypeForSelectBoxWithTextFieldA } from "@/components/inputs/selectBoxWithTextFieldA";
@@ -13,8 +12,8 @@ import SaveCategory from "@/features/editContents/saveCategory";
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { APIInternal } from "@/apiClient/apis";
 import { ENDPOINT } from "@/const/endpoint";
-import { ReqSaveContents } from "@/types/request";
-import { contentsToSaveContentsInput } from "@/functions/convertors";
+import {ReqSaveContents, ReqUpdateContents} from "@/types/request";
+import {contentsToSaveContentsInput, contentsToUpdateContentsInput} from "@/functions/convertors";
 import { ResUploadBlob } from "@/types/response";
 import CommonWrapperForSaveItem from "@/components/_blocks/CommonWrapperForSaveItem";
 import useGetContents from "@/hook/useGetContents";
@@ -24,16 +23,16 @@ const DynamicEditor = dynamic(() => import('@/features/writeContents'), {
 })
 export default function EditContents({isNew}: {isNew: boolean}) {
 
-    const { data } = useGetContents();
+    const contentsData = useGetContents();
 
     const [saveFlagState, setSaveFlagState] = useState<boolean>(false);
     const [sendFlagState, setSendFlagState] = useState<boolean>(false);
 
     const [categoryState, setCategoryState] 
-        = useState<ExportTypeForSelectBoxWithTextFieldA>({type : 'select', value : data?.categoryName || ''});
+        = useState<ExportTypeForSelectBoxWithTextFieldA>({type : 'select', value : contentsData.data?.categoryName || ''});
     const [categoryImgState, setCategoryImgState] = useState<FileList | null>(null);
-    const [contentsTitleState, setContentsTitleSate] = useState<string>(data?.title || '');
-    const [contentsSummaryState, setContentsSummarySate] = useState<string>(data?.subTitle || '');
+    const [contentsTitleState, setContentsTitleSate] = useState<string>(contentsData.data?.title || '');
+    const [contentsSummaryState, setContentsSummarySate] = useState<string>(contentsData.data?.subTitle || '');
     const [contentsImgState, setContentsImgState] = useState<FileList | null>(null);
     const [editorContents, setEditorContents] = useState<RawDraftContentState | null>(null);
 
@@ -46,6 +45,17 @@ export default function EditContents({isNew}: {isNew: boolean}) {
         }),
         retry : false
     });
+
+    const mutateUpdateContents: UseMutationResult<null, Error, ReqUpdateContents> = useMutation({
+        mutationFn : variables => APIInternal<null>({
+            url : ENDPOINT.updateContents,
+            method : 'PUT',
+            contentsType : 'application/json',
+            body : JSON.stringify(variables)
+        }),
+        retry : false
+    });
+
 
     const mutatePutBlob: UseMutationResult<Array<ResUploadBlob | null>, Error, Array<{file : File, path: string} | null>> = useMutation({
         mutationFn : variables => Promise.all(variables.map(
@@ -66,8 +76,6 @@ export default function EditContents({isNew}: {isNew: boolean}) {
                 ...editorImgList
             ] = data;
 
-            console.log(data);
-
             if(!editorContents) {
                 console.error('no editorContents data');
                 return;
@@ -83,8 +91,8 @@ export default function EditContents({isNew}: {isNew: boolean}) {
                         acc[key] = {
                             ...entity,
                             data: {
-                                /*...entity.data,*/
-                                src : editorImgList[editorImgListIndex]?.blobUrl // 새로운 URL로 교체
+                                ...entity.data,
+                                src : editorImgList[editorImgListIndex]?.blobUrl || entity.data?.src // 새로운 URL로 교체
                             }
                         };
                         ++editorImgListIndex;
@@ -95,14 +103,24 @@ export default function EditContents({isNew}: {isNew: boolean}) {
                 }, {})
             };
 
-            mutateSaveContents.mutate(contentsToSaveContentsInput(
-                categoryState,
-                categoryImg?.blobUrl || null,
-                contentsTitleState,
-                contentsSummaryState,
-                contentsImg?.blobUrl || null,
-                updatedRawContentState
-            ));
+            if(isNew) {
+                mutateSaveContents.mutate(contentsToSaveContentsInput(
+                    categoryState,
+                    categoryImg?.blobUrl || null,
+                    contentsTitleState,
+                    contentsSummaryState,
+                    contentsImg?.blobUrl || null,
+                    updatedRawContentState
+                ));
+            } else {
+                mutateUpdateContents.mutate(contentsToUpdateContentsInput(
+                    contentsTitleState,
+                    contentsSummaryState,
+                    contentsImg?.blobUrl || null,
+                    updatedRawContentState,
+                    contentsData.data?.contentsSummaryId || 0
+                ));
+            }
         },
         onError: error => {
             alert(`저장실패!\n${error.message}`);
@@ -121,7 +139,7 @@ export default function EditContents({isNew}: {isNew: boolean}) {
         if(sendFlagState) {
             setSendFlagState(false);
             if(isValidateForSending(categoryState, categoryImgState, contentsTitleState, contentsSummaryState, editorContents)) {
-                console.log(categoryState, categoryImgState, contentsTitleState, contentsSummaryState, editorContents);
+                console.log(categoryState, categoryImgState, contentsImgState, contentsTitleState, contentsSummaryState, editorContents);
 
                 let uploadImgList = [
                     categoryImgState ? {file : categoryImgState[0], path : `${categoryState.value}/${categoryImgState[0].name}`} : null,
@@ -133,10 +151,10 @@ export default function EditContents({isNew}: {isNew: boolean}) {
                         entity => entity.type == 'IMAGE'
                     ).map(
                         imgEntity => {
-                            return {
-                                file : imgEntity.data.tmpFile,
+                            return (!!imgEntity.data?.tmpFile) ? {
+                                file : imgEntity.data?.tmpFile,
                                 path : `${categoryState.value}/${contentsTitleState}/editor/${imgEntity.data.tmpFile.name}`
-                            };
+                            } : null;
                         }
                     );
 
@@ -176,15 +194,21 @@ export default function EditContents({isNew}: {isNew: boolean}) {
             <CommonWrapperForSaveItem child={(
                 <>
                     <StyledLayoutFlex $styled={{ flexDirection : 'row-reverse' }}>
-                        <StyledLayoutFlexItem>
-                            {isNew && <ButtonA_long title={'저장'} onClick={() => setSaveFlagState(true)} />}
-                            {!isNew && (
-                                <>
-                                    <ButtonA_long title={'수정'} onClick={() => {}} />
+                        {isNew && (
+                            <StyledLayoutFlexItem>
+                                <ButtonA_long title={'저장'} onClick={() => setSaveFlagState(true)}/>
+                            </StyledLayoutFlexItem>)
+                        }
+                        {!isNew && (
+                            <>
+                                <StyledLayoutFlexItem $styled={{ flex : '0 0 136px'}}>
                                     <ButtonA_long title={'삭제'} onClick={() => {}} />
-                                </>
-                            )}
-                        </StyledLayoutFlexItem>
+                                </StyledLayoutFlexItem>
+                                <StyledLayoutFlexItem $styled={{ flex : '0 0 136px'}}>
+                                    <ButtonA_long title={'수정'} onClick={() => setSaveFlagState(true)} />
+                                </StyledLayoutFlexItem>
+                            </>
+                        )}
                     </StyledLayoutFlex>
                 </>
             )} />
@@ -210,7 +234,7 @@ export default function EditContents({isNew}: {isNew: boolean}) {
             />
             <CommonWrapperForSaveItem child={<FileUploadInputA
                 title={'콘텐츠 대표 이미지(선택)'}
-                initialPreviewImgSrc={data?.representativeImgURL || ''}
+                initialPreviewImgSrc={contentsData.data?.representativeImgURL || ''}
                 accept={imageAcceptTypes}
                 exportFlag={saveFlagState}
                 exportSetter={setContentsImgState} />}
