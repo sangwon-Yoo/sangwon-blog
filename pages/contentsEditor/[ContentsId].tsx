@@ -8,20 +8,21 @@ import {QUERY_KEY} from "@/const/queryKey";
 import useGetContents from "@/hook/useGetContents";
 import Contents from "./index";
 import {QUERY_PARAM} from "@/const/queryParam";
+import ContentsEditor from "./index";
 
-export default function ContentsFromId() {
+export default function ContentsEditorFromId() {
 
     return (
-        <Contents />
+        <ContentsEditor isNew={false} />
     );
 }
 
-// This gets called on every request
+
 export const getServerSideProps: GetServerSideProps = async ({
                                                                  params,
                                                                  req,
                                                                  query
-}) => {
+                                                             }) => {
 
     const queryClient = new QueryClient();
     const contentsId = getZeroIndexString(params?.ContentsId) || '';

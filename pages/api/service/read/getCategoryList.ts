@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { InternalResponseDTO, ResCategoryList } from "@/types/response";
 import prisma from "../../db";
 
-export default async function saveContents(
+export default async function getCategoryList(
     req: NextApiRequest,
     res: NextApiResponse<InternalResponseDTO<ResCategoryList>>
 ) {

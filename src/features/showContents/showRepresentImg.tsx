@@ -7,8 +7,6 @@ export default function ShowRepresentImg() {
 
     const { data } = useGetContents();
 
-    console.log(data?.representativeImgURL)
-
     return (
         <StyledWrapper
             $styled={{ width : '680px', height : '384px', margin : '0 0 36px 0' }}

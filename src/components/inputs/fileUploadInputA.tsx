@@ -10,17 +10,17 @@ import { StyledContentsIconClose } from "@/components/styledIcons";
 import { ChangeEvent, Dispatch, LegacyRef, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-export default function FileUploadInputA({title, initialValue, accept, multiple, exportFlag, exportSetter}: {
+export default function FileUploadInputA({title, initialPreviewImgSrc, accept, multiple, exportFlag, exportSetter}: {
     title: string;
-    initialValue: FileList | null;
+    initialPreviewImgSrc: string;
     accept?: string;
     multiple?: boolean;
     exportFlag: boolean;
     exportSetter: Dispatch<SetStateAction<FileList | null>>;
 }) {
 
-    const [inputFileState, setInputFileState] = useState<FileList | null>(initialValue);
-    const [previewURL, setPreviewURL] = useState<string | null>(null);
+    const [inputFileState, setInputFileState] = useState<FileList | null>(null);
+    const [previewURL, setPreviewURL] = useState<string | null>(initialPreviewImgSrc || null);
     const inputFileRef = useRef<HTMLInputElement>(null);
 
     const doExport = useCallback(
@@ -33,11 +33,6 @@ export default function FileUploadInputA({title, initialValue, accept, multiple,
             doExport();
         }
     });
-
-    useEffect(() => {
-        // 수정 할 때, 초기 값 넣는 로직
-        //setPreviewURL(imgURL);
-    }, []);
 
     const inputImgOnChange = (event: ChangeEvent<HTMLInputElement>) => {
 

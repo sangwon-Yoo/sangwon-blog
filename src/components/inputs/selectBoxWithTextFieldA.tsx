@@ -10,13 +10,14 @@ import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "reac
 
 export type ExportTypeForSelectBoxWithTextFieldA = {type: 'select' | 'text'; value: string};
 export default function SelectBoxWithTextFieldA(
-    {title, initialValue, optionValueList, optionValueForUsingTextField, exportFlag, exportSetter}: {
+    {title, initialValue, optionValueList, optionValueForUsingTextField, exportFlag, exportSetter, disabled}: {
     title: string;
     initialValue: ExportTypeForSelectBoxWithTextFieldA;
     optionValueList: Array<string>;
     optionValueForUsingTextField: string;
     exportFlag: boolean;
     exportSetter : Dispatch<SetStateAction<ExportTypeForSelectBoxWithTextFieldA>>;
+    disabled: boolean
 }) {
 
     const [inputState, setInputState] = useState<ExportTypeForSelectBoxWithTextFieldA>(initialValue);
@@ -86,6 +87,7 @@ export default function SelectBoxWithTextFieldA(
                                 setInputState({ type : 'select', value : event.currentTarget.value });
                             }
                         }}
+                        disabled={disabled}
                     >
                         <option value={''} defaultChecked={initialValue.value == ''}> -- 선택하세요 -- </option>
                         {optionValueList.map((option, index) => (
@@ -142,6 +144,7 @@ export default function SelectBoxWithTextFieldA(
                         onClick={(event) => {
                             setInputState({ type : 'select', value : '' });
                         }}
+                        disabled={disabled}
                     >
                         <StyledContentsIconClose />
                     </StyledContentsButton>

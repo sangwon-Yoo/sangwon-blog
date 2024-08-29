@@ -5,6 +5,7 @@ import { RawDraftContentState } from "draft-js";
 import {EDITOR_BLOCKS} from "@/const/editorBlock";
 import {escapeHtml} from "@/functions/utils";
 import Image from "next/image";
+import {stylingTextByStyleRanges} from "@/functions/editorUtils";
 
 export default function ShowMainContents() {
 
@@ -36,9 +37,10 @@ export default function ShowMainContents() {
                                 height : 'auto',
                                 color : '#292929'
                             }}
-                        >
-                            {block.text}
-                        </StyledContentsParagraph>
+                            dangerouslySetInnerHTML={{
+                                __html : stylingTextByStyleRanges(block.text, block.inlineStyleRanges)
+                            }}
+                        />
                     </StyledWrapper>
                 );
             } else if(block.type == EDITOR_BLOCKS.header_three) {
@@ -87,9 +89,10 @@ export default function ShowMainContents() {
                                 height : 'auto',
                                 color : '#292929'
                             }}
-                        >
-                            {block.text}
-                        </StyledContentsParagraph>
+                            dangerouslySetInnerHTML={{
+                                __html : stylingTextByStyleRanges(block.text, block.inlineStyleRanges)
+                            }}
+                        />
                     </StyledWrapper>
                 );
             } else if(block.type == EDITOR_BLOCKS.code_block) {

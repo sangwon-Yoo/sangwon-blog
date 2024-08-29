@@ -14,7 +14,7 @@ import {
 import Draft, {
     convertToRaw, EditorState,
     RichUtils, getDefaultKeyBinding,
-    ContentBlock, RawDraftContentState
+    ContentBlock, RawDraftContentState, convertFromRaw
 } from "draft-js";
 import Editor from '@draft-js-plugins/editor';
 import createImagePlugin from '@draft-js-plugins/image';
@@ -22,16 +22,22 @@ import 'draft-js/dist/Draft.css';
 import Immutable from "immutable";
 import styled from "styled-components";
 import {EDITOR_BLOCKS} from "@/const/editorBlock";
-
+import { stateToHTML } from 'draft-js-export-html';
+import useGetContents from "@/hook/useGetContents";
 
 export default function WriteContents(
     {exportFlag, exportSetter}: {exportFlag: boolean; exportSetter: Dispatch<SetStateAction<RawDraftContentState | null>>}
 ) {
 
+    const { data } = useGetContents();
+
     const [
         editorState,
         setEditorState
-    ] = useState(() => EditorState.createEmpty());
+    ] = useState(() => data?.contentsData?.contentsHtml
+        ? EditorState.createWithContent(convertFromRaw(JSON.parse(data?.contentsData?.contentsHtml) as RawDraftContentState))
+        : EditorState.createEmpty()
+    );
     const imagePlugIn = createImagePlugin();
     const [plugIns] = useState(() => {
 
@@ -57,6 +63,7 @@ export default function WriteContents(
 
     useEffect(() => {
         console.log(convertToRaw(editorState.getCurrentContent()));
+        //console.log(stateToHTML(editorState.getCurrentContent())); html 로 애초에 바꿔서 저장 할 수도 있음.
         const selection = editorState.getSelection();
         const blockType = editorState
             .getCurrentContent()

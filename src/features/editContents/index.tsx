@@ -9,27 +9,31 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import FileUploadInputA from "@/components/inputs/fileUploadInputA";
 import { RawDraftContentState, RawDraftEntity } from "draft-js";
-import SaveCategory from "@/features/saveContents/saveCategory";
+import SaveCategory from "@/features/editContents/saveCategory";
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { APIInternal } from "@/apiClient/apis";
 import { ENDPOINT } from "@/const/endpoint";
 import { ReqSaveContents } from "@/types/request";
 import { contentsToSaveContentsInput } from "@/functions/convertors";
 import { ResUploadBlob } from "@/types/response";
+import CommonWrapperForSaveItem from "@/components/_blocks/CommonWrapperForSaveItem";
+import useGetContents from "@/hook/useGetContents";
 
 const DynamicEditor = dynamic(() => import('@/features/writeContents'), {
     ssr : false
 })
-export default function SaveContents() {
+export default function EditContents({isNew}: {isNew: boolean}) {
+
+    const { data } = useGetContents();
 
     const [saveFlagState, setSaveFlagState] = useState<boolean>(false);
     const [sendFlagState, setSendFlagState] = useState<boolean>(false);
 
     const [categoryState, setCategoryState] 
-        = useState<ExportTypeForSelectBoxWithTextFieldA>({type : 'select', value : ''});
+        = useState<ExportTypeForSelectBoxWithTextFieldA>({type : 'select', value : data?.categoryName || ''});
     const [categoryImgState, setCategoryImgState] = useState<FileList | null>(null);
-    const [contentsTitleState, setContentsTitleSate] = useState<string>('');
-    const [contentsSummaryState, setContentsSummarySate] = useState<string>('');
+    const [contentsTitleState, setContentsTitleSate] = useState<string>(data?.title || '');
+    const [contentsSummaryState, setContentsSummarySate] = useState<string>(data?.subTitle || '');
     const [contentsImgState, setContentsImgState] = useState<FileList | null>(null);
     const [editorContents, setEditorContents] = useState<RawDraftContentState | null>(null);
 
@@ -173,18 +177,24 @@ export default function SaveContents() {
                 <>
                     <StyledLayoutFlex $styled={{ flexDirection : 'row-reverse' }}>
                         <StyledLayoutFlexItem>
-                            <ButtonA_long title={'저장'} onClick={() => setSaveFlagState(true)} />
+                            {isNew && <ButtonA_long title={'저장'} onClick={() => setSaveFlagState(true)} />}
+                            {!isNew && (
+                                <>
+                                    <ButtonA_long title={'수정'} onClick={() => {}} />
+                                    <ButtonA_long title={'삭제'} onClick={() => {}} />
+                                </>
+                            )}
                         </StyledLayoutFlexItem>
                     </StyledLayoutFlex>
                 </>
             )} />
             <SaveCategory
                 initialCategoryValue={categoryState}
-                initialCategoryImgValue={categoryImgState}
                 exportFlag={saveFlagState}
                 categoryExportSetter={setCategoryState}
                 categoryImgExportSetter={setCategoryImgState}
                 imageAcceptTypes={imageAcceptTypes}
+                isNew={isNew}
             />
             <CommonWrapperForSaveItem child={<TextFieldA
                 title={'제목'}
@@ -200,7 +210,7 @@ export default function SaveContents() {
             />
             <CommonWrapperForSaveItem child={<FileUploadInputA
                 title={'콘텐츠 대표 이미지(선택)'}
-                initialValue={contentsImgState}
+                initialPreviewImgSrc={data?.representativeImgURL || ''}
                 accept={imageAcceptTypes}
                 exportFlag={saveFlagState}
                 exportSetter={setContentsImgState} />}
@@ -215,34 +225,6 @@ export default function SaveContents() {
             >
                 <DynamicEditor exportFlag={saveFlagState} exportSetter={setEditorContents} />
             </StyledWrapper>
-        </StyledWrapper>
-    );
-}
-
-export function CommonWrapperForSaveItem({child}: {child: JSX.Element}) {
-
-    return (
-        <StyledWrapper
-            $styled={{
-                margin : '0 0 24px 0'
-            }}
-            $styledMobile={{
-                margin : '0 0 14px 0'
-            }}
-        >
-            <StyledContents
-                $styled={{
-                    width : '680px',
-                    height : 'auto',
-                    padding : '20px 20px 6px 20px',
-                }}
-                $styledMobile={{
-                    width : '100%',
-                    height : 'auto'
-                }}
-            >
-                {child}
-            </StyledContents>
         </StyledWrapper>
     );
 }

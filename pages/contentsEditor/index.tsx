@@ -5,13 +5,13 @@ import {
 import { StyledWrapper } from "@/design-system/module/Wrapper";
 import Top from "@/components/top";
 import Footer from "@/components/footer";
-import SaveContents from "@/features/saveContents";
+import EditContents from "@/features/editContents";
 import SelectBoxWithTextFieldA from "@/components/inputs/selectBoxWithTextFieldA";
 import TextFieldA from "@/components/inputs/textFieldA";
 import TextAreaA from "@/components/inputs/textAreaA";
 import WriteContents from "@/features/writeContents";
 
-export default function ContentsEditor() {
+export default function ContentsEditor({isNew = true}: {isNew?: boolean}) {
 
     return (
         <>
@@ -22,7 +22,7 @@ export default function ContentsEditor() {
                 $styledMobile={{ flexDirection : 'column', alignItems : 'stretch' }}
             >
                 <StyledLayoutFlexItem>
-                    <SaveContents />
+                    <EditContents isNew={isNew} />
                 </StyledLayoutFlexItem>
             </StyledLayoutFlex>
 
