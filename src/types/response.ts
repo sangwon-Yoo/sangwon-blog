@@ -25,3 +25,8 @@ export type ResContents = {
         contentsHtml : string;
     } | null;
 }
+
+export type ResSaveContents = {
+    contentsSummaryId: number;
+}
+export type ResUpdateContents = ResSaveContents;

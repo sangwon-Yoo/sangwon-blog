@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { InternalResponseDTO } from "@/types/response";
+import {InternalResponseDTO, ResSaveContents} from "@/types/response";
 import { ReqSaveContents } from "@/types/request";
 import { put } from '@vercel/blob';
 import { VERCEL_BLOB_PATH } from "../../../../constant";
@@ -9,7 +9,7 @@ import prisma from "../../db";
 
 export default async function saveContents(
     req: NextApiRequest,
-    res: NextApiResponse<InternalResponseDTO<null>>
+    res: NextApiResponse<InternalResponseDTO<ResSaveContents>>
 ) {
 
     const reqBody = req.body as ReqSaveContents;
@@ -35,6 +35,8 @@ export default async function saveContents(
         return;
     }
 
+    let savedContents;
+
     if(reqBody.isNewCategory) {
 
         if(!reqBody.categoryImgFileSrc) {
@@ -49,7 +51,7 @@ export default async function saveContents(
 
         try {
 
-            await prisma.contentsCategory.create({
+            const category = await prisma.contentsCategory.create({
                 data : {
                     name : reqBody.categoryName,
                     representativeImgURL : reqBody.categoryImgFileSrc,
@@ -68,6 +70,20 @@ export default async function saveContents(
                             }
                         ]
                     }
+                },
+                include : {
+                    contentsSummary : true
+                }
+            });
+
+            res.status(200).json({
+                returnCode : '00',
+                returnMessage: 'ok',
+                errorMessage : '',
+                returnData : {
+                    contentsSummaryId : category.contentsSummary.find(
+                        summary => summary.title == reqBody.contentsTitle
+                    )?.id || 0
                 }
             });
 
@@ -95,7 +111,7 @@ export default async function saveContents(
                 });
             }
 
-            await prisma.contentsSummary.create({
+            const summary = await prisma.contentsSummary.create({
                 data : {
                     contentsCategory : {
                         connect : { name: reqBody.categoryName }
@@ -114,6 +130,15 @@ export default async function saveContents(
                 }
             });
 
+            res.status(200).json({
+                returnCode : '00',
+                returnMessage: 'ok',
+                errorMessage : '',
+                returnData : {
+                    contentsSummaryId : summary.id
+                }
+            });
+
         } catch (error) {
             console.error(error);
             res.status(500).json({
@@ -125,11 +150,4 @@ export default async function saveContents(
             return;
         }
     }
-
-    res.status(200).json({
-        returnCode : '00',
-        returnMessage: 'ok',
-        errorMessage : '',
-        returnData : null
-    });
 }

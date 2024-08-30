@@ -14,9 +14,11 @@ import { APIInternal } from "@/apiClient/apis";
 import { ENDPOINT } from "@/const/endpoint";
 import {ReqSaveContents, ReqUpdateContents} from "@/types/request";
 import {contentsToSaveContentsInput, contentsToUpdateContentsInput} from "@/functions/convertors";
-import { ResUploadBlob } from "@/types/response";
+import {ResSaveContents, ResUpdateContents, ResUploadBlob} from "@/types/response";
 import CommonWrapperForSaveItem from "@/components/_blocks/CommonWrapperForSaveItem";
 import useGetContents from "@/hook/useGetContents";
+import {isEmptyObj} from "@/functions/utils";
+import {useRouter} from "next/router";
 
 const DynamicEditor = dynamic(() => import('@/features/writeContents'), {
     ssr : false
@@ -35,25 +37,33 @@ export default function EditContents({isNew}: {isNew: boolean}) {
     const [contentsSummaryState, setContentsSummarySate] = useState<string>(contentsData.data?.subTitle || '');
     const [contentsImgState, setContentsImgState] = useState<FileList | null>(null);
     const [editorContents, setEditorContents] = useState<RawDraftContentState | null>(null);
+    const router = useRouter();
 
-    const mutateSaveContents: UseMutationResult<null, Error, ReqSaveContents> = useMutation({
-        mutationFn : variables => APIInternal<null>({
+    const mutateSaveContents: UseMutationResult<ResSaveContents | null, Error, ReqSaveContents> = useMutation({
+        mutationFn : variables => APIInternal<ResSaveContents>({
             url : ENDPOINT.saveContents,
             method : 'POST',
             contentsType : 'application/json',
             body : JSON.stringify(variables)
         }),
-        retry : false
+        retry : false,
+        onSuccess : (data) => {
+            router.push(`/contents/${data?.contentsSummaryId}`);
+        }
     });
 
-    const mutateUpdateContents: UseMutationResult<null, Error, ReqUpdateContents> = useMutation({
-        mutationFn : variables => APIInternal<null>({
+    const mutateUpdateContents: UseMutationResult<ResUpdateContents | null, Error, ReqUpdateContents> = useMutation({
+        mutationFn : variables => APIInternal<ResUpdateContents>({
             url : ENDPOINT.updateContents,
             method : 'PUT',
             contentsType : 'application/json',
             body : JSON.stringify(variables)
         }),
-        retry : false
+        retry : false,
+        onSuccess : (data) => {
+            console.log(data);
+            router.push(`/contents/${data?.contentsSummaryId}`);
+        }
     });
 
 
@@ -151,7 +161,7 @@ export default function EditContents({isNew}: {isNew: boolean}) {
                         entity => entity.type == 'IMAGE'
                     ).map(
                         imgEntity => {
-                            return (!!imgEntity.data?.tmpFile) ? {
+                            return (!isEmptyObj(imgEntity.data?.tmpFile)) ? { //tmpFile 이 있으면 로컬에서 신규로 올린 것.
                                 file : imgEntity.data?.tmpFile,
                                 path : `${categoryState.value}/${contentsTitleState}/editor/${imgEntity.data.tmpFile.name}`
                             } : null;

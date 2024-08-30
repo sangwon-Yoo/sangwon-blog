@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { InternalResponseDTO } from "@/types/response";
+import {InternalResponseDTO, ResUpdateContents} from "@/types/response";
 import { ReqUpdateContents } from "@/types/request";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]";
@@ -7,7 +7,7 @@ import prisma from "../../db";
 
 export default async function updateContents(
     req: NextApiRequest,
-    res: NextApiResponse<InternalResponseDTO<null>>
+    res: NextApiResponse<InternalResponseDTO<ResUpdateContents>>
 ) {
 
     const reqBody = req.body as ReqUpdateContents;
@@ -34,7 +34,7 @@ export default async function updateContents(
     }
 
     try {
-        await prisma.contentsSummary.update({
+        const summary = await prisma.contentsSummary.update({
             where : { id : reqBody.contentsSummaryId },
             data : {
                 title : reqBody.contentsTitle,
@@ -48,6 +48,15 @@ export default async function updateContents(
             }
         });
 
+        res.status(200).json({
+            returnCode : '00',
+            returnMessage: 'ok',
+            errorMessage : '',
+            returnData : {
+                contentsSummaryId : summary.id
+            }
+        });
+
     } catch (error) {
         console.error(error);
         res.status(500).json({
@@ -58,11 +67,4 @@ export default async function updateContents(
         });
         return;
     }
-
-    res.status(200).json({
-        returnCode : '00',
-        returnMessage: 'ok',
-        errorMessage : '',
-        returnData : null
-    });
 }
