@@ -47,8 +47,8 @@ export default function EditContents({isNew}: {isNew: boolean}) {
             body : JSON.stringify(variables)
         }),
         retry : false,
-        onSuccess : (data) => {
-            router.push(`/contents/${data?.contentsSummaryId}`);
+        onSuccess : async (data) => {
+            await router.push(`/contents/${data?.contentsSummaryId}`);
         }
     });
 
@@ -60,9 +60,9 @@ export default function EditContents({isNew}: {isNew: boolean}) {
             body : JSON.stringify(variables)
         }),
         retry : false,
-        onSuccess : (data) => {
+        onSuccess : async (data) => {
             console.log(data);
-            router.push(`/contents/${data?.contentsSummaryId}`);
+            await router.push(`/contents/${data?.contentsSummaryId}`);
         }
     });
 
