@@ -1,6 +1,7 @@
 import { put, PutBlobResult } from '@vercel/blob';
 import type { NextApiResponse, NextApiRequest, PageConfig } from 'next';
 import { InternalResponseDTO, ResUploadBlob } from "@/types/response";
+import {getZeroIndexString} from "@/functions/utils";
 
 export default async function uploadImage(
     req: NextApiRequest,
@@ -10,7 +11,7 @@ export default async function uploadImage(
     let blob: PutBlobResult;
 
     try {
-        blob = await put(req.query.savePath as string, req, { access: 'public' });
+        blob = await put(getZeroIndexString(req.query.savePath) || '', req, { access: 'public' });
     } catch (error) {
         console.error(error);
         res.status(500).json({

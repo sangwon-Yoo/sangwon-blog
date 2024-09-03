@@ -2,7 +2,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import {InternalResponseDTO, ResSaveContents} from "@/types/response";
 import { ReqSaveContents } from "@/types/request";
 import { put } from '@vercel/blob';
-import { VERCEL_BLOB_PATH } from "../../../../constant";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]";
 import prisma from "../../db";

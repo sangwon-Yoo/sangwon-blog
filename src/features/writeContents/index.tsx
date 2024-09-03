@@ -14,7 +14,7 @@ import {
 import Draft, {
     convertToRaw, EditorState,
     RichUtils, getDefaultKeyBinding,
-    ContentBlock, RawDraftContentState, convertFromRaw
+    ContentBlock, RawDraftContentState, convertFromRaw, Modifier, DraftHandleValue
 } from "draft-js";
 import Editor from '@draft-js-plugins/editor';
 import createImagePlugin from '@draft-js-plugins/image';
@@ -94,13 +94,35 @@ export default function WriteContents(
         return 'not-handled';
     };
 
-    const handleReturn = (e: KeyboardEvent) => {
+    const handleReturn = (e: KeyboardEvent): DraftHandleValue => {
         if (e.shiftKey) {
             // 소프트 뉴라인 삽입
             setEditorState(RichUtils.insertSoftNewline(editorState));
             return 'handled';
         }
-        return 'not-handled';
+
+        const contentState = editorState.getCurrentContent();
+        const selectionState = editorState.getSelection();
+
+        // 현재 블록을 분할하고 새로운 블록을 생성
+        const newContentState = Modifier.splitBlock(contentState, selectionState);
+        const newSelection = newContentState.getSelectionAfter();
+
+        // 새로운 블록의 타입을 'unstyled'로 설정
+        const newContentStateWithUnstyledBlock = Modifier.setBlockType(
+            newContentState,
+            newSelection,
+            'unstyled'
+        );
+
+        const newEditorState = EditorState.push(
+            editorState,
+            newContentStateWithUnstyledBlock,
+            'split-block'
+        );
+
+        setEditorState(newEditorState);
+        return 'handled';
     };
 
     const mapKeyToEditorCommand = (e: KeyboardEvent) => {

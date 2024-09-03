@@ -12,13 +12,14 @@ import SaveCategory from "@/features/editContents/saveCategory";
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { APIInternal } from "@/apiClient/apis";
 import { ENDPOINT } from "@/const/endpoint";
-import {ReqSaveContents, ReqUpdateContents} from "@/types/request";
+import { ReqSaveContents, ReqUpdateContents} from "@/types/request";
 import {contentsToSaveContentsInput, contentsToUpdateContentsInput} from "@/functions/convertors";
 import {ResSaveContents, ResUpdateContents, ResUploadBlob} from "@/types/response";
 import CommonWrapperForSaveItem from "@/components/_blocks/CommonWrapperForSaveItem";
 import useGetContents from "@/hook/useGetContents";
 import {isEmptyObj} from "@/functions/utils";
 import {useRouter} from "next/router";
+import {QUERY_PARAM} from "@/const/queryParam";
 
 const DynamicEditor = dynamic(() => import('@/features/writeContents'), {
     ssr : false
@@ -47,9 +48,8 @@ export default function EditContents({isNew}: {isNew: boolean}) {
             body : JSON.stringify(variables)
         }),
         retry : false,
-        onSuccess : async (data) => {
-            await router.push(`/contents/${data?.contentsSummaryId}`);
-        }
+        onSuccess : async (data) => await router.push(`/contents/${data?.contentsSummaryId}`)
+
     });
 
     const mutateUpdateContents: UseMutationResult<ResUpdateContents | null, Error, ReqUpdateContents> = useMutation({
@@ -60,10 +60,17 @@ export default function EditContents({isNew}: {isNew: boolean}) {
             body : JSON.stringify(variables)
         }),
         retry : false,
-        onSuccess : async (data) => {
-            console.log(data);
-            await router.push(`/contents/${data?.contentsSummaryId}`);
-        }
+        onSuccess : async (data) => await router.push(`/contents/${data?.contentsSummaryId}`)
+    });
+
+    const mutateDeleteContents: UseMutationResult<null, Error, number> = useMutation({
+        mutationFn : id => APIInternal<null>({
+            url : `${ENDPOINT.deleteContents}?${QUERY_PARAM.contentsSummaryId}=${id}`,
+            method : 'DELETE',
+            contentsType : 'application/json',
+        }),
+        retry : false,
+        onSuccess : async () => await router.push(`/home`)
     });
 
 
@@ -212,7 +219,7 @@ export default function EditContents({isNew}: {isNew: boolean}) {
                         {!isNew && (
                             <>
                                 <StyledLayoutFlexItem $styled={{ flex : '0 0 136px'}}>
-                                    <ButtonA_long title={'삭제'} onClick={() => {}} />
+                                    <ButtonA_long title={'삭제'} onClick={() => mutateDeleteContents.mutate(contentsData?.data?.contentsSummaryId || 0)} />
                                 </StyledLayoutFlexItem>
                                 <StyledLayoutFlexItem $styled={{ flex : '0 0 136px'}}>
                                     <ButtonA_long title={'수정'} onClick={() => setSaveFlagState(true)} />

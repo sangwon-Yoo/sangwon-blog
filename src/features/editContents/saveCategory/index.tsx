@@ -9,6 +9,7 @@ import { APIInternal } from "@/apiClient/apis";
 import { ResCategoryList } from "@/types/response";
 import { ENDPOINT } from "@/const/endpoint";
 import CommonWrapperForSaveItem from "@/components/_blocks/CommonWrapperForSaveItem";
+import {QUERY_KEY} from "@/const/queryKey";
 
 export default function SaveCategory(
     {initialCategoryValue, exportFlag, categoryExportSetter, categoryImgExportSetter, imageAcceptTypes, isNew}: {
@@ -36,7 +37,7 @@ export default function SaveCategory(
     );
 
     const { status, data } = useQuery({
-        queryKey : ['getCategoryList'],
+        queryKey : [QUERY_KEY.getCategoryList],
         queryFn : () => APIInternal<ResCategoryList>({
             url : ENDPOINT.getCategoryList,
             contentsType : 'application/json'

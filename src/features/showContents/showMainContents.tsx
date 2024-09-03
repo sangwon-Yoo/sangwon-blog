@@ -6,6 +6,8 @@ import {EDITOR_BLOCKS} from "@/const/editorBlock";
 import {escapeHtml} from "@/functions/utils";
 import Image from "next/image";
 import {stylingTextByStyleRanges} from "@/functions/editorUtils";
+import {useEffect} from "react";
+import hljs from "highlight.js/lib/core";
 
 export default function ShowMainContents() {
 
@@ -14,6 +16,10 @@ export default function ShowMainContents() {
     console.log(JSON.parse(data?.contentsData?.contentsHtml || 'null'));
     const contentsData
         = JSON.parse(data?.contentsData?.contentsHtml || 'null') as RawDraftContentState | null;
+
+    useEffect(() => {
+        hljs.highlightAll();
+    }, [contentsData]);
 
     if(!contentsData) return null;
 

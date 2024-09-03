@@ -14,6 +14,7 @@ import {
 import Image from "next/image";
 import Top from "@/components/top";
 import Footer from "@/components/footer";
+import {GetServerSideProps} from "next";
 
 
 // This gets called on every request
@@ -404,4 +405,26 @@ export default function Home() {
             <Footer />
         </>
     );
+}
+
+// This gets called on every request
+export const getServerSideProps: GetServerSideProps = async ({
+                                                                 params,
+                                                                 req,
+                                                                 query
+                                                             }) => {
+
+   /* const queryClient = new QueryClient();
+    const contentsId = getZeroIndexString(params?.ContentsId) || '';
+
+    await queryClient.prefetchQuery({
+        queryKey : [QUERY_KEY.getContents, contentsId],
+        queryFn : () => APIInternal<ResContents>({
+            url : `${process.env.NEXT_PUBLIC_HOST}${ENDPOINT.getContents}?${QUERY_PARAM.contentsSummaryId}=${contentsId}`
+        }),
+    });*/
+
+    // For Remix:
+    // return json({ dehydratedState: dehydrate(queryClient) })
+    return { props: { /*dehydratedState: dehydrate(queryClient)*/ } }
 }

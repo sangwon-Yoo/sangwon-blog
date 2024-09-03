@@ -13,6 +13,14 @@ export type ResCategoryList = Array<{
     categoryName: string;
 }>;
 
+export type ResCategoryWithSummaryList = Array<{
+    categoryName: string;
+    summaryList: Array<{
+        id: number;
+        contentsName: string;
+    }>
+}>;
+
 export type ResContents = {
     contentsSummaryId: number;
     categoryName : string;
