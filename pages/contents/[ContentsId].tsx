@@ -19,11 +19,15 @@ import ShowMainContents from "@/features/showContents/showMainContents";
 import {StyledContents, StyledContentsParagraph} from "@/design-system/module/Contents";
 import Image from "next/image";
 import Footer from "@/components/footer";
+import Script from "next/script";
+import {useEffect} from "react";
+import ClipboardJS from "clipboard";
+
 
 export default function ContentsFromId() {
 
     return (
-        <Contents />
+        <MakeContentsPage />
     );
 }
 
@@ -49,7 +53,26 @@ export const getServerSideProps: GetServerSideProps = async ({
     return { props: { dehydratedState: dehydrate(queryClient) } }
 }
 
-function Contents() {
+function MakeContentsPage() {
+
+    useEffect(() => {
+        //클립보드 복사 초기화
+        const copyBtn: HTMLElement | '' = document.getElementById('copyBtn') || '';
+        const clipboard = new ClipboardJS(copyBtn);
+        clipboard.on('success', function (e: any) {
+            alert('링크 복사가 완료되었습니다.');
+            e.clearSelection();
+        });
+        clipboard.on('error', function (e: any) {
+            console.error('Action:', e.action);
+            console.error('Trigger:', e.trigger);
+        });
+
+        return () => {
+            clipboard.destroy();
+        };
+    }, []);
+
 
     return (
         <>

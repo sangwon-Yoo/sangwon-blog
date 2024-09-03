@@ -18,7 +18,8 @@ export default function SendMessage() {
                 $styledMobile={{
                     hover : { color : '#66f1e1', backgroundColor : 'unset' }
                 }}
-
+                href={'https://www.instagram.com/direct/t/yoo.sangwon/'}
+                target={'_blank'}
             >
                 <StyledContentsIconPaperPlan />
             </StyledContentsAnchor>

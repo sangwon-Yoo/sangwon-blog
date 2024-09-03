@@ -9,10 +9,12 @@ import {StyledLayoutFlex, StyledLayoutFlexItem} from "@/design-system/module/Lay
 import {StyledContentsIconCopy, StyledContentsIconEdit2} from "@/components/styledIcons";
 import useGetContents from "@/hook/useGetContents";
 import dayjs from "dayjs";
+import {useRouter} from "next/router";
 
 export default function ShowMidBox() {
 
     const { data } = useGetContents();
+    const router = useRouter();
 
     return (
         <StyledWrapper $styled={{
@@ -54,11 +56,13 @@ export default function ShowMidBox() {
                                     height : '50px'
                                 }}>
                                     <StyledContentsButton
+                                        id={'copyBtn'}
                                         $styled={{
                                             width : '100%',
                                             height : '100%',
                                             color : '#6B6B6B'
                                         }}
+                                        data-clipboard-text={`${process.env.NEXT_PUBLIC_HOST}${router.asPath}`}
                                     >
                                         <StyledContentsIconCopy />
                                     </StyledContentsButton>
@@ -76,6 +80,7 @@ export default function ShowMidBox() {
                                             height : '100%',
                                             color : '#6B6B6B'
                                         }}
+                                        onClick={() => router.push(`/contentsEditor/${data?.contentsSummaryId}`)}
                                     >
                                         <StyledContentsIconEdit2 />
                                     </StyledContentsButton>
