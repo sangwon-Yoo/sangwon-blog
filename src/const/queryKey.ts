@@ -4,5 +4,4 @@ export enum QUERY_KEY {
     getCategoryWithSummaryList = 'getCategoryWithSummaryList',
     blobSavingPath = 'blobSavingPath',
     blobDeletingPath = 'blobDeletingPath',
-    blobDeletingPath = "blobDeletingPath"
 }
