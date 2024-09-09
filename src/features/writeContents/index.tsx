@@ -9,28 +9,35 @@ import {
     useState,
     KeyboardEvent,
     Dispatch,
-    SetStateAction, useCallback
+    SetStateAction, useCallback, SyntheticEvent
 } from "react";
 import Draft, {
     convertToRaw, EditorState,
     RichUtils, getDefaultKeyBinding,
-    ContentBlock, RawDraftContentState
+    ContentBlock, RawDraftContentState, convertFromRaw, Modifier, DraftHandleValue
 } from "draft-js";
 import Editor from '@draft-js-plugins/editor';
 import createImagePlugin from '@draft-js-plugins/image';
 import 'draft-js/dist/Draft.css';
 import Immutable from "immutable";
 import styled from "styled-components";
-
+import {EDITOR_BLOCKS} from "@/const/editorBlock";
+import { stateToHTML } from 'draft-js-export-html';
+import useGetContents from "@/hook/useGetContents";
 
 export default function WriteContents(
     {exportFlag, exportSetter}: {exportFlag: boolean; exportSetter: Dispatch<SetStateAction<RawDraftContentState | null>>}
 ) {
 
+    const { data } = useGetContents();
+
     const [
         editorState,
         setEditorState
-    ] = useState(() => EditorState.createEmpty());
+    ] = useState(() => data?.contentsData?.contentsHtml
+        ? EditorState.createWithContent(convertFromRaw(JSON.parse(data?.contentsData?.contentsHtml) as RawDraftContentState))
+        : EditorState.createEmpty()
+    );
     const imagePlugIn = createImagePlugin();
     const [plugIns] = useState(() => {
 
@@ -55,18 +62,14 @@ export default function WriteContents(
     }, [exportFlag, doExport]);
 
     useEffect(() => {
-        console.log('hello');
         console.log(convertToRaw(editorState.getCurrentContent()));
+        //console.log(stateToHTML(editorState.getCurrentContent())); html 로 애초에 바꿔서 저장 할 수도 있음.
         const selection = editorState.getSelection();
         const blockType = editorState
             .getCurrentContent()
             .getBlockForKey(selection.getStartKey())
             .getType();
-        console.log(blockType);
-        console.log(editorState.getCurrentContent().getEntityMap())
     });
-
-    console.log(editorState.getCurrentInlineStyle());
 
     const myBlockStyleFn = (contentBlock: ContentBlock) => {
 
@@ -91,9 +94,39 @@ export default function WriteContents(
         return 'not-handled';
     };
 
+    const handleReturn = (e: KeyboardEvent): DraftHandleValue => {
+        if (e.shiftKey) {
+            // 소프트 뉴라인 삽입
+            setEditorState(RichUtils.insertSoftNewline(editorState));
+            return 'handled';
+        }
+
+        const contentState = editorState.getCurrentContent();
+        const selectionState = editorState.getSelection();
+
+        // 현재 블록을 분할하고 새로운 블록을 생성
+        const newContentState = Modifier.splitBlock(contentState, selectionState);
+        const newSelection = newContentState.getSelectionAfter();
+
+        // 새로운 블록의 타입을 'unstyled'로 설정
+        const newContentStateWithUnstyledBlock = Modifier.setBlockType(
+            newContentState,
+            newSelection,
+            'unstyled'
+        );
+
+        const newEditorState = EditorState.push(
+            editorState,
+            newContentStateWithUnstyledBlock,
+            'split-block'
+        );
+
+        setEditorState(newEditorState);
+        return 'handled';
+    };
+
     const mapKeyToEditorCommand = (e: KeyboardEvent) => {
         if (e.key === 'Tab' /* TAB */) {
-            console.log('pressed : Tab');
             const newEditorState = RichUtils.onTab(
                 e,
                 editorState,
@@ -126,7 +159,7 @@ export default function WriteContents(
         const imgURL = URL.createObjectURL(blob);
 
         setEditorState(prev => imagePlugIn.addImage(
-            prev, imgURL, {isLocal : true}
+            prev, imgURL, {tmpFile : file}
         ));
         setInputFileEmptyValue('');
     };
@@ -230,6 +263,7 @@ export default function WriteContents(
                             plugins={plugIns}
                             onChange={setEditorState}
                             handleKeyCommand={handleKeyCommand}
+                            handleReturn={handleReturn}
                             blockStyleFn={myBlockStyleFn}
                             customStyleMap={CUSTOM_INLINE_STYLE_MAP}
                             blockRenderMap={CUSTOM_BLOCK_RENDER_MAP}
@@ -319,17 +353,18 @@ function BlockControlButton(
 }
 
 const CUSTOM_BLOCK_RENDER_MAP = Immutable.Map({
-    'unstyled': {
+
+    [EDITOR_BLOCKS.unstyled]: {
         element: 'div'
     },
-    'header-three': {
+    [EDITOR_BLOCKS.header_three]: {
         element: 'h3'
     },
-    'center' : {
+    [EDITOR_BLOCKS.center] : {
         element : 'div',
         wrapper : <CenterBlock />
     },
-    'code-block': {
+    [EDITOR_BLOCKS.code_block]: {
         element : 'pre',
         wrapper : <CodeBlock />
     }

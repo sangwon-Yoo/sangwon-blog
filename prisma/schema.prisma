@@ -29,26 +29,29 @@ model ContentsCategory {
 
 model ContentsData {
   id           Int    @id @default(autoincrement())
-  title        String @unique
   contentsHtml String
 
-  contentsSummary ContentsSummary @relation(fields: [title], references: [title])
+  title           String @unique //잘못설계했다
+  contentsSummary ContentsSummary @relation(fields: [title], references: [title], onDelete: Cascade)
 }
 
 model ContentsSummary {
   id                   Int           @id @default(autoincrement())
-  categoryName         String
   title                String        @unique
   subTitle             String
   representativeImgURL String?
   createdDate          DateTime      @default(now())
   updatedDate          DateTime      @updatedAt
-  userId               String
   contentsData         ContentsData?
 
+  userId               String
+  categoryName         String
   contentsCategory ContentsCategory @relation(fields: [categoryName], references: [name])
   user             User             @relation(fields: [userId], references: [id])
 }
 
 // 쓰레드풀, 쓰레드풀 타임아웃
 // 외래키 관계에서는 부모가 모든 것에 기준. 부모가 있어야 자식을 create 할 수 있고, 자식은 지울 수 있지만, 부모는 지우거나 다른 값으로 업데이트 할 수 없다. 이를 가능하게 하는것이 cascase ondelete, onupdate
+// User ContentsCategory
+//   ContentsSummary
+//   ContentsData
