@@ -6,6 +6,8 @@ import { authOptions } from "../../auth/[...nextauth]";
 import prisma from "../../db";
 import {getZeroIndexString} from "@/functions/utils";
 import {QUERY_PARAM} from "@/const/queryParam";
+import {QUERY_KEY} from "@/const/queryKey";
+import {del} from "@vercel/blob";
 
 export default async function deleteContents(
     req: NextApiRequest,

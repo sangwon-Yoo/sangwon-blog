@@ -20,6 +20,7 @@ import useGetContents from "@/hook/useGetContents";
 import {isEmptyObj} from "@/functions/utils";
 import {useRouter} from "next/router";
 import {QUERY_PARAM} from "@/const/queryParam";
+import {QUERY_KEY} from "@/const/queryKey";
 
 const DynamicEditor = dynamic(() => import('@/features/writeContents'), {
     ssr : false
@@ -79,7 +80,7 @@ export default function EditContents({isNew}: {isNew: boolean}) {
             fileInput => {
                 if(!fileInput) return null;
                 return APIInternal<ResUploadBlob | null>({
-                    url: ENDPOINT.uploadImage + `?savePath=${fileInput?.path}`,
+                    url: ENDPOINT.uploadImage + `?${QUERY_KEY.blobSavingPath}=${fileInput?.path}`,
                     method: 'POST',
                     body: fileInput?.file || null
                 });
@@ -219,7 +220,10 @@ export default function EditContents({isNew}: {isNew: boolean}) {
                         {!isNew && (
                             <>
                                 <StyledLayoutFlexItem $styled={{ flex : '0 0 136px'}}>
-                                    <ButtonA_long title={'삭제'} onClick={() => mutateDeleteContents.mutate(contentsData?.data?.contentsSummaryId || 0)} />
+                                    <ButtonA_long
+                                        title={'삭제'}
+                                        onClick={() => mutateDeleteContents.mutate(contentsData?.data?.contentsSummaryId || 0)}
+                                    />
                                 </StyledLayoutFlexItem>
                                 <StyledLayoutFlexItem $styled={{ flex : '0 0 136px'}}>
                                     <ButtonA_long title={'수정'} onClick={() => setSaveFlagState(true)} />
