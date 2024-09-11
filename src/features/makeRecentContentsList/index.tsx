@@ -17,6 +17,7 @@ export default function MakeRecentContentsList() {
                         subtitle={summary.subTitle}
                         category={summary.categoryName}
                         imgSrc={summary.representativeImgURL || ''}
+                        linkUrl={`/contents/${summary.id}`}
                     />
                 );
             })}

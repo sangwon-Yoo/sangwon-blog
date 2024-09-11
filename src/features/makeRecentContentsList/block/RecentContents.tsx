@@ -7,17 +7,23 @@ import {
 } from "@/design-system/module/Contents";
 import {StyledLayoutFlexItem, StyledLayoutGrid, StyledLayoutGridItem} from "@/design-system/module/Layout";
 import Image from "next/image";
+import {useRouter} from "next/router";
 
-export default function RecentContents({date, title, subtitle, category, imgSrc}:{
-    date: string, title: string, subtitle: string, category: string, imgSrc: string
+export default function RecentContents({date, title, subtitle, category, imgSrc, linkUrl}:{
+    date: string, title: string, subtitle: string, category: string, imgSrc: string, linkUrl: string
 }) {
+
+    const router = useRouter();
 
     return (
         <StyledLayoutFlexItem>
             <StyledWrapper $styled={{
                 borderTop : '1px solid #e6e6e6', padding : '20px 10px 2px 10px'
             }}>
-                <StyledContentsAnchor $styled={{ display : 'block' }}>
+                <StyledContentsAnchor
+                    $styled={{ display : 'block' }}
+                    onClick={() => router.push(linkUrl)}
+                >
                     <StyledLayoutGrid $styled={{
                         gridTemplateColumns : '72% 28%',
                         gridTemplateAreas :
