@@ -13,7 +13,6 @@ export default function ShowMainContents() {
 
     const { data } = useGetContents();
 
-    console.log(JSON.parse(data?.contentsData?.contentsHtml || 'null'));
     const contentsData
         = JSON.parse(data?.contentsData?.contentsHtml || 'null') as RawDraftContentState | null;
 

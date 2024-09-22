@@ -20,7 +20,7 @@ import useGetContents from "@/hook/useGetContents";
 import {isEmptyObj} from "@/functions/utils";
 import {useRouter} from "next/router";
 import {QUERY_PARAM} from "@/const/queryParam";
-import {QUERY_KEY} from "@/const/queryKey";
+
 
 const DynamicEditor = dynamic(() => import('@/features/writeContents'), {
     ssr : false
@@ -80,7 +80,7 @@ export default function EditContents({isNew}: {isNew: boolean}) {
             fileInput => {
                 if(!fileInput) return null;
                 return APIInternal<ResUploadBlob | null>({
-                    url: ENDPOINT.uploadImage + `?${QUERY_KEY.blobSavingPath}=${fileInput?.path}`,
+                    url: ENDPOINT.uploadImage + `?${QUERY_PARAM.blobSavingPath}=${fileInput?.path}`,
                     method: 'POST',
                     body: fileInput?.file || null
                 });
@@ -157,7 +157,6 @@ export default function EditContents({isNew}: {isNew: boolean}) {
         if(sendFlagState) {
             setSendFlagState(false);
             if(isValidateForSending(categoryState, categoryImgState, contentsTitleState, contentsSummaryState, editorContents)) {
-                console.log(categoryState, categoryImgState, contentsImgState, contentsTitleState, contentsSummaryState, editorContents);
 
                 let uploadImgList = [
                     categoryImgState ? {file : categoryImgState[0], path : `${categoryState.value}/${categoryImgState[0].name}`} : null,

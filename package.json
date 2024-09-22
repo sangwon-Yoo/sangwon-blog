@@ -23,6 +23,7 @@
     "next": "14.2.4",
     "next-auth": "^4.24.5",
     "react": "^18.3.1",
+    "react-device-detect": "^2.2.3",
     "react-dom": "^18.3.1",
     "styled-components": "^6.1.1",
     "styled-icons": "^10.47.1"

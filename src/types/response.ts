@@ -37,4 +37,16 @@ export type ResContents = {
 export type ResSaveContents = {
     contentsSummaryId: number;
 }
+
+export type ResSummaryList = Array<{
+    id: number;
+    title: string;
+    subTitle: string;
+    representativeImgURL: string | null;
+    createdDate: Date;
+    updatedDate: Date;
+    userId: string;
+    categoryName: string;
+}>;
+
 export type ResUpdateContents = ResSaveContents;
