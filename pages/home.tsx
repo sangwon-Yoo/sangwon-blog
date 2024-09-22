@@ -8,8 +8,6 @@ import {
 import {
     StyledLayoutFlex,
     StyledLayoutFlexItem,
-    StyledLayoutGrid,
-    StyledLayoutGridItem
 } from "@/design-system/module/Layout";
 import Image from "next/image";
 import Top from "@/components/top";
