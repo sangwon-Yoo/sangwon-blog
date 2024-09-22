@@ -7,6 +7,19 @@ const nextConfig = {
         })
         return config
     },
+    async redirects() {
+        return [
+            {
+                source: '/',
+                destination: '/home',
+                permanent: true,
+            },
+        ]
+    },
+    images: {
+        remotePatterns: [{ hostname: "*.public.blob.vercel-storage.com" }],
+    },
+    reactStrictMode : false
 };
 
 module.exports = nextConfig;

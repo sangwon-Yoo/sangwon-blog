@@ -4,10 +4,10 @@ type ResponseData = {
     message: string
 }
 
-export default function handler(
+export default async function healthCheck(
     req: NextApiRequest,
     res: NextApiResponse<ResponseData>
 ) {
 
-    res.status(200).json({ message: 'Hello from Next.js!' })
+    res.status(200).json({ message: `Hello from Sangwon's Blog!` });
 }

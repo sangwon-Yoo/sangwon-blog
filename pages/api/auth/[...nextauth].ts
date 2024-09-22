@@ -13,6 +13,7 @@ export const authOptions = {
         }),
         // ...add more providers here
     ],
+    secret : 'k8DpWXiDeaZKCtJbN203iY5m/Op1pvNplQGipbzkKH4=', // random 으로 생성한 해시키
     callbacks: {
         async signIn({ user, account, profile, email, credentials }: any) {
 
@@ -47,6 +48,9 @@ export const authOptions = {
         async session({ session, token, user }: any) {
             // Send properties to the client, like an access_token from a provider.
             session.accessToken = token.accessToken
+            if(session?.user) {
+                session.user.id = token.sub;
+            }
             return session
         }
     },

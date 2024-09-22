@@ -9,12 +9,15 @@ import { StyledContentsIconClose } from "@/components/styledIcons";
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 
 export type ExportTypeForSelectBoxWithTextFieldA = {type: 'select' | 'text'; value: string};
-export default function SelectBoxWithTextFieldA({title, initialValue, optionValueForUsingTextField, exportFlag, exportSetter}: {
+export default function SelectBoxWithTextFieldA(
+    {title, initialValue, optionValueList, optionValueForUsingTextField, exportFlag, exportSetter, disabled}: {
     title: string;
     initialValue: ExportTypeForSelectBoxWithTextFieldA;
+    optionValueList: Array<string>;
     optionValueForUsingTextField: string;
     exportFlag: boolean;
     exportSetter : Dispatch<SetStateAction<ExportTypeForSelectBoxWithTextFieldA>>;
+    disabled: boolean
 }) {
 
     const [inputState, setInputState] = useState<ExportTypeForSelectBoxWithTextFieldA>(initialValue);
@@ -76,7 +79,7 @@ export default function SelectBoxWithTextFieldA({title, initialValue, optionValu
                             border: '1.4px solid #0ca8ac',
                             hover: { border: '1.4px solid #66f1e1' }
                         }}
-                        value={inputState.value}
+                        value={inputState.type == 'select' ? inputState.value : optionValueForUsingTextField}
                         onChange={(event) => {
                             if(event.currentTarget.value == optionValueForUsingTextField) {
                                 setInputState({ type : 'text', value : '' });
@@ -84,12 +87,15 @@ export default function SelectBoxWithTextFieldA({title, initialValue, optionValu
                                 setInputState({ type : 'select', value : event.currentTarget.value });
                             }
                         }}
+                        disabled={disabled}
                     >
                         <option value={''} defaultChecked={initialValue.value == ''}> -- 선택하세요 -- </option>
-                        <option value={'vanillaJS'} defaultChecked={initialValue.value == 'vanillaJS'}>vanillaJS</option>
-                        <option value={'markup'} defaultChecked={initialValue.value == 'markup'}>markup</option>
-                        <option value={'react'} defaultChecked={initialValue.value == 'react'}>react</option>
-                        <option value={'nextJS'} defaultChecked={initialValue.value == 'nextJS'}>nextJS</option>
+                        {optionValueList.map((option, index) => (
+                            <option
+                                value={option}
+                                defaultChecked={initialValue.value == option}
+                                key={index}>{option}
+                            </option>))}
                         <option value={optionValueForUsingTextField} defaultChecked={initialValue.value == optionValueForUsingTextField}>{optionValueForUsingTextField}</option>
                     </StyledContentsInputText>
                 </StyledWrapper>
@@ -138,6 +144,7 @@ export default function SelectBoxWithTextFieldA({title, initialValue, optionValu
                         onClick={(event) => {
                             setInputState({ type : 'select', value : '' });
                         }}
+                        disabled={disabled}
                     >
                         <StyledContentsIconClose />
                     </StyledContentsButton>
