@@ -2,14 +2,11 @@ import { StyledWrapper } from "@/design-system/module/Wrapper";
 import {
     StyledContents,
     StyledContentsAnchor,
-    StyledContentsParagraph,
-    StyledContentsSpan
+    StyledContentsParagraph
 } from "@/design-system/module/Contents";
 import {
     StyledLayoutFlex,
     StyledLayoutFlexItem,
-    StyledLayoutGrid,
-    StyledLayoutGridItem
 } from "@/design-system/module/Layout";
 import Image from "next/image";
 import Top from "@/components/top";
