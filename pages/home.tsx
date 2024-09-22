@@ -21,6 +21,7 @@ import {APIInternal} from "@/apiClient/apis";
 import {ResSummaryList} from "@/types/response";
 import {ENDPOINT} from "@/const/endpoint";
 import MakeRecentContentsList from "@/features/makeRecentContentsList";
+import {useRouter} from "next/router";
 
 
 // This gets called on every request
@@ -31,6 +32,7 @@ import MakeRecentContentsList from "@/features/makeRecentContentsList";
 
 export default function Home() {
 
+    const router = useRouter();
 
     return (
         <>
@@ -74,46 +76,52 @@ export default function Home() {
                             >
                                 <StyledLayoutFlexItem>
                                     <StyledWrapper $styled={{ textAlign : 'center' }}>
-                                        <StyledContentsAnchor $styled={{
-                                            display : 'inline-block',
-                                            width : '143px',
-                                            height : '43px',
-                                            lineHeight : '39px',
-                                            fontSize : '1rem',
-                                            margin : '4px',
-                                            border : '2px solid #ffffff',
-                                            borderRadius : '2px',
-                                            color : '#ffffff',
-                                            backgroundColor : 'transparent',
-                                            transition : 'background-color .12s ease',
-                                            hover : {
-                                                color : '#292929',
-                                                backgroundColor : '#ffffff'
-                                            }
-                                        }}>
+                                        <StyledContentsAnchor
+                                            $styled={{
+                                                display : 'inline-block',
+                                                width : '143px',
+                                                height : '43px',
+                                                lineHeight : '39px',
+                                                fontSize : '1rem',
+                                                margin : '4px',
+                                                border : '2px solid #ffffff',
+                                                borderRadius : '2px',
+                                                color : '#ffffff',
+                                                backgroundColor : 'transparent',
+                                                transition : 'background-color .12s ease',
+                                                hover : {
+                                                    color : '#292929',
+                                                    backgroundColor : '#ffffff'
+                                                }
+                                            }}
+                                            onClick={() => router.push('/about/blog')}
+                                        >
                                             {`블로그 소개`}
                                         </StyledContentsAnchor>
                                     </StyledWrapper>
                                 </StyledLayoutFlexItem>
                                 <StyledLayoutFlexItem>
                                     <StyledWrapper $styled={{ textAlign : 'center' }}>
-                                        <StyledContentsAnchor $styled={{
-                                            display : 'inline-block',
-                                            width : '143px',
-                                            height : '43px',
-                                            lineHeight : '39px',
-                                            fontSize : '1rem',
-                                            margin : '4px',
-                                            border : '2px solid #ffffff',
-                                            borderRadius : '2px',
-                                            color : '#ffffff',
-                                            backgroundColor : 'transparent',
-                                            transition : 'background-color .12s ease',
-                                            hover : {
-                                                color : '#292929',
-                                                backgroundColor : '#ffffff'
-                                            }
-                                        }}>
+                                        <StyledContentsAnchor
+                                            $styled={{
+                                                display : 'inline-block',
+                                                width : '143px',
+                                                height : '43px',
+                                                lineHeight : '39px',
+                                                fontSize : '1rem',
+                                                margin : '4px',
+                                                border : '2px solid #ffffff',
+                                                borderRadius : '2px',
+                                                color : '#ffffff',
+                                                backgroundColor : 'transparent',
+                                                transition : 'background-color .12s ease',
+                                                hover : {
+                                                    color : '#292929',
+                                                    backgroundColor : '#ffffff'
+                                                }
+                                            }}
+                                            onClick={() => router.push('/about/yoo')}
+                                        >
                                             {`Yoo 소개`}
                                         </StyledContentsAnchor>
                                     </StyledWrapper>

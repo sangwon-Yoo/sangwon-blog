@@ -157,7 +157,6 @@ export default function EditContents({isNew}: {isNew: boolean}) {
         if(sendFlagState) {
             setSendFlagState(false);
             if(isValidateForSending(categoryState, categoryImgState, contentsTitleState, contentsSummaryState, editorContents)) {
-                console.log(categoryState, categoryImgState, contentsImgState, contentsTitleState, contentsSummaryState, editorContents);
 
                 let uploadImgList = [
                     categoryImgState ? {file : categoryImgState[0], path : `${categoryState.value}/${categoryImgState[0].name}`} : null,

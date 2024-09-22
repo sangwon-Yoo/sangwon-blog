@@ -62,8 +62,6 @@ export default function WriteContents(
     }, [exportFlag, doExport]);
 
     useEffect(() => {
-        console.log(convertToRaw(editorState.getCurrentContent()));
-        //console.log(stateToHTML(editorState.getCurrentContent())); html 로 애초에 바꿔서 저장 할 수도 있음.
         const selection = editorState.getSelection();
         const blockType = editorState
             .getCurrentContent()
