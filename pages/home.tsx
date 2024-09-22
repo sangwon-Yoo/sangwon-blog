@@ -2,8 +2,7 @@ import { StyledWrapper } from "@/design-system/module/Wrapper";
 import {
     StyledContents,
     StyledContentsAnchor,
-    StyledContentsParagraph,
-    StyledContentsSpan
+    StyledContentsParagraph
 } from "@/design-system/module/Contents";
 import {
     StyledLayoutFlex,
