@@ -2,12 +2,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import {InternalResponseDTO, ResSummaryList} from "@/types/response";
 import prisma from "../../db";
 
-export const config = {
-    runtime: 'edge', // this must be set to `edge`
-    // execute this function on iad1 or hnd1, based on the connecting client location
-    regions: ['icn1', 'iad1']
-};
-
 export default async function getSummaryList(
     req: NextApiRequest,
     res: NextApiResponse<InternalResponseDTO<ResSummaryList>>

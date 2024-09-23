@@ -12,6 +12,7 @@ import useInitClipboard from "@/hook/useInitClipboard";
 import {StyledContents, StyledContentsParagraph} from "@/design-system/module/Contents";
 import Image from "next/image";
 import {stylingTextByStyleRanges} from "@/functions/editorUtils";
+import {GetServerSideProps} from "next";
 
 export default function BlogPage() {
 
@@ -142,4 +143,17 @@ export default function BlogPage() {
             <Footer />
         </>
     );
+}
+
+// This gets called on every request
+export const getServerSideProps: GetServerSideProps = async ({
+                                                                 params,
+                                                                 req,
+                                                                 query
+                                                             }) => {
+
+
+
+    // For Remix:
+    return { props: {  } }
 }
