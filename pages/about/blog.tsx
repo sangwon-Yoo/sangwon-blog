@@ -110,7 +110,7 @@ export default function BlogPage() {
                                     color : '#292929'
                                 }}
                                 dangerouslySetInnerHTML={{
-                                    __html : `1. NextAuth 를 통한 OAuth 로그인/로그아웃\n2. Draft.js, highlight.js 를 통한 커스텀 에디터\n3. prisma ORM 를 이용한 CURD Rest API 생성\n4. 그 외 자체 마크업이나 배포관리`
+                                    __html : `1. NextAuth 를 통한 OAuth 로그인/로그아웃\n2. Draft.js, highlight.js 를 통한 커스텀 에디터\n3. prisma ORM 를 이용한 CRUD Rest API 생성\n4. 그 외 자체 마크업이나 배포관리`
                                 }}
                             />
                         </StyledWrapper>
