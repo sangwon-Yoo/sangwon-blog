@@ -145,15 +145,16 @@ export default function BlogPage() {
     );
 }
 
-// This gets called on every request
-export const getServerSideProps: GetServerSideProps = async ({
-                                                                 params,
-                                                                 req,
-                                                                 query
-                                                             }) => {
+// This function gets called at build time
+export async function getStaticProps() {
+    // Call an external API endpoint to get posts
+    //const res = await fetch('https://.../posts')
+    //const posts = await res.json()
 
-
-
-    // For Remix:
-    return { props: {  } }
+    // By returning { props: { posts } }, the Blog component
+    // will receive `posts` as a prop at build time
+    return {
+        props: {
+        }
+    }
 }
