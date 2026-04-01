@@ -9,7 +9,7 @@ export default function Child({text, linkUrl}: {text: string, linkUrl: string}) 
         <StyledContentsAnchor
             $styled={{
                 display : 'block',
-                height : '1.6rem',
+                height : 'auto',
                 lineHeight : '1.6rem',
                 fontSize : '0.8rem',
                 color : '#ffffff80'}}
