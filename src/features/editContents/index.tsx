@@ -20,6 +20,7 @@ import useGetContents from "@/hook/useGetContents";
 import {isEmptyObj} from "@/functions/utils";
 import {useRouter} from "next/router";
 import {QUERY_PARAM} from "@/const/queryParam";
+import { error } from "console";
 
 
 const DynamicEditor = dynamic(() => import('@/features/writeContents'), {
@@ -49,7 +50,8 @@ export default function EditContents({isNew}: {isNew: boolean}) {
             body : JSON.stringify(variables)
         }),
         retry : false,
-        onSuccess : async (data) => await router.push(`/contents/${data?.contentsSummaryId}`)
+        onSuccess : async (data) => await router.push(`/contents/${data?.contentsSummaryId}`),
+        onError : (error) => alert(error.message)
 
     });
 
@@ -61,7 +63,8 @@ export default function EditContents({isNew}: {isNew: boolean}) {
             body : JSON.stringify(variables)
         }),
         retry : false,
-        onSuccess : async (data) => await router.push(`/contents/${data?.contentsSummaryId}`)
+        onSuccess : async (data) => await router.push(`/contents/${data?.contentsSummaryId}`),
+        onError : (error) => alert(error.message)
     });
 
     const mutateDeleteContents: UseMutationResult<null, Error, number> = useMutation({
@@ -71,7 +74,8 @@ export default function EditContents({isNew}: {isNew: boolean}) {
             contentsType : 'application/json',
         }),
         retry : false,
-        onSuccess : async () => await router.push(`/home`)
+        onSuccess : async () => await router.push(`/home`),
+        onError : (error) => alert(error.message)
     });
 
 
@@ -202,7 +206,7 @@ export default function EditContents({isNew}: {isNew: boolean}) {
 
         return false;
     };
-
+    
     return (
         <StyledWrapper
             $styled={{ margin : '120px 24px 36px 24px' }}

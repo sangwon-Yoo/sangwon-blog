@@ -18,7 +18,7 @@ export default function FileUploadInputA({title, initialPreviewImgSrc, accept, m
     exportFlag: boolean;
     exportSetter: Dispatch<SetStateAction<FileList | null>>;
 }) {
-
+    
     const [inputFileState, setInputFileState] = useState<FileList | null>(null);
     const [previewURL, setPreviewURL] = useState<string | null>(initialPreviewImgSrc || null);
     const inputFileRef = useRef<HTMLInputElement>(null);
