@@ -10,11 +10,22 @@ import {StyledContentsIconCopy, StyledContentsIconEdit2} from "@/components/styl
 import useGetContents from "@/hook/useGetContents";
 import dayjs from "dayjs";
 import {useRouter} from "next/router";
+import { useSession } from "next-auth/react";
+import { MouseEventHandler, useCallback } from "react";
 
 export default function ShowMidBox() {
 
+    const { data : session, status } = useSession();
     const { data } = useGetContents();
     const router = useRouter();
+
+    const onClickEditHandler: MouseEventHandler<HTMLButtonElement> = useCallback(() => {
+        if(status == 'authenticated') {
+            router.push(`/contentsEditor/${data?.contentsSummaryId}`);
+        } else {
+            alert('로그인 후 이용하세요');
+        }
+    }, [router, status]);
 
     return (
         <StyledWrapper $styled={{
@@ -80,7 +91,7 @@ export default function ShowMidBox() {
                                             height : '100%',
                                             color : '#6B6B6B'
                                         }}
-                                        onClick={() => router.push(`/contentsEditor/${data?.contentsSummaryId}`)}
+                                        onClick={onClickEditHandler}
                                     >
                                         <StyledContentsIconEdit2 />
                                     </StyledContentsButton>
